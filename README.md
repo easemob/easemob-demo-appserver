@@ -19,7 +19,8 @@
 6、开启直播；
 7、结束直播；
 8、转让直播间；
-9、删除直播间。
+9、删除直播间；
+10、获取推拉流地址。
 ```
 
 ## 技术选择
@@ -86,11 +87,15 @@
 
 #### [liveroom模块](./easemob-im-live-server/src/main/java/com/easemob/live/server/liveroom)
 
-- 提供直播间Rest Api服务，包含controller、model、service、exception等
+- 提供直播间Rest Api服务，包含controller、model、service、exception等。
 
 #### [rest模块](./easemob-im-live-server/src/main/java/com/easemob/live/server/rest)
 
 - 直播间服务需调用环信REST接口，该模块提供调用环信REST服务，包含token、user、chatroom API的调用，封装了调用所需的RequestBody、ResponseBody。
+
+#### [qiniu-service](./qiniu-service)
+
+- 获取七牛云直播推拉流地址。
 
 
 ## 环信文档

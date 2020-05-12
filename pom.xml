@@ -10,6 +10,7 @@
     <version>1.0.0.Final</version>
     <modules>
         <module>easemob-im-live-server</module>
+        <module>qiniu-service</module>
     </modules>
 
     <name>easemob-im-app-server</name>

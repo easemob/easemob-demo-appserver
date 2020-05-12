@@ -73,7 +73,7 @@ curl -X POST http://localhost:8080/appserver/liverooms -H 'Authorization: Bearer
 
 ## 获取直播间详情
 
-**API说明:** 创建一个直播间详情。
+**API说明:** 获取直播间详情。
 
 **Path:** `http://localhost:8080/appserver/liverooms/{liveroomId}`
 
@@ -126,7 +126,7 @@ curl -X GET http://localhost:8080/appserver/liverooms/107776865009665 -H 'Author
 
 ## 修改直播间详情
 
-**API说明:** 创建一个直播间。
+**API说明:** 修改直播间详情。
 
 **Path:** `http://localhost:8080/appserver/liverooms/{liveroomId}`
 
@@ -501,5 +501,91 @@ curl -X PUT http://localhost:8081/appserver/liverooms/107780133421057/owner/hxte
     "status": "offline",
     "showid": 0,
     "affiliations_count": 1
+}
+```
+
+
+## 获取推流地址
+
+**API说明:** 获取七牛云直播推流地址。详情见：[七牛云文档](https://developer.qiniu.com/pili/api/2767/the-rtmp-push-flow-address)
+
+**Path:** `http://localhost:8080/appserver/streams/url/publish`
+
+**HTTP Method:** `GET`
+
+**Permission:** App用户
+
+**Request Parameters:** 
+
+| 参数 | 类型 | 说明  |
+| --- | --- | --- |
+| domain    | String | 推流域名，此属性为必选项 |
+| hub       | String | 直播空间名，此属性为必选项 |
+| streamKey | String | 流名，此属性为必选的 |
+| expire    | Integer| 获取推流url过期时间，单位为秒，此属性为可选的，默认600秒后过期 |
+
+**Request Headers:** 
+
+| 参数 | 说明  |
+| --- | --- |
+| Content-Type  | application/json |
+| Authorization | Bearer ${token} |
+
+**Request Body示例:** 无
+
+**请求示例:**
+
+```
+curl -X GET 'http://localhost:8080/appserver/streams/url/publish?domain=pili-publish.shenchong.com&hub=shenchong-liveroom&streamKey=hxtest1' -H 'Authorization: Bearer YWMtVPHfHCeREeqZiOl8' -H 'Content-Type: application/json'
+```
+
+**返回示例:**
+
+```json
+{
+    "data": "rtmp://pili-publish.shenchong.com/shenchong-liveroom/hxtest1?e=1589261045&token=xxx:CSErrjZukoIVxBuwlTT0LWcwVF8="
+}
+```
+
+
+## 获取播放地址
+
+**API说明:** 获取七牛云直播流播放地址。详情见：[七牛云文档](https://developer.qiniu.com/pili/api/2768/rtmp-broadcast-address)
+
+**Path:** `http://localhost:8080/appserver/streams/url/play`
+
+**HTTP Method:** `GET`
+
+**Permission:** App用户
+
+**Request Parameters:** 
+
+| 参数 | 类型 | 说明  |
+| --- | --- | --- |
+| domain    | String | 播放域名，此属性为必选项 |
+| hub       | String | 直播空间名，此属性为必选项 |
+| streamKey | String | 流名，此属性为必选的 |
+| protocol  | String | 播放协议，此属性为可选的，默认为rtmp；可选的三个值为：rtmp，hls，hdl |
+
+**Request Headers:** 
+
+| 参数 | 说明  |
+| --- | --- |
+| Content-Type  | application/json |
+| Authorization | Bearer ${token} |
+
+**Request Body示例:** 无
+
+**请求示例:**
+
+```
+curl -X GET 'http://localhost:8080/appserver/streams/url/play?domain=pili-publish.shenchong.com&hub=shenchong-liveroom&streamKey=hxtest1' -H 'Authorization: Bearer YWMtVPHfHCeREeqZiOl8' -H 'Content-Type: application/json'
+```
+
+**返回示例:**
+
+```json
+{
+    "data": "rtmp://pili-publish.shenchong.com/shenchong-liveroom/hxtest1"
 }
 ```

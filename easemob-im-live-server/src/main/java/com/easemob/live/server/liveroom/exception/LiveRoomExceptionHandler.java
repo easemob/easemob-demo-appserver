@@ -1,16 +1,13 @@
-package com.easemob.live.server.liveroom;
+package com.easemob.live.server.liveroom.exception;
 
 import com.alibaba.fastjson.JSONObject;
-import com.easemob.live.server.liveroom.exception.ForbiddenOpException;
-import com.easemob.live.server.liveroom.exception.LiveRoomException;
-import com.easemob.live.server.liveroom.exception.LiveRoomNotFoundException;
-import com.easemob.live.server.liveroom.exception.LiveRoomSecurityException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
@@ -31,8 +28,20 @@ public class LiveRoomExceptionHandler extends ResponseEntityExceptionHandler {
 
         final ExceptionResponse response = new ExceptionResponse();
         response.setErrorDescription(error.getDefaultMessage());
-        response.setException(IllegalArgumentException.class.getName());
+        response.setException(ex.getClass().getName());
         response.setError("illegal_argument");
+        return handleExceptionInternal(ex, response, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        final ExceptionResponse response = new ExceptionResponse();
+        response.setErrorDescription(ex.getMessage());
+        response.setException(ex.getClass().getName());
+        response.setError("illegal_argument");
+
         return handleExceptionInternal(ex, response, headers, status, request);
     }
 
@@ -78,7 +87,7 @@ public class LiveRoomExceptionHandler extends ResponseEntityExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         final ExceptionResponse response = new ExceptionResponse();
         response.setErrorDescription(ex.getMessage());
-        response.setException(ex.getClass().getSimpleName());
+        response.setException(ex.getClass().getName());
         response.setError(ex.getType());
         return handleExceptionInternal(ex, response, headers, status, request);
     }
@@ -89,7 +98,7 @@ public class LiveRoomExceptionHandler extends ResponseEntityExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         final ExceptionResponse response = new ExceptionResponse();
         response.setErrorDescription(ex.getMessage());
-        response.setException(ex.getClass().getSimpleName());
+        response.setException(ex.getClass().getName());
         response.setError("resource_not_found");
         return handleExceptionInternal(ex, response, headers, status, request);
     }

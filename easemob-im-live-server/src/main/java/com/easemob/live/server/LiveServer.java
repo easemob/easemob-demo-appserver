@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableDiscoveryClient
 @EnableJpaRepositories
 @EntityScan("com.easemob.live.server.liveroom.model")
-@SpringBootApplication(scanBasePackages = "com.easemob.live.server")
+@SpringBootApplication(scanBasePackages = "com.easemob")
 public class LiveServer {
     public static void main(String[] args) {
         SpringApplication.run(LiveServer.class, args);
