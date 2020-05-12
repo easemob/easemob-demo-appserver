@@ -35,20 +35,19 @@ public class QiniuController {
      * @param expire URL will be invalid after expire seconds.
      */
     @GetMapping("/appserver/streams/url/publish")
-    public ResponseEntity getRTMPPublishURL(@RequestParam(name = "domain") String domain,
-                                            @RequestParam(name = "hub") String hub,
+    public ResponseEntity getRTMPPublishURL(@RequestParam(name = "domain", required = false) String domain,
+                                            @RequestParam(name = "hub", required = false) String hub,
                                             @RequestParam(name = "streamKey") String streamKey,
                                             @RequestParam(name = "expire", required = false) Integer expire,
                                             HttpServletRequest request) {
 
         RequestUtils.resolveAuthorizationToken(request.getHeader(AUTHORIZATION));
 
-        if (expire == null) {
-            expire = 600;
-        }
-
         Map<String, Object> response = new HashMap<>(1);
-        response.put("data", qiniuService.RTMPPublishURL(domain, hub, streamKey, expire));
+
+        String publishUrl = qiniuService.RTMPPublishURL(domain, hub, streamKey, expire);
+
+        response.put("data", publishUrl);
 
         return ResponseEntity.ok(response);
     }
@@ -62,9 +61,9 @@ public class QiniuController {
      * @param streamKey 流名
      */
     @GetMapping("/appserver/streams/url/play")
-    public ResponseEntity getPlayURL(@RequestParam(name = "protocol", defaultValue = "rtmp", required = false) String protocol,
-                                     @RequestParam(name = "domain") String domain,
-                                     @RequestParam(name = "hub") String hub,
+    public ResponseEntity getPlayURL(@RequestParam(name = "protocol", required = false, defaultValue = "rtmp") String protocol,
+                                     @RequestParam(name = "domain", required = false) String domain,
+                                     @RequestParam(name = "hub", required = false) String hub,
                                      @RequestParam(name = "streamKey") String streamKey,
                                      HttpServletRequest request) {
 

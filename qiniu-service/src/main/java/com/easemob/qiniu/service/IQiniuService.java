@@ -11,10 +11,10 @@ public interface IQiniuService {
      * @param domain 推流域名
      * @param hub 直播空间名
      * @param streamKey 流名
-     * @param expireAfterSeconds URL will be invalid after expireAfterSeconds.
+     * @param expire URL will be invalid after expire seconds.
      * @return RTMP publish URL
      */
-    String RTMPPublishURL(String domain, String hub, String streamKey, int expireAfterSeconds);
+    String RTMPPublishURL(String domain, String hub, String streamKey, Integer expire);
 
     /**
      * generates play URL

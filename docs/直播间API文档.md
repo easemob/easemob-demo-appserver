@@ -519,9 +519,9 @@ curl -X PUT http://localhost:8081/appserver/liverooms/107780133421057/owner/hxte
 
 | 参数 | 类型 | 说明  |
 | --- | --- | --- |
-| domain    | String | 推流域名，此属性为必选项 |
-| hub       | String | 直播空间名，此属性为必选项 |
-| streamKey | String | 流名，此属性为必选的 |
+| domain    | String | 推流域名，此属性为可选项，默认获取配置文件中该参数 |
+| hub       | String | 直播空间名，此属性为可选项，默认获取配置文件中该参数 |
+| streamKey | String | 流名，此属性为必选项 |
 | expire    | Integer| 获取推流url过期时间，单位为秒，此属性为可选的，默认600秒后过期 |
 
 **Request Headers:** 
@@ -562,8 +562,8 @@ curl -X GET 'http://localhost:8080/appserver/streams/url/publish?domain=pili-pub
 
 | 参数 | 类型 | 说明  |
 | --- | --- | --- |
-| domain    | String | 播放域名，此属性为必选项 |
-| hub       | String | 直播空间名，此属性为必选项 |
+| domain    | String | 播放域名，此属性为可选项，默认获取配置文件中该参数 |
+| hub       | String | 直播空间名，此属性为可选项，默认获取配置文件中该参数 |
 | streamKey | String | 流名，此属性为必选的 |
 | protocol  | String | 播放协议，此属性为可选的，默认为rtmp；可选的三个值为：rtmp，hls，hdl |
 
