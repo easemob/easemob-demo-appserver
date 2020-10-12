@@ -2,9 +2,11 @@ package com.easemob.qiniu.pili;
 
 public final class Client {
     private Mac mac;
+    private RPC cli;
 
     public Client(String accessKey, String secretKey) {
         this.mac = new Mac(accessKey, secretKey);
+        this.cli = new RPC(this.mac);
     }
 
     public String RTMPPublishURL(String domain, String hub, String streamKey, int expireAfterSeconds) {
@@ -30,6 +32,10 @@ public final class Client {
 
     public String HDLPlayURL(String domain, String hub, String streamKey) {
         return String.format("http://%s/%s/%s.flv", domain, hub, streamKey);
+    }
+
+    public HubClient newHubClient(String hub) {
+        return new HubClient(this.cli, hub);
     }
 }
 

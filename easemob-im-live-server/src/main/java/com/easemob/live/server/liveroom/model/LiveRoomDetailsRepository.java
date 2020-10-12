@@ -1,6 +1,5 @@
-package com.easemob.live.server.liveroom;
+package com.easemob.live.server.liveroom.model;
 
-import com.easemob.live.server.liveroom.model.LiveRoomDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

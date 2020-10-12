@@ -26,4 +26,11 @@ public interface IQiniuService {
      * @return play URL
      */
     String playURL(String protocol, String domain, String hub, String streamKey);
+
+    /**
+     * 流是否在直播中
+     * @param streamKey 流名
+     * @return boolean
+     */
+    boolean streamOngoing(String streamKey);
 }

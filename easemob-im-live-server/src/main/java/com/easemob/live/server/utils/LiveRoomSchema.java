@@ -1,6 +1,6 @@
 package com.easemob.live.server.utils;
 
-import com.easemob.live.server.liveroom.LiveRoomRequest;
+import com.easemob.live.server.liveroom.api.LiveRoomRequest;
 import com.easemob.live.server.liveroom.model.LiveRoomDetails;
 import org.apache.commons.lang.StringUtils;
 

@@ -1,4 +1,4 @@
-package com.easemob.live.server.liveroom;
+package com.easemob.live.server.liveroom.api;
 
 import com.easemob.live.server.liveroom.service.LiveRoomService;
 import com.easemob.live.server.utils.RequestUtils;

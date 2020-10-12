@@ -3,15 +3,20 @@ package com.easemob.qiniu.service;
 import com.easemob.qiniu.config.QiniuProperties;
 import com.easemob.qiniu.enums.PlayProtocol;
 import com.easemob.qiniu.pili.Client;
+import com.easemob.qiniu.pili.HubClient;
+import com.easemob.qiniu.pili.PiliException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
  * @author shenchong@easemob.com 2020/5/11
  */
+@Slf4j
 @Component
 public class QiniuServiceImpl implements IQiniuService {
 
     private final Client client;
+    private final HubClient hubClient;
     private final String publishDomain;
     private final String rtmpDomain;
     private final String hlsDomain;
@@ -28,6 +33,8 @@ public class QiniuServiceImpl implements IQiniuService {
         this.hdlDomain = properties.getHdlDomain();
         this.hub = properties.getHub();
         this.expire = properties.getExpire();
+
+        this.hubClient = this.client.newHubClient(this.hub);
     }
 
     @Override
@@ -70,5 +77,17 @@ public class QiniuServiceImpl implements IQiniuService {
             default:
                 throw new IllegalArgumentException("Unsupported protocol");
         }
+    }
+
+    @Override
+    public boolean streamOngoing(String streamKey) {
+        try {
+            this.hubClient.liveStatus(streamKey);
+        } catch (PiliException e) {
+            if (e.isNotInLive() || e.isNotFound()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

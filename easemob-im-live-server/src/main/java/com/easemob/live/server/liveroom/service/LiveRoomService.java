@@ -1,9 +1,12 @@
 package com.easemob.live.server.liveroom.service;
 
-import com.easemob.live.server.liveroom.CreateLiveRoomRequest;
-import com.easemob.live.server.liveroom.LiveRoomDetailsRepository;
-import com.easemob.live.server.liveroom.LiveRoomInfo;
-import com.easemob.live.server.liveroom.LiveRoomRequest;
+import com.easemob.live.server.liveroom.api.CreateLiveRoomRequest;
+import com.easemob.live.server.liveroom.model.LiveRoomDetailsRepository;
+import com.easemob.live.server.liveroom.api.LiveRoomInfo;
+import com.easemob.live.server.liveroom.api.LiveRoomRequest;
+import com.easemob.live.server.liveroom.event.LiveRoomEvent;
+import com.easemob.live.server.liveroom.event.LiveRoomOfflineEvent;
+import com.easemob.live.server.liveroom.event.LiveRoomOngoingEvent;
 import com.easemob.live.server.liveroom.exception.ForbiddenOpException;
 import com.easemob.live.server.liveroom.exception.LiveRoomNotFoundException;
 import com.easemob.live.server.liveroom.model.LiveRoomDetails;
@@ -17,6 +20,7 @@ import com.easemob.live.server.utils.LiveRoomSchema;
 import com.easemob.live.server.utils.ModelConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +39,9 @@ public class LiveRoomService {
 
     @Autowired
     private LiveRoomDetailsRepository liveRoomDetailsRepository;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
 
     public LiveRoomInfo createLiveRoom(CreateLiveRoomRequest liveRoomRequest) {
@@ -169,6 +176,9 @@ public class LiveRoomService {
         liveRoomDetails.setAffiliationsCount(liveRoomInfo.getAffiliationsCount());
         liveRoomDetailsRepository.save(liveRoomDetails);
 
+        LiveRoomEvent event = new LiveRoomOngoingEvent(liveroomId);
+        eventPublisher.publishEvent(event);
+
         liveRoomInfo.setCover(liveRoomDetails.getCover());
         liveRoomInfo.setStatus(liveRoomDetails.getStatus());
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
@@ -197,6 +207,9 @@ public class LiveRoomService {
 
         liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);
         LiveRoomDetails details = liveRoomDetailsRepository.save(liveRoomDetails);
+
+        LiveRoomEvent event = new LiveRoomOfflineEvent(liveroomId);
+        eventPublisher.publishEvent(event);
 
         return ModelConverter.detailsConverterLiveRoomInfo(details);
     }

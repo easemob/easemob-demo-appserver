@@ -1,6 +1,6 @@
 package com.easemob.live.server.rest;
 
-import com.easemob.live.server.liveroom.LiveRoomInfo;
+import com.easemob.live.server.liveroom.api.LiveRoomInfo;
 import com.easemob.live.server.rest.chatroom.*;
 import com.easemob.live.server.rest.token.GetTokenRequest;
 import com.easemob.live.server.rest.token.GetTokenResponse;

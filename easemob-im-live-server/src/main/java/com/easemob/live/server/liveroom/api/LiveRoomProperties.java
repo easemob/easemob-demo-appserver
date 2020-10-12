@@ -1,4 +1,4 @@
-package com.easemob.live.server.liveroom;
+package com.easemob.live.server.liveroom.api;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

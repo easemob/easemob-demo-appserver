@@ -1,4 +1,4 @@
-package com.easemob.live.server.liveroom;
+package com.easemob.live.server.liveroom.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

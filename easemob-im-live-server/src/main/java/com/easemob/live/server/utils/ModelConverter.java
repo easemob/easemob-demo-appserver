@@ -1,6 +1,6 @@
 package com.easemob.live.server.utils;
 
-import com.easemob.live.server.liveroom.LiveRoomInfo;
+import com.easemob.live.server.liveroom.api.LiveRoomInfo;
 import com.easemob.live.server.liveroom.model.LiveRoomDetails;
 
 import java.util.Map;

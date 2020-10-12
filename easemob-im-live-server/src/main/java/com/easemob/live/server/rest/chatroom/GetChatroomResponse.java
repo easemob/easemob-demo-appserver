@@ -1,6 +1,6 @@
 package com.easemob.live.server.rest.chatroom;
 
-import com.easemob.live.server.liveroom.LiveRoomInfo;
+import com.easemob.live.server.liveroom.api.LiveRoomInfo;
 import com.easemob.live.server.rest.RestResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
