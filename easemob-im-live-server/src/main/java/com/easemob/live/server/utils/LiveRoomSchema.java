@@ -31,6 +31,10 @@ public class LiveRoomSchema {
             liveRoomDetails.setCover(request.getCover());
         }
 
+        if (request.getPersistent() != null) {
+            liveRoomDetails.setPersistent(request.getPersistent());
+        }
+
         if (request.getExt() != null) {
             liveRoomDetails.setExt(JsonUtils.mapToJsonString(request.getExt()));
         }

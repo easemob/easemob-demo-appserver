@@ -20,5 +20,7 @@ public class LiveRoomRequest {
 
     private String cover;
 
+    private Boolean persistent;
+
     private Map<String, Object> ext;
 }

@@ -37,6 +37,9 @@ public class LiveRoomDetails {
     @Column(name = "cover")
     private String cover;
 
+    @Column(name = "persistent")
+    private Boolean persistent;
+
     @Enumerated
     @Column(name = "status", nullable = false)
     private LiveRoomStatus status = LiveRoomStatus.OFFLINE;

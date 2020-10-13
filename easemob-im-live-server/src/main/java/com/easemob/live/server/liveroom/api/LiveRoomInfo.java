@@ -37,6 +37,8 @@ public class LiveRoomInfo {
 
     private String cover;
 
+    private Boolean persistent;
+
     private LiveRoomStatus status = LiveRoomStatus.OFFLINE;
 
     private long showid = 0;

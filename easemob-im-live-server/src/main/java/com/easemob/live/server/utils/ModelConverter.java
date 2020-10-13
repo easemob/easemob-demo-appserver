@@ -18,6 +18,7 @@ public class ModelConverter {
                 .description(liveRoomDetails.getDescription())
                 .owner(liveRoomDetails.getOwner())
                 .created(liveRoomDetails.getCreated())
+                .persistent(liveRoomDetails.getPersistent())
                 .cover(liveRoomDetails.getCover())
                 .status(liveRoomDetails.getStatus())
                 .showid(liveRoomDetails.getShowid())

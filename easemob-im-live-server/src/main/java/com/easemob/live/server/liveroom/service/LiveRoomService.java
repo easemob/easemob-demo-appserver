@@ -78,6 +78,7 @@ public class LiveRoomService {
                 .created(liveRoomInfo.getCreated())
                 .owner(liveRoomInfo.getOwner())
                 .cover(liveRoomInfo.getCover())
+                .persistent(liveRoomInfo.getPersistent())
                 .status(liveRoomInfo.getStatus())
                 .showid(liveRoomInfo.getShowid())
                 .affiliationsCount(liveRoomInfo.getAffiliationsCount())
@@ -108,6 +109,7 @@ public class LiveRoomService {
         liveRoomDetails.setAffiliationsCount(liveRoomInfo.getAffiliationsCount());
         liveRoomDetailsRepository.save(liveRoomDetails);
 
+        liveRoomInfo.setPersistent(liveRoomDetails.getPersistent());
         liveRoomInfo.setCover(liveRoomDetails.getCover());
         liveRoomInfo.setStatus(liveRoomDetails.getStatus());
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
@@ -179,6 +181,7 @@ public class LiveRoomService {
         LiveRoomEvent event = new LiveRoomOngoingEvent(liveroomId);
         eventPublisher.publishEvent(event);
 
+        liveRoomInfo.setPersistent(liveRoomDetails.getPersistent());
         liveRoomInfo.setCover(liveRoomDetails.getCover());
         liveRoomInfo.setStatus(liveRoomDetails.getStatus());
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());

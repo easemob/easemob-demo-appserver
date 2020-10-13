@@ -24,4 +24,6 @@ public class CreateLiveRoomRequest extends LiveRoomRequest {
     private List<String> members;
 
     private Boolean mute;
+
+    private Boolean persistent = true;
 }
