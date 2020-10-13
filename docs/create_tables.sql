@@ -15,4 +15,4 @@ create table live_room_details (
     index SHOW_STATUS (status)
 ) engine=InnoDB DEFAULT CHARSET=utf8mb4;
 
-ALTER TABLE live_room_details ADD persistent bit;
+ALTER TABLE live_room_details ADD persistent bit NOT NULL DEFAULT 1;

@@ -1,5 +1,6 @@
 package com.easemob.live.server.liveroom.event;
 
+import com.easemob.live.server.liveroom.api.LiveRoomInfo;
 import com.easemob.live.server.liveroom.model.LiveRoomDetailsRepository;
 import com.easemob.live.server.liveroom.exception.LiveRoomNotFoundException;
 import com.easemob.live.server.liveroom.model.LiveRoomDetails;
@@ -64,6 +65,10 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
 
     private void refreshLiveRoomStatus(String liveroomId) {
 
+        if (this.statusTasks.containsKey(liveroomId)) {
+            return;
+        }
+
         FutureRunnable runnable = new FutureRunnable(liveroomId);
         ScheduledFuture statusFuture = scheduled
                 .scheduleWithFixedDelay(runnable, 60000, 60000, TimeUnit.MILLISECONDS);
@@ -107,6 +112,7 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                     log.warn("delete chatroom failed, liveroomId : {}", liveroomId);
                 }
                 liveRoomRepository.deleteById(Long.valueOf(liveroomId));
+                log.info("cleanup liveroom, liveroomId={}", liveroomId);
             }
         }, 3600000, TimeUnit.MILLISECONDS);
 
@@ -134,12 +140,13 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
 
             if (liveRoomDetails.getStatus() == LiveRoomStatus.OFFLINE && future != null) {
                 future.cancel(true);
+                return;
             }
 
             if (!qiniuService.streamOngoing(liveroomId)) {
 
                 liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);
-                liveRoomRepository.save(liveRoomDetails);
+                refreshLiveRoomInfo(liveRoomDetails);
 
                 cleanupLiveRoom(liveroomId);
 
@@ -148,6 +155,25 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                 if (future != null) {
                     future.cancel(true);
                 }
+                return;
+            }
+
+            refreshLiveRoomInfo(liveRoomDetails);
+        }
+
+        private void refreshLiveRoomInfo(LiveRoomDetails oldDetails) {
+            try {
+                LiveRoomInfo liveRoomInfo =
+                        restClient.retrieveChatroomInfo(liveroomId, restClient.retrieveAppToken());
+                // 更新直播间信息
+                oldDetails.setName(liveRoomInfo.getName());
+                oldDetails.setDescription(liveRoomInfo.getDescription());
+                oldDetails.setOwner(liveRoomInfo.getOwner());
+                oldDetails.setAffiliationsCount(liveRoomInfo.getAffiliationsCount());
+                LiveRoomDetails details = liveRoomRepository.save(oldDetails);
+                log.info("refresh liveroom info, details={}", details);
+            } catch (Exception e) {
+                log.warn("update liveroom info failed, e={}", e.getMessage());
             }
         }
     }

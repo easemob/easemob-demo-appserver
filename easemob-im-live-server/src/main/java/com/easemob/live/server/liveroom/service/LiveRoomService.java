@@ -18,6 +18,8 @@ import com.easemob.live.server.rest.user.UserStatus;
 import com.easemob.live.server.utils.JsonUtils;
 import com.easemob.live.server.utils.LiveRoomSchema;
 import com.easemob.live.server.utils.ModelConverter;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +45,12 @@ public class LiveRoomService {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
+    private Cache<String, LiveRoomInfo> infoCache = Caffeine.newBuilder()
+            .initialCapacity(100)
+            .maximumSize(1000)
+            .expireAfterWrite(10000, TimeUnit.MILLISECONDS)
+            .build();
 
 
     public LiveRoomInfo createLiveRoom(CreateLiveRoomRequest liveRoomRequest) {
@@ -67,6 +76,7 @@ public class LiveRoomService {
 
         // 获取聊天室详情
         LiveRoomInfo liveRoomInfo = restClient.retrieveChatroomInfo(chatroomId, token);
+        liveRoomInfo.setPersistent(liveRoomRequest.getPersistent());
         liveRoomInfo.setCover(liveRoomRequest.getCover());
         liveRoomInfo.setExt(liveRoomRequest.getExt());
 
@@ -93,21 +103,26 @@ public class LiveRoomService {
     }
 
     public LiveRoomInfo getLiveRoomInfo(String liveroomId, String token) {
+        return infoCache.get(liveroomId, key -> getLiveRoomInfoFromDb(key, token));
+    }
+
+    public LiveRoomInfo getLiveRoomInfoFromDb(String liveroomId, String token) {
 
         log.info("get liveroom info, liveroomId : {}, token : {}", liveroomId, token);
 
         LiveRoomInfo liveRoomInfo = restClient.retrieveChatroomInfo(liveroomId, token);
 
-        LiveRoomDetails liveRoomDetails =
+        LiveRoomDetails oldDetails =
                 liveRoomDetailsRepository.findById(Long.valueOf(liveroomId))
                         .orElseThrow(
                                 () -> new LiveRoomNotFoundException(liveroomId + " is not found"));
 
         // 更新直播间信息
-        liveRoomDetails.setName(liveRoomInfo.getName());
-        liveRoomDetails.setOwner(liveRoomInfo.getOwner());
-        liveRoomDetails.setAffiliationsCount(liveRoomInfo.getAffiliationsCount());
-        liveRoomDetailsRepository.save(liveRoomDetails);
+        oldDetails.setName(liveRoomInfo.getName());
+        oldDetails.setDescription(liveRoomInfo.getDescription());
+        oldDetails.setOwner(liveRoomInfo.getOwner());
+        oldDetails.setAffiliationsCount(liveRoomInfo.getAffiliationsCount());
+        LiveRoomDetails liveRoomDetails = liveRoomDetailsRepository.save(oldDetails);
 
         liveRoomInfo.setPersistent(liveRoomDetails.getPersistent());
         liveRoomInfo.setCover(liveRoomDetails.getCover());
@@ -141,6 +156,8 @@ public class LiveRoomService {
     public LiveRoomInfo ongoingLiveRoom(String username, String liveroomId) {
 
         log.info("ongoing liveroom, liveroomId : {}, username : {}", liveroomId, username);
+
+        infoCache.invalidate(liveroomId);
 
         LiveRoomDetails liveRoomDetails =
                 liveRoomDetailsRepository.findById(Long.valueOf(liveroomId))
@@ -194,6 +211,8 @@ public class LiveRoomService {
 
         log.info("offline liveroom, liveroomId : {}, username : {}", liveroomId, username);
 
+        infoCache.invalidate(liveroomId);
+
         LiveRoomDetails liveRoomDetails =
                 liveRoomDetailsRepository.findById(Long.valueOf(liveroomId))
                         .orElseThrow(() -> new LiveRoomNotFoundException(
@@ -221,6 +240,8 @@ public class LiveRoomService {
 
         log.info("modify liveroom, liveroomId : {}, request : {}", liveroomId, request);
 
+        infoCache.invalidate(liveroomId);
+
         LiveRoomDetails liveRoomDetails =
                 liveRoomDetailsRepository.findById(Long.valueOf(liveroomId))
                         .orElseThrow(() -> new LiveRoomNotFoundException(
@@ -246,6 +267,8 @@ public class LiveRoomService {
 
         log.info("assign liveroom owner, liveroomId : {}, new owner : {}", liveroomId, newOwner);
 
+        infoCache.invalidate(liveroomId);
+
         LiveRoomDetails liveRoomDetails =
                 liveRoomDetailsRepository.findById(Long.valueOf(liveroomId))
                         .orElseThrow(() -> new LiveRoomNotFoundException(
@@ -268,6 +291,8 @@ public class LiveRoomService {
     public LiveRoomInfo deleteLiveRoom(String liveroomId, String token) {
 
         log.info("delete liveroom, liveroomId : {}", liveroomId);
+
+        infoCache.invalidate(liveroomId);
 
         LiveRoomDetails liveRoomDetails =
                 liveRoomDetailsRepository.findById(Long.valueOf(liveroomId))
