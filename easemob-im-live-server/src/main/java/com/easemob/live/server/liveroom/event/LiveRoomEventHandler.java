@@ -138,8 +138,8 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                             .orElseThrow(() -> new LiveRoomNotFoundException(
                                     "liveroom " + liveroomId + " is not found"));
 
-            if (liveRoomDetails.getStatus() == LiveRoomStatus.OFFLINE && future != null) {
-                future.cancel(true);
+            if (liveRoomDetails.getStatus() == LiveRoomStatus.OFFLINE) {
+                cancelFuture();
                 return;
             }
 
@@ -152,13 +152,18 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
 
                 log.info("stream is offline, so offline liveroom, too, liveroomId={}", liveroomId);
 
-                if (future != null) {
-                    future.cancel(true);
-                }
+                cancelFuture();
                 return;
             }
 
             refreshLiveRoomInfo(liveRoomDetails);
+        }
+
+        private void cancelFuture() {
+            statusTasks.remove(liveroomId);
+            if (future != null) {
+                future.cancel(true);
+            }
         }
 
         private void refreshLiveRoomInfo(LiveRoomDetails oldDetails) {
