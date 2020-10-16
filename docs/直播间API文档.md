@@ -38,6 +38,8 @@
 | maxusers    | Integer| 直播间成员最大数（包括直播间创建者），值为数值类型，默认值200，最大值5000，此属性为可选的 |
 | owner       | String | 直播间的主播，此属性为必须的 |
 | members     | Array  | 直播间成员，此属性为可选的，但是如果加了此项，数组元素至少一个 |
+| persistent  | Boolean| 直播间是否持久化，此属性为可选的，默认为true，设为false后，直播间停播后一小时内未有状态更新，会自动清理直播间 |
+| video_type  | String | 直播间视频类型，此属性为可选的，默认是live，即直播，还可设为vod，即点播类型 |
 | cover       | String | 直播间封面Url |
 | ext         | Map    | 直播间自定义属性 |
 
@@ -58,6 +60,8 @@ curl -X POST http://localhost:8080/appserver/liverooms -H 'Authorization: Bearer
     "created": 1582182428511,
     "mute": false,
     "cover": "http://172.0.0.1:8080/cover/pictiure",
+    "persistent": true,
+    "video_type": "live",
     "status": "offline",
     "showid": 0,
     "maxusers": 300,
@@ -111,6 +115,8 @@ curl -X GET http://localhost:8080/appserver/liverooms/107776865009665 -H 'Author
     "created": 1582182428511,
     "mute": false,
     "cover": "http://172.0.0.1:8080/cover/pictiure",
+    "persistent": true,
+    "video_type": "live",
     "status": "offline",
     "showid": 0,
     "maxusers": 300,
@@ -158,11 +164,13 @@ curl -X GET http://localhost:8080/appserver/liverooms/107776865009665 -H 'Author
 
 | 参数 | 类型 | 说明  |
 | --- | --- | --- |
-| name        | String | 直播间名称，此属性为必选项 |
-| description | String | 直播间描述，此属性为可选项 |
-| maxusers    | Integer| 直播间成员最大数（包括直播间创建者），值为数值类型，默认值200，最大值5000，此属性为可选的 |
-| owner       | String | 直播间的主播，此属性为必须的 |
+| name        | String | 直播间名称 |
+| description | String | 直播间描述 |
+| maxusers    | Integer| 直播间成员最大数（包括直播间创建者），值为数值类型，默认值200，最大值5000 |
+| owner       | String | 直播间的主播 |
 | cover       | String | 直播间封面Url |
+| persistent  | Boolean| 直播间是否持久化，默认为true，设为false后，直播间停播后一小时内未有状态更新，会自动清理直播间 |
+| video_type  | String | 直播间视频类型，默认是live，即直播，还可设为vod，即点播类型 |
 | ext         | Map    | 直播间自定义属性 |
 
 **请求示例:**
@@ -181,6 +189,8 @@ curl -X PUT http://localhost:8080/appserver/liverooms/107776865009665 -H 'Author
     "owner": "hxtest1",
     "created": 1582533391279,
     "cover": "http://177.0.0.1:8080/cover",
+    "persistent": true,
+    "video_type": "live",
     "status": "offline",
     "showid": 0,
     "affiliations_count": 1
@@ -231,6 +241,8 @@ curl -X GET http://localhost:8080/appserver/liverooms?limit=2&cursor=10777686500
             "id": "107741231251457",
             "name": "test1",
             "owner": "hxtest1",
+            "persistent": true,
+            "video_type": "live",
             "status": "ongoing",
             "showid": 1,
             "affiliations_count": 1
@@ -240,6 +252,8 @@ curl -X GET http://localhost:8080/appserver/liverooms?limit=2&cursor=10777686500
             "name": "test1",
             "owner": "hxtest1",
             "cover": "http://177.0.0.1:8080/cover/pictiure",
+            "persistent": true,
+            "video_type": "live",
             "status": "offline",
             "showid": 0,
             "affiliations_count": 1
@@ -294,6 +308,8 @@ curl -X GET http://localhost:8080/appserver/liverooms/ongoing?limit=2&cursor=107
             "id": "107741231251457",
             "name": "test1",
             "owner": "hxtest1",
+            "persistent": true,
+            "video_type": "live",
             "status": "ongoing",
             "showid": 1,
             "affiliations_count": 1
@@ -303,6 +319,8 @@ curl -X GET http://localhost:8080/appserver/liverooms/ongoing?limit=2&cursor=107
             "name": "test1",
             "owner": "hxtest1",
             "cover": "http://177.0.0.1:8080/cover/pictiure",
+            "persistent": true,
+            "video_type": "live",
             "status": "ongoing",
             "showid": 1,
             "affiliations_count": 1
@@ -356,6 +374,8 @@ curl -X POST http://localhost:8081/appserver/liverooms/107780133421057/users/hxt
     "created": 1582185545093,
     "mute": false,
     "cover": "http://172.0.0.1:8080/cover/pictiure",
+    "persistent": true,
+    "video_type": "live",
     "status": "ongoing",
     "showid": 4,
     "maxusers": 300,
@@ -406,6 +426,8 @@ curl -X POST http://localhost:8081/appserver/liverooms/107780133421057/users/hxt
     "name": "test1",
     "owner": "hxtest1",
     "cover": "http://177.0.0.1:8080/cover/pictiure",
+    "persistent": true,
+    "video_type": "live",
     "status": "offline",
     "showid": 4,
     "affiliations_count": 1
@@ -452,6 +474,8 @@ curl -X DELETE http://localhost:8081/appserver/liverooms/107780133421057 -H 'Aut
     "owner": "hxtest1",
     "created": 1583320857682,
     "cover": "http://172.0.0.1:8080/cover/pictiure",
+    "persistent": true,
+    "video_type": "live",
     "status": "offline",
     "showid": 0,
     "affiliations_count": 1
@@ -498,6 +522,8 @@ curl -X PUT http://localhost:8081/appserver/liverooms/107780133421057/owner/hxte
     "owner": "hxtest2",
     "created": 1583320900413,
     "cover": "http://172.0.0.1:8080/cover/pictiure",
+    "persistent": true,
+    "video_type": "live",
     "status": "offline",
     "showid": 0,
     "affiliations_count": 1

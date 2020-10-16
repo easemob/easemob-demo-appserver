@@ -8,6 +8,14 @@
 
 该服务为 环信直播间Demo 提供后端服务，可作为 App 使用环信SDK实现直播间的服务器端实现示例。
 
+```
+1、每一个直播间，都唯一对应一个聊天室， 直播间复用了对应聊天室的所有资源，包括聊天室详情及成员列表等；
+2、新建一个直播间会同时新建一个聊天室；新建一个直播间时，该直播间的直播状态为“未直播”，当前直播场次ID为0（直播场次ID默认为0，没开始一场直播，直播场次ID加1）；
+3、删除直播间后，聊天室成员会被移出聊天室，直播间所有信息会被删除，用户不可再加入该直播间；
+4、（1.0.3.Final版本新增功能）直播间增加persistent属性，默认为true，当设置为false时，直播间停播一个小时后，会被自动删除；
+5、（1.0.3.Final版本新增功能）直播间支持点播类型。详情请查看直播间API文档。
+```
+
 - 该服务目前提供的功能有
 
 ```
@@ -83,6 +91,28 @@
     - 启动服务即可
 
 
+## Docker Deploy
+
+* 如您需要使用 Docker 部署服务，可以参考此流程。
+* [Dockerfile](./easemob-im-live-server/Dockerfile)
+* [Properties for Docker service](./easemob-im-live-server/docker/application-docker.properties)
+
+```
+# 打包
+mvn clean install -DskipTests
+
+# 进入Dockerfile目录
+cd easemob-im-live-server/
+
+# build docker image
+mvn com.spotify:dockerfile-maven-plugin:build
+
+# 至此服务的docker image已经build完成，启动服务需要先启动本地或docker的MySQL服务，并正确配置application-docker.properties中的mysql数据源地址。
+# run docker service
+docker run -p 8080:8080 easemob/easemob-im-live-server
+```
+
+
 ## 模块说明
 
 #### [liveroom模块](./easemob-im-live-server/src/main/java/com/easemob/live/server/liveroom)
@@ -101,3 +131,14 @@
 ## 环信文档
 
 [服务端REST文档](http://docs-im.easemob.com/im/server/ready/intro)
+
+
+## Release Note
+
+### 1.0.3.Final
+- 直播间支持过期自动清理
+- 直播间支持点播功能
+- 直播间支持Docker部署
+
+### 1.0.2.Final
+- 支持获取七牛云推拉流地址
