@@ -5,6 +5,7 @@ import com.easemob.live.server.liveroom.model.LiveRoomDetailsRepository;
 import com.easemob.live.server.liveroom.exception.LiveRoomNotFoundException;
 import com.easemob.live.server.liveroom.model.LiveRoomDetails;
 import com.easemob.live.server.liveroom.model.LiveRoomStatus;
+import com.easemob.live.server.liveroom.model.VideoType;
 import com.easemob.live.server.rest.RestClient;
 import com.easemob.qiniu.service.IQiniuService;
 import lombok.Setter;
@@ -16,6 +17,12 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 /**
+ * 1、直播间开播后，每60s更新直播间详情，如直播间流已断开，则关闭直播间；
+ *
+ * 2、直播间关闭后，1小时内状态未改变，则清除直播间（此项取决于直播间persistent为false）；
+ *
+ * 3、对于videoType为VOD的点播直播间，不自动关闭直播间；
+ *
  * @author shenchong@easemob.com 2020/10/9
  */
 @Slf4j
@@ -143,7 +150,8 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                 return;
             }
 
-            if (!qiniuService.streamOngoing(liveroomId)) {
+            if (!qiniuService.streamOngoing(liveroomId)
+                    && (liveRoomDetails.getVideoType() != VideoType.VOD)) {
 
                 liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);
                 refreshLiveRoomInfo(liveRoomDetails);

@@ -41,6 +41,10 @@ public class LiveRoomDetails {
     private Boolean persistent;
 
     @Enumerated
+    @Column(name = "video_type", nullable = false)
+    private VideoType videoType = VideoType.LIVE;
+
+    @Enumerated
     @Column(name = "status", nullable = false)
     private LiveRoomStatus status = LiveRoomStatus.OFFLINE;
 

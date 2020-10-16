@@ -16,3 +16,5 @@ create table live_room_details (
 ) engine=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE live_room_details ADD persistent bit NOT NULL DEFAULT 1;
+
+ALTER TABLE live_room_details ADD video_type integer NOT NULL DEFAULT 0;

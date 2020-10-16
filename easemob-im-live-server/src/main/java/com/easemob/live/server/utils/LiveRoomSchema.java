@@ -35,6 +35,10 @@ public class LiveRoomSchema {
             liveRoomDetails.setPersistent(request.getPersistent());
         }
 
+        if (request.getVideoType() != null) {
+            liveRoomDetails.setVideoType(request.getVideoType());
+        }
+
         if (request.getExt() != null) {
             liveRoomDetails.setExt(JsonUtils.mapToJsonString(request.getExt()));
         }

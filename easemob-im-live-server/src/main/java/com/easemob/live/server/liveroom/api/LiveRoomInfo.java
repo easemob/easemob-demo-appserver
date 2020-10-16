@@ -1,6 +1,7 @@
 package com.easemob.live.server.liveroom.api;
 
 import com.easemob.live.server.liveroom.model.LiveRoomStatus;
+import com.easemob.live.server.liveroom.model.VideoType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -38,6 +39,9 @@ public class LiveRoomInfo {
     private String cover;
 
     private Boolean persistent;
+
+    @JsonProperty("video_type")
+    private VideoType videoType;
 
     private LiveRoomStatus status = LiveRoomStatus.OFFLINE;
 

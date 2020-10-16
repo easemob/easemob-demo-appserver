@@ -1,5 +1,6 @@
 package com.easemob.live.server.liveroom.api;
 
+import com.easemob.live.server.liveroom.model.VideoType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -21,6 +22,9 @@ public class LiveRoomRequest {
     private String cover;
 
     private Boolean persistent;
+
+    @JsonProperty("video_type")
+    private VideoType videoType;
 
     private Map<String, Object> ext;
 }

@@ -19,6 +19,7 @@ public class ModelConverter {
                 .owner(liveRoomDetails.getOwner())
                 .created(liveRoomDetails.getCreated())
                 .persistent(liveRoomDetails.getPersistent())
+                .videoType(liveRoomDetails.getVideoType())
                 .cover(liveRoomDetails.getCover())
                 .status(liveRoomDetails.getStatus())
                 .showid(liveRoomDetails.getShowid())

@@ -11,6 +11,7 @@ import com.easemob.live.server.liveroom.exception.ForbiddenOpException;
 import com.easemob.live.server.liveroom.exception.LiveRoomNotFoundException;
 import com.easemob.live.server.liveroom.model.LiveRoomDetails;
 import com.easemob.live.server.liveroom.model.LiveRoomStatus;
+import com.easemob.live.server.liveroom.model.VideoType;
 import com.easemob.live.server.rest.RestClient;
 import com.easemob.live.server.rest.chatroom.CreateChatroomRequest;
 import com.easemob.live.server.rest.chatroom.ModifyChatroomRequest;
@@ -77,6 +78,7 @@ public class LiveRoomService {
         // 获取聊天室详情
         LiveRoomInfo liveRoomInfo = restClient.retrieveChatroomInfo(chatroomId, token);
         liveRoomInfo.setPersistent(liveRoomRequest.getPersistent());
+        liveRoomInfo.setVideoType(liveRoomRequest.getVideoType());
         liveRoomInfo.setCover(liveRoomRequest.getCover());
         liveRoomInfo.setExt(liveRoomRequest.getExt());
 
@@ -89,6 +91,7 @@ public class LiveRoomService {
                 .owner(liveRoomInfo.getOwner())
                 .cover(liveRoomInfo.getCover())
                 .persistent(liveRoomInfo.getPersistent())
+                .videoType(liveRoomInfo.getVideoType())
                 .status(liveRoomInfo.getStatus())
                 .showid(liveRoomInfo.getShowid())
                 .affiliationsCount(liveRoomInfo.getAffiliationsCount())
@@ -125,6 +128,7 @@ public class LiveRoomService {
         LiveRoomDetails liveRoomDetails = liveRoomDetailsRepository.save(oldDetails);
 
         liveRoomInfo.setPersistent(liveRoomDetails.getPersistent());
+        liveRoomInfo.setVideoType(liveRoomDetails.getVideoType());
         liveRoomInfo.setCover(liveRoomDetails.getCover());
         liveRoomInfo.setStatus(liveRoomDetails.getStatus());
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
@@ -166,17 +170,21 @@ public class LiveRoomService {
 
         String token = restClient.retrieveAppToken();
 
-        // 检查直播间状态，如果在直播，再检查owner在线状态，如不在线，可被转让后重新开始直播
-        if (liveRoomDetails.getStatus() == LiveRoomStatus.ONGOING &&
-                restClient.userStatus(liveRoomDetails.getOwner(), token) == UserStatus.ONLINE) {
+        // 检查直播间状态，如果在直播，不允许再开始直播
+        if (liveRoomDetails.getStatus() == LiveRoomStatus.ONGOING) {
             throw new ForbiddenOpException("liveroom " + liveroomId + " is already ongoing");
         }
 
-        // 转让聊天室
         if (!liveRoomDetails.getOwner().equalsIgnoreCase(username)) {
+
+            if (liveRoomDetails.getVideoType() == VideoType.VOD) {
+                throw new ForbiddenOpException("you are not owner to this vod liveroom");
+            }
+
             log.info("assign liveroom, new owner : {}, old owner : {}",
                     username, liveRoomDetails.getOwner());
 
+            // 转让聊天室
             Boolean success = restClient.assignChatroomOwner(liveroomId, username, token);
 
             if (!success) {
@@ -199,6 +207,7 @@ public class LiveRoomService {
         eventPublisher.publishEvent(event);
 
         liveRoomInfo.setPersistent(liveRoomDetails.getPersistent());
+        liveRoomInfo.setVideoType(liveRoomDetails.getVideoType());
         liveRoomInfo.setCover(liveRoomDetails.getCover());
         liveRoomInfo.setStatus(liveRoomDetails.getStatus());
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
