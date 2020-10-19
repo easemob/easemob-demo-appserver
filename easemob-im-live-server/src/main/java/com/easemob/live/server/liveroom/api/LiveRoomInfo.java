@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.easemob.live.server.liveroom.model.LiveRoomConstant.OWNER;
 
 /**
  * @author shenchong@easemob.com 2020/2/20
@@ -57,4 +60,38 @@ public class LiveRoomInfo {
 
     @JsonProperty("affiliations")
     private List<Map<String, Object>> affiliations;
+
+    /**
+     * 因为affiliations列表中可能包含owner，需要将owner排除后返回member列表
+     * @param maxAffiliationsSize affiliations 最大长度
+     * @return 过滤后的liveRoomInfo
+     */
+    public LiveRoomInfo filterLiveRoomInfo(int maxAffiliationsSize) {
+
+        if (affiliationsCount <= maxAffiliationsSize) {
+            if (affiliations.parallelStream().anyMatch(a -> a.containsKey(OWNER))) {
+                // affiliations移除owner
+                affiliations = affiliations.parallelStream().filter(a -> !a.containsKey(OWNER))
+                        .collect(Collectors.toList());
+                affiliationsCount = affiliationsCount - 1;
+            }
+            return this;
+        }
+
+        if (affiliations.parallelStream()
+                .limit(maxAffiliationsSize)
+                .anyMatch(a -> a.containsKey(OWNER))) {
+
+            affiliations = affiliations.parallelStream()
+                    .limit(maxAffiliationsSize + 1)
+                    .filter(a -> !a.containsKey(OWNER))
+                    .collect(Collectors.toList());
+        }
+        else {
+            affiliations = affiliations.parallelStream()
+                    .limit(maxAffiliationsSize)
+                    .collect(Collectors.toList());
+        }
+        return this;
+    }
 }

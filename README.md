@@ -139,6 +139,7 @@ docker run -p 8080:8080 easemob/easemob-im-live-server
 - 直播间支持过期自动清理
 - 直播间支持点播功能
 - 直播间支持Docker部署
+- 直播间详情返回的成员列表过滤了owner
 
 ### 1.0.2.Final
 - 支持获取七牛云推拉流地址

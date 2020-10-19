@@ -65,12 +65,8 @@ curl -X POST http://localhost:8080/appserver/liverooms -H 'Authorization: Bearer
     "status": "offline",
     "showid": 0,
     "maxusers": 300,
-    "affiliations_count": 1,
-    "affiliations": [
-        {
-            "owner": "hxtest1"
-        }
-    ]
+    "affiliations_count": 0,
+    "affiliations": []
 }
 ```
 
@@ -123,7 +119,7 @@ curl -X GET http://localhost:8080/appserver/liverooms/107776865009665 -H 'Author
     "affiliations_count": 1,
     "affiliations": [
         {
-            "owner": "hxtest1"
+            "member": "hxtest2"
         }
     ]
 }
@@ -382,7 +378,7 @@ curl -X POST http://localhost:8081/appserver/liverooms/107780133421057/users/hxt
     "affiliations_count": 1,
     "affiliations": [
         {
-            "owner": "hxtest1"
+            "member": "hxtest2"
         }
     ]
 }

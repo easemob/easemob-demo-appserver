@@ -16,4 +16,9 @@ public class LiveRoomProperties {
      * Max size for list returned.
      */
     private Integer batchMaxSize = 100;
+
+    /**
+     * Max size for affiliations returned.
+     */
+    private Integer maxAffiliationsSize = 200;
 }
