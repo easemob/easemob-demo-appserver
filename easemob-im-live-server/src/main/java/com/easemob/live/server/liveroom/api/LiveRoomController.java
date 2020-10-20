@@ -1,5 +1,6 @@
 package com.easemob.live.server.liveroom.api;
 
+import com.easemob.live.server.liveroom.model.VideoType;
 import com.easemob.live.server.liveroom.service.LiveRoomService;
 import com.easemob.live.server.utils.RequestUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -89,12 +90,13 @@ public class LiveRoomController {
     public ResponseEntity getOngoingLiveRooms(@RequestParam(name = "limit", required = false) Integer limit,
                                               @RequestParam(name = "cursor", required = false,
                                                       defaultValue = "9223372036854775807") String cursor,
+                                              @RequestParam(name = "video_type", required = false) VideoType videoType,
                                               HttpServletRequest request) {
 
         limit = getLimit(limit);
         RequestUtils.resolveAuthorizationToken(request.getHeader(AUTHORIZATION));
 
-        List<LiveRoomInfo> liveRoomInfos = liveRoomService.getOngoingLiveRooms(Long.valueOf(cursor), limit);
+        List<LiveRoomInfo> liveRoomInfos = liveRoomService.getOngoingLiveRooms(videoType, Long.valueOf(cursor), limit);
 
         LiveRoomListResponse response = new LiveRoomListResponse();
         response.setEntities(liveRoomInfos);

@@ -42,7 +42,7 @@ public class LiveRoomDetails {
 
     @Enumerated
     @Column(name = "video_type", nullable = false)
-    private VideoType videoType = VideoType.LIVE;
+    private VideoType videoType = VideoType.live;
 
     @Enumerated
     @Column(name = "status", nullable = false)

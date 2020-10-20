@@ -30,5 +30,5 @@ public class CreateLiveRoomRequest extends LiveRoomRequest {
     private Boolean persistent = true;
 
     @JsonProperty("video_type")
-    private VideoType videoType = VideoType.LIVE;
+    private VideoType videoType = VideoType.live;
 }

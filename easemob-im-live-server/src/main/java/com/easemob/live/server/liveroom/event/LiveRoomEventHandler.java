@@ -151,7 +151,7 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
             }
 
             if (!qiniuService.streamOngoing(liveroomId)
-                    && (liveRoomDetails.getVideoType() != VideoType.VOD)) {
+                    && (liveRoomDetails.getVideoType() != VideoType.vod)) {
 
                 liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);
                 refreshLiveRoomInfo(liveRoomDetails);

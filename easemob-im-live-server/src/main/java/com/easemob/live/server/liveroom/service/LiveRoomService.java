@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -157,10 +158,21 @@ public class LiveRoomService {
                 .collect(Collectors.toList());
     }
 
-    public List<LiveRoomInfo> getOngoingLiveRooms(Long cursor, int limit) {
+    public List<LiveRoomInfo> getOngoingLiveRooms(VideoType videoType, Long cursor, int limit) {
 
-        List<LiveRoomDetails> liveRoomDetailsList =
-                liveRoomDetailsRepository.findOngoingRoomsBeforeId(cursor, limit);
+        List<LiveRoomDetails> liveRoomDetailsList = new ArrayList<>();
+
+        if (videoType == VideoType.live) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findOngoingLiveRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == VideoType.vod) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findOngoingVodRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == null) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findOngoingRoomsBeforeId(cursor, limit);
+        }
 
         return liveRoomDetailsList.stream()
                 .map(ModelConverter::detailsConverterLiveRoomInfo)
@@ -187,7 +199,7 @@ public class LiveRoomService {
 
         if (!liveRoomDetails.getOwner().equalsIgnoreCase(username)) {
 
-            if (liveRoomDetails.getVideoType() == VideoType.VOD) {
+            if (liveRoomDetails.getVideoType() == VideoType.vod) {
                 throw new ForbiddenOpException("you are not owner to this vod liveroom");
             }
 
