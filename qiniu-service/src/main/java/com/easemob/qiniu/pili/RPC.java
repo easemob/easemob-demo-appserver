@@ -79,6 +79,9 @@ final class RPC {
             ResponseBody responseBody = response.body();
             return responseBody.string();
         } else {
+            if (response.body() != null) {
+                response.body().close();
+            }
             throw new PiliException(response);
         }
     }
