@@ -21,4 +21,14 @@ public class LiveRoomProperties {
      * Max size for affiliations returned.
      */
     private Integer maxAffiliationsSize = 200;
+
+    /**
+     * ping stream status delay milliseconds
+     */
+    private Integer streamPingDelay = 60000;
+
+    /**
+     * liveroom cleanup delay milliseconds
+     */
+    private Integer liveroomCleanDelay = 3600000;
 }

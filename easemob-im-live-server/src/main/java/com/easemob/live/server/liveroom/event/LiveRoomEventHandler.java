@@ -1,6 +1,7 @@
 package com.easemob.live.server.liveroom.event;
 
 import com.easemob.live.server.liveroom.api.LiveRoomInfo;
+import com.easemob.live.server.liveroom.api.LiveRoomProperties;
 import com.easemob.live.server.liveroom.model.LiveRoomDetailsRepository;
 import com.easemob.live.server.liveroom.exception.LiveRoomNotFoundException;
 import com.easemob.live.server.liveroom.model.LiveRoomDetails;
@@ -44,12 +45,16 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
 
     private final RestClient restClient;
 
+    private final LiveRoomProperties properties;
+
     public LiveRoomEventHandler(LiveRoomDetailsRepository liveRoomRepository,
                                 IQiniuService qiniuService,
-                                RestClient restClient) {
+                                RestClient restClient,
+                                LiveRoomProperties properties) {
         this.liveRoomRepository = liveRoomRepository;
         this.qiniuService = qiniuService;
         this.restClient = restClient;
+        this.properties = properties;
     }
 
     @Override
@@ -79,7 +84,8 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
 
         FutureRunnable runnable = new FutureRunnable(liveroomId);
         ScheduledFuture statusFuture = scheduled
-                .scheduleWithFixedDelay(runnable, 60000, 60000, TimeUnit.MILLISECONDS);
+                .scheduleWithFixedDelay(runnable, properties.getStreamPingDelay(),
+                        properties.getStreamPingDelay(), TimeUnit.MILLISECONDS);
         runnable.setFuture(statusFuture);
         statusTasks.put(liveroomId, statusFuture);
     }
@@ -122,7 +128,7 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                 liveRoomRepository.deleteById(Long.valueOf(liveroomId));
                 log.info("cleanup liveroom, liveroomId={}", liveroomId);
             }
-        }, 3600000, TimeUnit.MILLISECONDS);
+        }, properties.getLiveroomCleanDelay(), TimeUnit.MILLISECONDS);
 
         cleanupTasks.put(liveroomId, cleanupFuture);
     }
@@ -153,8 +159,8 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                 return;
             }
 
-            if (!qiniuService.streamOngoing(liveroomId)
-                    && (liveRoomDetails.getVideoType() != VideoType.vod)
+            boolean streamOngoing = qiniuService.streamOngoing(liveroomId);
+            if (!streamOngoing && (liveRoomDetails.getVideoType() != VideoType.vod)
                     && times.incrementAndGet() >= 2) {
 
                 liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);
@@ -168,6 +174,10 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                 return;
             }
 
+            if (streamOngoing) {
+                log.info("stream is ongoing, liveroomId={}", liveroomId);
+                times.set(0);
+            }
             refreshLiveRoomInfo(liveRoomDetails);
         }
 
