@@ -63,12 +63,13 @@ public class LiveRoomController {
     public ResponseEntity getLiveRooms(@RequestParam(name = "limit", required = false) Integer limit,
                                        @RequestParam(name = "cursor", required = false,
                                                defaultValue = "9223372036854775807") String cursor,
+                                       @RequestParam(name = "video_type", required = false) VideoType videoType,
                                        HttpServletRequest request) {
 
         limit = getLimit(limit);
         RequestUtils.resolveAuthorizationToken(request.getHeader(AUTHORIZATION));
 
-        List<LiveRoomInfo> liveRoomInfos = liveRoomService.getLiveRooms(Long.valueOf(cursor), limit);
+        List<LiveRoomInfo> liveRoomInfos = liveRoomService.getLiveRooms(videoType, Long.valueOf(cursor), limit);
 
         LiveRoomListResponse response = new LiveRoomListResponse();
         response.setEntities(liveRoomInfos);

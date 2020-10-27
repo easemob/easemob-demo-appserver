@@ -148,10 +148,21 @@ public class LiveRoomService {
         return liveRoomInfo;
     }
 
-    public List<LiveRoomInfo> getLiveRooms(Long cursor, int limit) {
+    public List<LiveRoomInfo> getLiveRooms(VideoType videoType, Long cursor, int limit) {
 
-        List<LiveRoomDetails> liveRoomDetailsList =
-                liveRoomDetailsRepository.findBeforeId(cursor, limit);
+        List<LiveRoomDetails> liveRoomDetailsList = new ArrayList<>();
+
+        if (videoType == VideoType.live) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findLiveRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == VideoType.vod) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findVodRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == null) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findBeforeId(cursor, limit);
+        }
 
         return liveRoomDetailsList.stream()
                 .map(ModelConverter::detailsConverterLiveRoomInfo)
