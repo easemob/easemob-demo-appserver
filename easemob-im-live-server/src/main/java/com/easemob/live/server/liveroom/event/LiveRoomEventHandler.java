@@ -9,7 +9,6 @@ import com.easemob.live.server.liveroom.model.LiveRoomStatus;
 import com.easemob.live.server.liveroom.model.VideoType;
 import com.easemob.live.server.rest.RestClient;
 import com.easemob.qiniu.service.IQiniuService;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -77,36 +76,25 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
     }
 
     private void refreshLiveRoomStatus(String liveroomId) {
+        cancelCleanupTask(liveroomId);
+        cancelStatusTask(liveroomId);
 
-        if (this.statusTasks.containsKey(liveroomId)) {
-            return;
-        }
-
-        FutureRunnable runnable = new FutureRunnable(liveroomId);
         ScheduledFuture statusFuture = scheduled
-                .scheduleWithFixedDelay(runnable, properties.getStreamPingDelay(),
-                        properties.getStreamPingDelay(), TimeUnit.MILLISECONDS);
-        runnable.setFuture(statusFuture);
+                .scheduleWithFixedDelay(new FutureRunnable(liveroomId),
+                        properties.getStreamPingDelay(), properties.getStreamPingDelay(), TimeUnit.MILLISECONDS);
         statusTasks.put(liveroomId, statusFuture);
     }
 
     private void offlineEventHandler(String liveroomId) {
-        Future statusFuture = this.statusTasks.remove(liveroomId);
-        if (statusFuture != null) {
-            statusFuture.cancel(true);
-        }
-
+        cancelStatusTask(liveroomId);
         cleanupLiveRoom(liveroomId);
     }
 
     private void cleanupLiveRoom(String liveroomId) {
 
-        Future cleanupFuture = this.cleanupTasks.remove(liveroomId);
-        if (cleanupFuture != null) {
-            cleanupFuture.cancel(true);
-        }
+        cancelCleanupTask(liveroomId);
 
-        cleanupFuture = scheduled.schedule(() -> {
+        Future cleanupFuture = scheduled.schedule(() -> {
 
             cleanupTasks.remove(liveroomId);
 
@@ -133,10 +121,21 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
         cleanupTasks.put(liveroomId, cleanupFuture);
     }
 
-    public class FutureRunnable implements Runnable {
+    private void cancelCleanupTask(String liveroomId) {
+        Future cleanupFuture = this.cleanupTasks.remove(liveroomId);
+        if (cleanupFuture != null) {
+            cleanupFuture.cancel(true);
+        }
+    }
 
-        @Setter
-        private Future<?> future;
+    private void cancelStatusTask(String liveroomId) {
+        Future statusFuture = this.statusTasks.remove(liveroomId);
+        if (statusFuture != null) {
+            statusFuture.cancel(true);
+        }
+    }
+
+    public class FutureRunnable implements Runnable {
 
         private final String liveroomId;
 
@@ -155,7 +154,7 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                                     "liveroom " + liveroomId + " is not found"));
 
             if (liveRoomDetails.getStatus() == LiveRoomStatus.OFFLINE) {
-                cancelFuture();
+                cancelStatusTask(liveroomId);
                 return;
             }
 
@@ -170,7 +169,7 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
 
                 log.info("stream is offline, so offline liveroom, too, liveroomId={}", liveroomId);
 
-                cancelFuture();
+                cancelStatusTask(liveroomId);
                 return;
             }
 
@@ -179,13 +178,6 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
                 times.set(0);
             }
             refreshLiveRoomInfo(liveRoomDetails);
-        }
-
-        private void cancelFuture() {
-            statusTasks.remove(liveroomId);
-            if (future != null) {
-                future.cancel(true);
-            }
         }
 
         private void refreshLiveRoomInfo(LiveRoomDetails oldDetails) {

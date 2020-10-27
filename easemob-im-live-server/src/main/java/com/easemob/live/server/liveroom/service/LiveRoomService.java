@@ -203,9 +203,9 @@ public class LiveRoomService {
 
         String token = restClient.retrieveAppToken();
 
-        // 检查直播间状态，如果在直播，不允许再开始直播
-        if (liveRoomDetails.getStatus() == LiveRoomStatus.ONGOING) {
-            throw new ForbiddenOpException("liveroom " + liveroomId + " is already ongoing");
+        if ((liveRoomDetails.getStatus() == LiveRoomStatus.ONGOING)
+                && !liveRoomDetails.getOwner().equalsIgnoreCase(username)) {
+            throw new ForbiddenOpException("you are not owner to this liveroom");
         }
 
         if (!liveRoomDetails.getOwner().equalsIgnoreCase(username)) {
@@ -264,10 +264,6 @@ public class LiveRoomService {
         if (!liveRoomDetails.getOwner().equalsIgnoreCase(username)) {
             throw new ForbiddenOpException(
                     "user " + username + " is not owner of the liveroom " + liveroomId);
-        }
-
-        if (liveRoomDetails.getStatus() == LiveRoomStatus.OFFLINE) {
-            throw new ForbiddenOpException("liveroom " + liveroomId + " is already offline");
         }
 
         liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);
