@@ -84,6 +84,7 @@ public class QiniuServiceImpl implements IQiniuService {
         try {
             this.hubClient.liveStatus(streamKey);
         } catch (PiliException e) {
+            log.info("stream may be offline, code : {}", e.code());
             if (e.isNotInLive() || e.isNotFound()) {
                 return false;
             }

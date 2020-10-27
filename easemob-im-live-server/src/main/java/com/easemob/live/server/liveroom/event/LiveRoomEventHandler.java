@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 1、直播间开播后，每60s更新直播间详情，如直播间流已断开，则关闭直播间；
@@ -133,6 +134,8 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
 
         private final String liveroomId;
 
+        private final AtomicInteger times = new AtomicInteger(0);
+
         public FutureRunnable(String liveroomId) {
             this.liveroomId = liveroomId;
         }
@@ -151,7 +154,8 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
             }
 
             if (!qiniuService.streamOngoing(liveroomId)
-                    && (liveRoomDetails.getVideoType() != VideoType.vod)) {
+                    && (liveRoomDetails.getVideoType() != VideoType.vod)
+                    && times.incrementAndGet() >= 2) {
 
                 liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);
                 refreshLiveRoomInfo(liveRoomDetails);
