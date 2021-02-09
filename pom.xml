@@ -11,6 +11,7 @@
     <modules>
         <module>easemob-im-live-server</module>
         <module>qiniu-service</module>
+        <module>agora-app-server</module>
     </modules>
 
     <name>easemob-im-app-server</name>
