@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -31,17 +32,28 @@ public class RestManger {
 
     private static final String USERNAME = "username";
 
-    public String getToken(String username, String password) {
+    public String getToken(String username, String password, String orgName, String appName) {
+        if (StringUtils.isEmpty(orgName) || StringUtils.isEmpty(appName)) {
+            orgName = applicationConf.getOrgName();
+            appName = applicationConf.getAppName();
+        }
         String url = String.format(GET_TOKEN, applicationConf.getRestServer(),
-                applicationConf.getOrgName(), applicationConf.getAppName());
+                orgName, appName);
 
         Map<String, String> body = new HashMap<>();
         body.put(USERNAME, username);
         body.put("password", password);
         body.put("grant_type", "password");
         ResponseEntity<Map> responseEntity =
-                restTemplate
-                        .exchange(url, HttpMethod.POST, getHeaderAndBody(body, null), Map.class);
+                null;
+        try {
+            responseEntity = restTemplate
+                    .exchange(url, HttpMethod.POST, getHeaderAndBody(body, null), Map.class);
+        } catch (RestClientException e) {
+            log.error("getToken failed.username:{},orgName:{},appName:{}", username, orgName,
+                    appName, e);
+            return null;
+        }
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
             log.error("getAppId | failed connection to im-rest2-server, statusCode : {}",
                     responseEntity.getStatusCode());
@@ -50,12 +62,22 @@ public class RestManger {
         return (String) responseEntity.getBody().get("access_token");
     }
 
-    public String getUser(String userName, String token) {
+    public String getUser(String username, String token, String orgName, String appName) {
+        if (StringUtils.isEmpty(orgName) || StringUtils.isEmpty(appName)) {
+            orgName = applicationConf.getOrgName();
+            appName = applicationConf.getAppName();
+        }
         String url = String.format(GET_USER, applicationConf.getRestServer(),
-                applicationConf.getOrgName(), applicationConf.getAppName(), userName);
-        ResponseEntity<Map> responseEntity =
-                restTemplate
-                        .exchange(url, HttpMethod.GET, getHeaderAndBody(null, token), Map.class);
+                orgName, appName, username);
+        ResponseEntity<Map> responseEntity;
+        try {
+            responseEntity = restTemplate
+                    .exchange(url, HttpMethod.GET, getHeaderAndBody(null, token), Map.class);
+        } catch (RestClientException e) {
+            log.error("getUser failed.username:{},orgName:{},appName:{}", username, orgName,
+                    appName, e);
+            return null;
+        }
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
             log.error("getUserDetail | failed connection to im-rest2-server, statusCode : {}",
                     responseEntity.getStatusCode());
@@ -73,7 +95,7 @@ public class RestManger {
                 log.error(" getUserDetail | is wrong entitiesList size !=1 |{}|", entitiesList);
             }
         } else {
-            log.error("entities is null |{}|", userName);
+            log.error("entities is null |{}|", username);
             return null;
         }
         return null;

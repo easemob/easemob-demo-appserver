@@ -1,5 +1,6 @@
 package com.easemob.agora.config.auth.token;
 
+import com.easemob.agora.model.UserAuth;
 import com.easemob.agora.utils.RestManger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,11 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) {
         //1、 获取用户名和令牌
         String username = authentication.getName();
-        String token = authentication.getCredentials().toString();
+        UserAuth userAuth = (UserAuth) authentication.getCredentials();
 
         //2、对 username 和令牌进行校验
-        String name = restManger.getUser(username, token);
+        String name = restManger.getUser(username, userAuth.getToken(), userAuth.getOrgName(),
+                userAuth.getAppName());
         if (StringUtils.isEmpty(name)) {
             return null;
         }

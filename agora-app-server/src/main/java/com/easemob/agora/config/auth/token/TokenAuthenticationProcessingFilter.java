@@ -1,5 +1,7 @@
 package com.easemob.agora.config.auth.token;
 
+import com.easemob.agora.model.UserAuth;
+import com.easemob.agora.utils.ServiceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,17 +24,20 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
         //获取手机号和验证码
         String token = obtainToken(request);
-        // 参数过滤
-        if (StringUtils.isEmpty(token)) {
-            token = "";
-        }
 
         String username = obtainUsername(request);
 
         if (!StringUtils.isEmpty(token) && !StringUtils.isEmpty(username)) {
             //创建令牌
+            String appKey = obtainAppKey(request);
+
+            String orgName = ServiceUtil.getOrg(appKey);
+            String appName = ServiceUtil.getApp(appKey);
+
+            UserAuth userAuth = new UserAuth(orgName, appName, token);
+
             AbstractAuthenticationToken authenticationToken =
-                    new AuthenticationToken(username, token);
+                    new AuthenticationToken(username, userAuth);
             // 允许子类设置“details”属性
             setDetails(request, authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -43,6 +48,10 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private String obtainUsername(HttpServletRequest request) {
         return request.getParameter("userAccount");
+    }
+
+    private String obtainAppKey(HttpServletRequest request) {
+        return request.getParameter("appkey");
     }
 
     private String obtainToken(HttpServletRequest request) {

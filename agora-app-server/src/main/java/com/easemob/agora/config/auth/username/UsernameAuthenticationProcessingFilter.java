@@ -1,6 +1,9 @@
 package com.easemob.agora.config.auth.username;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.easemob.agora.model.UserAuth;
+import com.easemob.agora.utils.ServiceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -25,8 +28,9 @@ import java.util.Map;
 
 @Slf4j
 public class UsernameAuthenticationProcessingFilter extends OncePerRequestFilter {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String APPKEY = "appkey";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -39,9 +43,13 @@ public class UsernameAuthenticationProcessingFilter extends OncePerRequestFilter
         SecurityContext securityContext = SecurityContextHolder.getContext();
         if (!StringUtils.isEmpty(username) && securityContext.getAuthentication() == null) {
 
+            String appKey = obtainAppKey(request, body);
+            String orgName = ServiceUtil.getOrg(appKey);
+            String appName = ServiceUtil.getApp(appKey);
+            UserAuth userAuth = new UserAuth(orgName, appName, password);
             //创建令牌
             AbstractAuthenticationToken authenticationToken =
-                    new UsernameAuthenticationToken(username, password);
+                    new UsernameAuthenticationToken(username, userAuth);
             // 允许子类设置“details”属性
             setDetails(request, authenticationToken);
 
@@ -56,12 +64,11 @@ public class UsernameAuthenticationProcessingFilter extends OncePerRequestFilter
             BufferedReader br = request.getReader();
             StringBuilder sb = new StringBuilder();
             String str;
-            while ((str = br.readLine()) != null)
-            {
+            while ((str = br.readLine()) != null) {
                 sb.append(str);
             }
 
-            JSONObject result = JSONObject.parseObject(sb.toString());
+            JSONObject result = JSON.parseObject(sb.toString());
             return result.getInnerMap();
         } catch (Exception e) {
             log.debug("username filter get body failed.");
@@ -86,11 +93,18 @@ public class UsernameAuthenticationProcessingFilter extends OncePerRequestFilter
         return password;
     }
 
+    private String obtainAppKey(HttpServletRequest request, Map<String, Object> body) {
+        String password = request.getParameter(APPKEY);
+        if (StringUtils.isEmpty(password)) {
+            password = body.containsKey(APPKEY) ? body.get(APPKEY).toString() : "";
+        }
+        return password;
+    }
+
     private void setDetails(HttpServletRequest request,
             AbstractAuthenticationToken authRequest) {
         authRequest.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
     }
-
 
     class RequestWrapper extends HttpServletRequestWrapper {
 
@@ -144,6 +158,7 @@ public class UsernameAuthenticationProcessingFilter extends OncePerRequestFilter
                 }
 
                 @Override public void setReadListener(ReadListener listener) {
+                    // nothing
                 }
             };
         }
