@@ -27,9 +27,19 @@ public class TokenController {
     public ResponseParam getAgoraToken(
             @RequestParam(name = "channelName", required = false) String channelName,
             @RequestParam(name = "userAccount", required = false) String userId,
+            @RequestParam(name = "agoraUserId", required = false) String agoraUserId,
             @RequestBody(required = false) JSONObject body) {
+
+        if (!StringUtils.isEmpty(agoraUserId)) {
+            userId = agoraUserId;
+        }
+
         if (StringUtils.isEmpty(userId) && body != null) {
-            userId = body.getString("username");
+            if (body.containsKey("agoraUserId")) {
+                userId = body.getString("agoraUserId");
+            } else {
+                userId = body.getString("username");
+            }
         }
         if (StringUtils.isEmpty(channelName) && body != null) {
             channelName = body.getString("channelName");
@@ -44,8 +54,11 @@ public class TokenController {
     @GetMapping("/token/rtcToken")
     public ResponseParam getAgoraToken(
             @RequestParam(name = "channelName", required = false) String channelName,
-            @RequestParam(name = "userAccount", required = false) String userId) {
-
+            @RequestParam(name = "userAccount", required = false) String userId,
+            @RequestParam(name = "agoraUserId", required = false) String agoraUserId) {
+        if (!StringUtils.isEmpty(agoraUserId)) {
+            userId = agoraUserId;
+        }
         ResponseParam responseParam = new ResponseParam();
         TokenInfo token = tokenService.getRtcToken(channelName, userId);
         responseParam.setAccessToken(token.getToken());
