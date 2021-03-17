@@ -18,3 +18,5 @@ create table live_room_details (
 ALTER TABLE live_room_details ADD persistent bit NOT NULL DEFAULT 1;
 
 ALTER TABLE live_room_details ADD video_type integer NOT NULL DEFAULT 0;
+
+ALTER TABLE live_room_details ADD channel varchar(64) NOT NULL;
