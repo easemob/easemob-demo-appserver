@@ -13,5 +13,11 @@ public enum VideoType {
     /**
      * 点播
      */
-    vod
+    vod,
+
+    /**
+     * 声网极速直播
+     */
+    agora_speed_live,
+
 }
