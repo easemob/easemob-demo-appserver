@@ -56,7 +56,4 @@ public class LiveRoomDetails {
 
     @Column(name = "ext")
     private String ext;
-
-    @Column(name = "channel")
-    private String channel;
 }

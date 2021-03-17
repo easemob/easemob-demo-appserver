@@ -21,9 +21,6 @@ public interface LiveRoomDetailsRepository extends JpaRepository<LiveRoomDetails
     @Query(value = "select * from live_room_details where video_type=1 and id<?1 order by id desc limit ?2", nativeQuery = true)
     List<LiveRoomDetails> findVodRoomsBeforeId(Long id, int limit);
 
-    @Query(value = "select * from live_room_details where video_type=2 and id<?1 order by id desc limit ?2", nativeQuery = true)
-    List<LiveRoomDetails> findAgoraSpeedLiveRoomsBeforeId(Long id, int limit);
-
     @Query(value = "select * from live_room_details where status=1 and id<?1 order by id desc limit ?2", nativeQuery = true)
     List<LiveRoomDetails> findOngoingRoomsBeforeId(Long id, int limit);
 
@@ -32,7 +29,4 @@ public interface LiveRoomDetailsRepository extends JpaRepository<LiveRoomDetails
 
     @Query(value = "select * from live_room_details where status=1 and video_type=1 and id<?1 order by id desc limit ?2", nativeQuery = true)
     List<LiveRoomDetails> findOngoingVodRoomsBeforeId(Long id, int limit);
-
-    @Query(value = "select * from live_room_details where status=1 and video_type=2 and id<?1 order by id desc limit ?2", nativeQuery = true)
-    List<LiveRoomDetails> findOngoingAgoraSpeedLiveRoomsBeforeId(Long id, int limit);
 }

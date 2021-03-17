@@ -31,6 +31,4 @@ public class CreateLiveRoomRequest extends LiveRoomRequest {
 
     @JsonProperty("video_type")
     private VideoType videoType = VideoType.live;
-
-    private String channel;
 }

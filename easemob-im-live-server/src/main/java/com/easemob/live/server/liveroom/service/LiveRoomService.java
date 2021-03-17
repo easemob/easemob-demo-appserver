@@ -92,44 +92,21 @@ public class LiveRoomService {
         liveRoomInfo.setCover(liveRoomRequest.getCover());
         liveRoomInfo.setExt(liveRoomRequest.getExt());
 
-        LiveRoomDetails liveRoomDetails = null;
-        if (liveRoomInfo.getVideoType() == VideoType.agora_speed_live) {
-            // 创建声网极速直播间
-            liveRoomDetails = LiveRoomDetails.builder()
-                    .id(Long.valueOf(liveRoomInfo.getId()))
-                    .name(liveRoomInfo.getName())
-                    .description(liveRoomInfo.getDescription())
-                    .created(liveRoomInfo.getCreated())
-                    .owner(liveRoomInfo.getOwner())
-                    .cover(liveRoomInfo.getCover())
-                    .persistent(liveRoomInfo.getPersistent())
-                    .videoType(liveRoomInfo.getVideoType())
-                    .status(liveRoomInfo.getStatus())
-                    .showid(liveRoomInfo.getShowid())
-                    .affiliationsCount(liveRoomInfo.getAffiliationsCount())
-                    .ext(JsonUtils.mapToJsonString(liveRoomInfo.getExt()))
-                    .channel(chatroomId)
-                    .build();
-            liveRoomInfo.setChannel(chatroomId);
-        } else {
-            // 创建直播间
-            liveRoomDetails = LiveRoomDetails.builder()
-                    .id(Long.valueOf(liveRoomInfo.getId()))
-                    .name(liveRoomInfo.getName())
-                    .description(liveRoomInfo.getDescription())
-                    .created(liveRoomInfo.getCreated())
-                    .owner(liveRoomInfo.getOwner())
-                    .cover(liveRoomInfo.getCover())
-                    .persistent(liveRoomInfo.getPersistent())
-                    .videoType(liveRoomInfo.getVideoType())
-                    .status(liveRoomInfo.getStatus())
-                    .showid(liveRoomInfo.getShowid())
-                    .affiliationsCount(liveRoomInfo.getAffiliationsCount())
-                    .ext(JsonUtils.mapToJsonString(liveRoomInfo.getExt()))
-                    .channel(chatroomId)
-                    .build();
-
-        }
+        // 创建直播间
+        LiveRoomDetails liveRoomDetails = LiveRoomDetails.builder()
+                .id(Long.valueOf(liveRoomInfo.getId()))
+                .name(liveRoomInfo.getName())
+                .description(liveRoomInfo.getDescription())
+                .created(liveRoomInfo.getCreated())
+                .owner(liveRoomInfo.getOwner())
+                .cover(liveRoomInfo.getCover())
+                .persistent(liveRoomInfo.getPersistent())
+                .videoType(liveRoomInfo.getVideoType())
+                .status(liveRoomInfo.getStatus())
+                .showid(liveRoomInfo.getShowid())
+                .affiliationsCount(liveRoomInfo.getAffiliationsCount())
+                .ext(JsonUtils.mapToJsonString(liveRoomInfo.getExt()))
+                .build();
 
         liveRoomDetailsRepository.save(liveRoomDetails);
 
@@ -168,9 +145,6 @@ public class LiveRoomService {
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
         liveRoomInfo.setExt(JsonUtils.parse(liveRoomDetails.getExt(), Map.class));
 
-        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live) {
-            liveRoomInfo.setChannel(liveRoomDetails.getChannel());
-        }
         return liveRoomInfo;
     }
 
@@ -184,10 +158,6 @@ public class LiveRoomService {
 
         if (videoType == VideoType.vod) {
             liveRoomDetailsList = liveRoomDetailsRepository.findVodRoomsBeforeId(cursor, limit);
-        }
-
-        if (videoType == VideoType.agora_speed_live) {
-            liveRoomDetailsList = liveRoomDetailsRepository.findAgoraSpeedLiveRoomsBeforeId(cursor, limit);
         }
 
         if (videoType == null) {
@@ -209,10 +179,6 @@ public class LiveRoomService {
 
         if (videoType == VideoType.vod) {
             liveRoomDetailsList = liveRoomDetailsRepository.findOngoingVodRoomsBeforeId(cursor, limit);
-        }
-
-        if (videoType == VideoType.agora_speed_live) {
-            liveRoomDetailsList = liveRoomDetailsRepository.findOngoingAgoraSpeedLiveRoomsBeforeId(cursor, limit);
         }
 
         if (videoType == null) {
@@ -280,9 +246,6 @@ public class LiveRoomService {
         liveRoomInfo.setStatus(liveRoomDetails.getStatus());
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
         liveRoomInfo.setExt(JsonUtils.parse(liveRoomDetails.getExt(), Map.class));
-        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live) {
-            liveRoomInfo.setChannel(liveRoomDetails.getChannel());
-        }
 
         return liveRoomInfo;
     }
