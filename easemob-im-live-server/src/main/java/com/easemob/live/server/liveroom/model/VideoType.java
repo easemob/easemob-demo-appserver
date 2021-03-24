@@ -20,4 +20,9 @@ public enum VideoType {
      */
     agora_speed_live,
 
+    /**
+     * 声网点播
+     */
+    agora_vod,
+
 }

@@ -159,7 +159,7 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
             }
 
             boolean streamOngoing = qiniuService.streamOngoing(liveroomId);
-            if (!streamOngoing && (liveRoomDetails.getVideoType() != VideoType.vod)
+            if (!streamOngoing && (liveRoomDetails.getVideoType() != VideoType.vod || liveRoomDetails.getVideoType() != VideoType.agora_vod)
                     && times.incrementAndGet() >= 2) {
 
                 liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);
