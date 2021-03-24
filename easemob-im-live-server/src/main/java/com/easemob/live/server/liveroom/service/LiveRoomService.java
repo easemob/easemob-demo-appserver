@@ -126,7 +126,7 @@ public class LiveRoomService {
                     .showid(liveRoomInfo.getShowid())
                     .affiliationsCount(liveRoomInfo.getAffiliationsCount())
                     .ext(JsonUtils.mapToJsonString(liveRoomInfo.getExt()))
-                    .channel(chatroomId)
+                    .channel("")
                     .build();
 
         }
@@ -190,6 +190,10 @@ public class LiveRoomService {
             liveRoomDetailsList = liveRoomDetailsRepository.findAgoraSpeedLiveRoomsBeforeId(cursor, limit);
         }
 
+        if (videoType == VideoType.agora_vod) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findAgoraVodRoomsBeforeId(cursor, limit);
+        }
+
         if (videoType == null) {
             liveRoomDetailsList = liveRoomDetailsRepository.findBeforeId(cursor, limit);
         }
@@ -213,6 +217,10 @@ public class LiveRoomService {
 
         if (videoType == VideoType.agora_speed_live) {
             liveRoomDetailsList = liveRoomDetailsRepository.findOngoingAgoraSpeedLiveRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == VideoType.agora_vod) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findOngoingAgoraVodRoomsBeforeId(cursor, limit);
         }
 
         if (videoType == null) {
@@ -244,7 +252,7 @@ public class LiveRoomService {
 
         if (!liveRoomDetails.getOwner().equalsIgnoreCase(username)) {
 
-            if (liveRoomDetails.getVideoType() == VideoType.vod) {
+            if (liveRoomDetails.getVideoType() == VideoType.vod || liveRoomDetails.getVideoType() == VideoType.agora_vod) {
                 throw new ForbiddenOpException("you are not owner to this vod liveroom");
             }
 
