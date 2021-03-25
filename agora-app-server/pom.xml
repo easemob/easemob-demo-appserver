@@ -5,7 +5,7 @@
     <parent>
         <artifactId>easemob-im-app-server</artifactId>
         <groupId>com.easemob.im</groupId>
-        <version>1.0.5.Final</version>
+        <version>1.0.5.1.Final</version>
     </parent>
 
     <artifactId>agora-app-server</artifactId>
