@@ -34,4 +34,16 @@ public class TokenServiceImpl implements TokenService {
                         channelName, userId, expireTime));
         return tokenInfo;
     }
+
+    @Override public TokenInfo getRtcToken(String channelName, Integer uid) {
+        if (StringUtils.isEmpty(channelName) || uid == null) {
+            throw new IllegalArgumentException("channelName or userId must not null.");
+        }
+        TokenInfo tokenInfo = new TokenInfo();
+        tokenInfo.setExpireTime(expireTime);
+        tokenInfo.setToken(RtcTokenGenerate
+                .generateToken(applicationConf.getAgoraAppId(), applicationConf.getAgoraCert(),
+                        channelName, uid, expireTime));
+        return tokenInfo;
+    }
 }

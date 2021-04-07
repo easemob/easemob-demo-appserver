@@ -66,4 +66,16 @@ public class TokenController {
         return responseParam;
     }
 
+    @GetMapping("/token/liveToken")
+    public ResponseParam getAgoraToken(
+            @RequestParam(name = "channelName", required = false) String channelName,
+            @RequestParam(name = "userAccount", required = false) String userId,
+            @RequestParam(name = "uid", required = false, defaultValue = "0") Integer uid) {
+        ResponseParam responseParam = new ResponseParam();
+        TokenInfo token = tokenService.getRtcToken(channelName, uid);
+        responseParam.setAccessToken(token.getToken());
+        responseParam.setExpireTime(token.getExpireTime());
+        return responseParam;
+    }
+
 }

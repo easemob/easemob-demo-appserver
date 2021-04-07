@@ -9,6 +9,19 @@ import com.easemob.agora.model.TokenInfo;
  */
 public interface TokenService {
 
+    /**
+     * 通过username获取token
+     * @param channelName
+     * @param userId
+     * @return
+     */
     TokenInfo getRtcToken(String channelName, String userId);
 
+    /**
+     * 通过uid获取token
+     * @param channelName
+     * @param uid
+     * @return
+     */
+    TokenInfo getRtcToken(String channelName, Integer uid);
 }
