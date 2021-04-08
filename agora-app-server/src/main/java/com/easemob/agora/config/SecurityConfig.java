@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/token/**")
+                .antMatchers("/token/**", "/channel/**")
                 .hasAuthority("user")
                 .anyRequest()
                 .authenticated();

@@ -19,4 +19,5 @@ public class ResponseParam {
     private String token;
     private String errorInfo;
     private Integer expireTime;
+    private Integer agoraUserId;
 }
