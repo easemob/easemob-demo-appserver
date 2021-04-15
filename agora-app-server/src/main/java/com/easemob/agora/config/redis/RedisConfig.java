@@ -12,9 +12,6 @@ public class RedisConfig {
     @Bean(name = "channelRedis")
     public JedisPool channelRedisTemplate(@Autowired RedisConfigProperties properties) {
         GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
-        poolConfig.setMaxTotal(properties.getMaxTotal());
-        poolConfig.setMinIdle(properties.getMinIdle());
-        poolConfig.setMaxWaitMillis(properties.getMaxWaitMillis());
         return new JedisPool(poolConfig, properties.getHost(), properties.getPort(), properties.getTimeout(), properties.getPassword());
     }
 }
