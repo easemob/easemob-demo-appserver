@@ -11,8 +11,5 @@ public class RedisConfigProperties {
     private String host;
     private int port;
     private String password;
-    private int maxTotal;
-    private int minIdle;
-    private int maxWaitMillis;
     private int timeout;
 }
