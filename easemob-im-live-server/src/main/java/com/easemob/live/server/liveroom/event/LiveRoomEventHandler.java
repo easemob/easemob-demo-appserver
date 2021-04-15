@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * 2、直播间关闭后，1小时内状态未改变，则清除直播间（此项取决于直播间persistent为false）；
  *
- * 3、对于videoType为VOD的点播直播间，不自动关闭直播间；
+ * 3、对于videoType为VOD或者agora_vod的点播直播间，不自动关闭直播间；
  *
  * @author shenchong@easemob.com 2020/10/9
  */
@@ -159,7 +159,7 @@ public class LiveRoomEventHandler implements ApplicationListener<LiveRoomEvent> 
             }
 
             boolean streamOngoing = qiniuService.streamOngoing(liveroomId);
-            if (!streamOngoing && (liveRoomDetails.getVideoType() != VideoType.vod && liveRoomDetails.getVideoType() != VideoType.agora_vod)
+            if (!streamOngoing && (liveRoomDetails.getVideoType() != VideoType.vod) && (liveRoomDetails.getVideoType() != VideoType.agora_vod)
                     && times.incrementAndGet() >= 2) {
 
                 liveRoomDetails.setStatus(LiveRoomStatus.OFFLINE);

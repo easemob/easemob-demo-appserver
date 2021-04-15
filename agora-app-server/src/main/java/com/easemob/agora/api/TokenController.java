@@ -3,8 +3,11 @@ package com.easemob.agora.api;
 import com.alibaba.fastjson.JSONObject;
 import com.easemob.agora.model.ResponseParam;
 import com.easemob.agora.model.TokenInfo;
+import com.easemob.agora.service.RedisService;
 import com.easemob.agora.service.TokenService;
+import com.easemob.agora.utils.RandomUidUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +22,9 @@ public class TokenController {
 
     private final TokenService tokenService;
 
+    @Autowired
+    private RedisService redisService;
+
     public TokenController(TokenService tokenService) {
         this.tokenService = tokenService;
     }
@@ -27,27 +33,55 @@ public class TokenController {
     public ResponseParam getAgoraToken(
             @RequestParam(name = "channelName", required = false) String channelName,
             @RequestParam(name = "userAccount", required = false) String userId,
-            @RequestParam(name = "agoraUserId", required = false) String agoraUserId,
+            @RequestParam(name = "agoraUserId", required = false) Integer agoraUserId,
             @RequestBody(required = false) JSONObject body) {
 
-        if (!StringUtils.isEmpty(agoraUserId)) {
-            userId = agoraUserId;
+        String uid;
+        String easemobUserId = null;
+        boolean isRandomUid = false;
+
+        if (agoraUserId == null || agoraUserId == 0) {
+            isRandomUid = true;
+            uid = RandomUidUtil.randomUid();
+        } else {
+            uid = String.valueOf(agoraUserId);
         }
 
-        if (StringUtils.isEmpty(userId) && body != null) {
+        if (!StringUtils.isEmpty(userId)) {
+            easemobUserId = userId;
+        }
+
+        if (body != null) {
             if (body.containsKey("agoraUserId")) {
-                userId = body.getString("agoraUserId");
+                Integer tempAgoraUserId = body.getInteger("agoraUserId");
+                if (tempAgoraUserId == null || tempAgoraUserId == 0) {
+                    isRandomUid = true;
+                    uid = RandomUidUtil.randomUid();
+                } else {
+                    uid = body.getInteger("agoraUserId").toString();
+                }
             } else {
-                userId = body.getString("username");
+                isRandomUid = true;
+                uid = RandomUidUtil.randomUid();
             }
         }
+
+        if (StringUtils.isEmpty(easemobUserId) && body != null) {
+            if (body.containsKey("username")) {
+                easemobUserId = body.getString("username");
+            }
+        }
+
         if (StringUtils.isEmpty(channelName) && body != null) {
             channelName = body.getString("channelName");
         }
         ResponseParam responseParam = new ResponseParam();
-        TokenInfo token = tokenService.getRtcToken(channelName, userId);
+        TokenInfo token = tokenService.getRtcToken(channelName, uid);
+        redisService.saveAgoraChannelInfo(isRandomUid, channelName, uid);
+        redisService.saveUidMapper(uid, easemobUserId);
         responseParam.setAccessToken(token.getToken());
         responseParam.setExpireTime(token.getExpireTime());
+        responseParam.setAgoraUserId(Integer.valueOf(uid));
         return responseParam;
     }
 
@@ -55,19 +89,35 @@ public class TokenController {
     public ResponseParam getAgoraToken(
             @RequestParam(name = "channelName", required = false) String channelName,
             @RequestParam(name = "userAccount", required = false) String userId,
-            @RequestParam(name = "agoraUserId", required = false) String agoraUserId) {
-        if (!StringUtils.isEmpty(agoraUserId)) {
-            userId = agoraUserId;
+            @RequestParam(name = "agoraUserId", required = false) Integer agoraUserId) {
+
+        String uid;
+        String easemobUserId = null;
+        boolean isRandomUid = false;
+
+        if (agoraUserId == null || agoraUserId == 0) {
+            isRandomUid = true;
+            uid = RandomUidUtil.randomUid();
+        } else {
+            uid = String.valueOf(agoraUserId);
         }
+
+        if (!StringUtils.isEmpty(userId)) {
+            easemobUserId = userId;
+        }
+
         ResponseParam responseParam = new ResponseParam();
-        TokenInfo token = tokenService.getRtcToken(channelName, userId);
+        TokenInfo token = tokenService.getRtcToken(channelName, uid);
+        redisService.saveAgoraChannelInfo(isRandomUid, channelName, uid);
+        redisService.saveUidMapper(uid, easemobUserId);
         responseParam.setAccessToken(token.getToken());
         responseParam.setExpireTime(token.getExpireTime());
+        responseParam.setAgoraUserId(Integer.valueOf(uid));
         return responseParam;
     }
 
     @GetMapping("/token/liveToken")
-    public ResponseParam getAgoraToken(
+    public ResponseParam getAgoraLiveToken(
             @RequestParam(name = "channelName", required = false) String channelName,
             @RequestParam(name = "userAccount", required = false) String userId,
             @RequestParam(name = "uid", required = false, defaultValue = "0") Integer uid) {

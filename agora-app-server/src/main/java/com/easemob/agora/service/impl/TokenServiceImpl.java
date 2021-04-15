@@ -20,7 +20,7 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private ApplicationConf applicationConf;
 
-    @Value("${agora.expira.time.seconds:3600}")
+    @Value("${agora.expira.time.seconds:86400}")
     private int expireTime;
 
     @Override public TokenInfo getRtcToken(String channelName, String userId) {
