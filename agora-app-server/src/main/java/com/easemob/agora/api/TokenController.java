@@ -1,6 +1,7 @@
 package com.easemob.agora.api;
 
 import com.alibaba.fastjson.JSONObject;
+import com.easemob.agora.model.ChannelResponse;
 import com.easemob.agora.model.ResponseParam;
 import com.easemob.agora.model.TokenInfo;
 import com.easemob.agora.service.RedisService;
@@ -10,6 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author skyfour
@@ -30,6 +35,49 @@ public class TokenController {
     }
 
     @PostMapping("/token/rtcToken")
+    public ResponseParam getAgoraToken(
+            @RequestParam(name = "channelName", required = false) String channelName,
+            @RequestParam(name = "userAccount", required = false) String userId,
+            @RequestParam(name = "agoraUserId", required = false) String agoraUserId,
+            @RequestBody(required = false) JSONObject body) {
+
+        if (!StringUtils.isEmpty(agoraUserId)) {
+            userId = agoraUserId;
+        }
+
+        if (StringUtils.isEmpty(userId) && body != null) {
+            if (body.containsKey("agoraUserId")) {
+                userId = body.getString("agoraUserId");
+            } else {
+                userId = body.getString("username");
+            }
+        }
+        if (StringUtils.isEmpty(channelName) && body != null) {
+            channelName = body.getString("channelName");
+        }
+        ResponseParam responseParam = new ResponseParam();
+        TokenInfo token = tokenService.getRtcToken(channelName, userId);
+        responseParam.setAccessToken(token.getToken());
+        responseParam.setExpireTime(token.getExpireTime());
+        return responseParam;
+    }
+
+    @GetMapping("/token/rtcToken")
+    public ResponseParam getAgoraToken(
+            @RequestParam(name = "channelName", required = false) String channelName,
+            @RequestParam(name = "userAccount", required = false) String userId,
+            @RequestParam(name = "agoraUserId", required = false) String agoraUserId) {
+        if (!StringUtils.isEmpty(agoraUserId)) {
+            userId = agoraUserId;
+        }
+        ResponseParam responseParam = new ResponseParam();
+        TokenInfo token = tokenService.getRtcToken(channelName, userId);
+        responseParam.setAccessToken(token.getToken());
+        responseParam.setExpireTime(token.getExpireTime());
+        return responseParam;
+    }
+
+    @PostMapping("/token/rtcToken/v1")
     public ResponseParam getAgoraToken(
             @RequestParam(name = "channelName", required = false) String channelName,
             @RequestParam(name = "userAccount", required = false) String userId,
@@ -85,7 +133,7 @@ public class TokenController {
         return responseParam;
     }
 
-    @GetMapping("/token/rtcToken")
+    @GetMapping("/token/rtcToken/v1")
     public ResponseParam getAgoraToken(
             @RequestParam(name = "channelName", required = false) String channelName,
             @RequestParam(name = "userAccount", required = false) String userId,
