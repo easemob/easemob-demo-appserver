@@ -8,20 +8,10 @@ import com.easemob.agora.model.TokenInfo;
  * @email skyzhang@easemob.com
  */
 public interface TokenService {
-
     /**
-     * 通过username获取token
-     * @param channelName
-     * @param userId
+     * 获取USER权限的token
+     * @param userAccount 用户账号
      * @return
      */
-    TokenInfo getRtcToken(String channelName, String userId);
-
-    /**
-     * 通过uid获取token
-     * @param channelName
-     * @param uid
-     * @return
-     */
-    TokenInfo getRtcToken(String channelName, Integer uid);
+    TokenInfo getUserToken(String userAccount);
 }

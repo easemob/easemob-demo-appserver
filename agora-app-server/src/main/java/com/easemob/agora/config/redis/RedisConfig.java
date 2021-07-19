@@ -12,6 +12,9 @@ public class RedisConfig {
     @Bean(name = "channelRedis")
     public JedisPool channelRedisTemplate(@Autowired RedisConfigProperties properties) {
         GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
-        return new JedisPool(poolConfig, properties.getHost(), properties.getPort(), properties.getTimeout(), properties.getPassword());
+        if (properties.getPassword() != null) {
+            return new JedisPool(poolConfig, properties.getHost(), properties.getPort(), properties.getTimeout(), properties.getPassword());
+        }
+        return new JedisPool(poolConfig, properties.getHost(), properties.getPort(), properties.getTimeout());
     }
 }

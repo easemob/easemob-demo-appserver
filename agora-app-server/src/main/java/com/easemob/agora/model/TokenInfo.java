@@ -9,8 +9,8 @@ import lombok.Data;
  */
 @Data
 public class TokenInfo {
-
     private String token;
-
-    private Integer expireTime;
+    private Long expireTimestamp;
+    private String easemobUserName;
+    private String agoraUid;
 }
