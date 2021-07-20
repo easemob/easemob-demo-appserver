@@ -1,11 +1,15 @@
 # AgoraAppServer
 
 
+
 ## 介绍
 AgoraAppServer是用来获取声网Token的开源项目。
 
+获取声网Token流程图：
+![获取声网token流程图](https://user-images.githubusercontent.com/15087647/126285697-606492f4-6ee2-458c-81d9-140da827ec53.png)
+
 ## 功能
-AgoraAppServer提供了获取声网token、获取频道内环信id与声网id映射关系的能力。
+AgoraAppServer提供了获取声网Token、获取频道内环信id与声网id映射关系的能力。
 
 ## 技术选择
 * [Spring Boot](https://spring.io/projects/spring-boot)
@@ -15,7 +19,7 @@ AgoraAppServer提供了获取声网token、获取频道内环信id与声网id映
 * [AgoraIO Tools](https://github.com/AgoraIO/Tools/tree/dev/accesstoken2/DynamicKey/AgoraDynamicKey/java)
 
 ## 准备
-在获取声网token之前，需要准备环信appkey、REST API访问地址(restServer)、声网App Id(agroaAppId)、声网APP证书(agoraCert)
+在获取声网token之前，需要准备环信AppKey、REST API访问地址(restServer)、声网App Id(agroaAppId)、声网APP证书(agoraCert)
 
 获取环信appkey、restServer：
 - 1.如果您有环信管理后台账号并创建过应用，请先登录环信管理后台，点击[这里](https://console.easemob.com/user/login)，然后到"应用列表" -> 点击"查看"即可获取到appkey。
@@ -57,9 +61,9 @@ AgoraAppServer提供了获取声网token、获取频道内环信id与声网id映
 
 上述准备好，启动服务即可使用。
 
-以下是接口API：
+## API
 
-**API说明:** 获取声网token。
+**API说明:** 获取声网Token。
 
 **Path:** `http://localhost:8080/token/rtcToken/v1`
 
