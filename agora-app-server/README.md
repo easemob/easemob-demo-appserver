@@ -167,13 +167,16 @@ curl -X GET "http://localhost:8080/channel/mapper?channelName=live&appkey=easemo
 }
 ```
 
+## AgoraIO Tools
+AgoraAppServer获取声网token使用的是[AgoraIO Tools](https://github.com/AgoraIO/Tools/tree/dev/accesstoken2/DynamicKey/AgoraDynamicKey/java)，AgoraAppServer服务的使用请参考[AgoraIO](./agora-app-server/src/main/java/com/easemob/agora/AgoraIO)。
+
+生成的声网Token可用于ServiceChat、ServiceRtc
+RtcTokenBuilder：
+![951C4546-3D9E-47D3-8C67-1C047F436A97](https://user-images.githubusercontent.com/15087647/126287819-41acffb9-7a90-43fb-a6db-8f05332c1582.png)
+
 ## 流程图
 获取声网Token流程图：
 ![获取声网token流程图](https://user-images.githubusercontent.com/15087647/126285697-606492f4-6ee2-458c-81d9-140da827ec53.png)
 
-## AgoraIO Tools
-AgoraAppServer获取声网token使用的是[AgoraIO Tools](https://github.com/AgoraIO/Tools/tree/dev/accesstoken2/DynamicKey/AgoraDynamicKey/java)，AgoraAppServer服务的使用请参考[AgoraIO](./agora-app-server/src/main/java/com/easemob/agora/AgoraIO/RtcTokenBuilder)。
 
-生成的token是用于ServiceChat、ServiceRtc
-![951C4546-3D9E-47D3-8C67-1C047F436A97](https://user-images.githubusercontent.com/15087647/126287819-41acffb9-7a90-43fb-a6db-8f05332c1582.png)
 
