@@ -8,10 +8,15 @@ AgoraAppServer用来获取声网Token
 
 **Permission:** App管理员
 
-**Request Parameters:** 无
+**Request Parameters:**
 
 ```json
-?userAccount=test1&channelName=live&appkey=easemob-demo%23test&agoraUserId=0
+| 参数 | 类型 | 说明  |
+| --- | --- | --- |
+| userAccount | String | 用户名（环信的用户名） |
+| channelName | String | 要加入的声网频道名称 |
+| appkey      | String| 环信的appkey |
+| agoraUserId | Integer | 声网用户id(传0，会随机生成一个1~Integer.MAX_VALUE的数字) |
 ```
 
 **Request Headers:** 
@@ -23,14 +28,7 @@ AgoraAppServer用来获取声网Token
 
 **Request Body示例:**
 
-**Request Body参数说明:**
-
-| 参数 | 类型 | 说明  |
-| --- | --- | --- |
-| userAccount | String | 用户名（环信的用户名） |
-| channelName | String | 要加入的声网频道名称 |
-| appkey      | String| 环信的appkey |
-| agoraUserId | Integer | 声网用户id(传0，会随机生成一个1~Integer.MAX_VALUE的数字) |
+**Request Body参数说明:** 无
 
 **请求示例:**
 
