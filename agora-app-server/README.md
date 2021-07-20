@@ -11,14 +11,12 @@ AgoraAppServer用来获取声网Token
 
 **Request Parameters:**
 
-```json
 | 参数 | 类型 | 说明  |
 | --- | --- | --- |
 | userAccount | String | 用户名（环信的用户名） |
 | channelName | String | 要加入的声网频道名称 |
 | appkey      | String| 环信的appkey |
 | agoraUserId | Integer | 声网用户id(传0，会随机生成一个1~Integer.MAX_VALUE的数字) |
-```
 
 **Request Headers:** 
 
@@ -40,13 +38,11 @@ curl -X GET "http://localhost:8080/token/rtcToken/v1?userAccount=test1&channelNa
 
 **Response Parameters:**
 
-```json
 | 参数 | 类型 | 说明  |
 | --- | --- | --- |
 | code | String | 结果状态码 |
 | accessToken | String | 声网token |
 | expireTime | int | 过期时间单位（秒） |
-```
 
 **返回示例:**
 
@@ -70,13 +66,11 @@ curl -X GET "http://localhost:8080/token/rtcToken/v1?userAccount=test1&channelNa
 
 **Request Parameters:**
 
-```json
 | 参数 | 类型 | 说明  |
 | --- | --- | --- |
 | channelName | String | 要加入的声网频道名称 |
 | userAccount | String | 用户名（环信的用户名） |
 | appkey      | String| 环信的appkey |
-```
 
 **Request Headers:** 
 
@@ -98,13 +92,11 @@ curl -X GET "http://localhost:8080/channel/mapper?channelName=live&appkey=easemo
 
 **Response Parameters:**
 
-```json
 | 参数 | 类型 | 说明  |
 | --- | --- | --- |
 | code | String | 结果状态码 |
 | channelName | String | 声网频道名称 |
 | result | JSON| agoraUserId与环信id的映射 |
-```
 
 **返回示例:**
 
