@@ -1,7 +1,63 @@
 # AgoraAppServer
-AgoraAppServer用来获取声网Token
 
-## 获取声网token
+
+## 介绍
+AgoraAppServer是用来获取声网Token的开源项目。
+
+## 功能
+AgoraAppServer提供了获取声网token、获取频道内环信id与声网id映射关系的能力。
+
+## 技术选择
+* [Spring Boot](https://spring.io/projects/spring-boot)
+
+## 主要组件
+* [Jedis](https://tool.oschina.net/uploads/apidocs/redis/clients/jedis/Jedis.html)
+* [AgoraIO Tools](https://github.com/AgoraIO/Tools/tree/dev/accesstoken2/DynamicKey/AgoraDynamicKey/java)
+
+## 准备
+在获取声网token之前，需要准备环信appkey、REST API访问地址(restServer)、声网App Id(agroaAppId)、声网APP证书(agoraCert)
+
+获取环信appkey、restServer：
+- 1.如果您有环信管理后台账号并创建过应用，请先登录环信管理后台，点击[这里](https://console.easemob.com/user/login)，然后到"应用列表" -> 点击"查看"即可获取到appkey。
+- 2.如果您没有环信管理后台账号，请先注册账号，点击[这里](https://console.easemob.com/user/register)，注册成功后请登录，然后点击"添加应用"，添加成功后点击"查看"即可获取到appkey。
+- 3.然后到"即时通讯" -> "服务概览"，拿到REST API访问地址
+
+获取agroaAppId、appCert：
+- 1.如果您有声网Console后台账号并创建过项目，请先登录声网Console后台，点击[这里](https://sso.agora.io/cn/login/)，然后到"项目列表" -> 找到自己的项目点击"编辑"图标后，即可看到App ID、APP证书。
+- 2.如果您没有声网Console后台账号，请先注册账号，点击[这里](https://sso.agora.io/cn/v4/signup)，注册成功后按照步骤1操作。
+
+## 配置
+配置文件中需要的参数来源于"准备"中获取到的环信appkey、REST API访问地址(restServer)、声网App Id(agroaAppId)、声网APP证书(agoraCert)
+- 服务配置文件参考：[application.properties](./agora-app-server/src/main/resources/application.properties)
+    - AppKey组成规则：${orgName}#${appName}，拿到AppKey后可得到对应的orgName和appName；
+    ```
+        ## 环信console 获取自己的rest域名
+        application.restServer=xxx
+        ## 环信console 注册获取的orgname
+        application.orgName=xxx
+        ## 环信console 注册获取的appname
+        application.appName=xxx
+        
+        ## 声网console获取appid
+        application.agoraAppId=xxx
+        ## 声网console获取appcert
+        application.agoraCert=xxx
+        ## 声网token过期时间(自已定义，不能超过1天)
+        agora.token.expire.period.seconds=86400
+        
+        ## 本地redis
+        spring.redis.channel.host=localhost
+        spring.redis.channel.port=6379
+        spring.redis.channel.password=123456
+        spring.redis.channel.timeout=10000
+        spring.redis.channel.expireTime=86400
+    ```
+
+## 使用
+
+上述准备好，启动服务即可使用。
+
+以下是接口API：
 
 **API说明:** 获取声网token。
 
