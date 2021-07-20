@@ -1,6 +1,8 @@
 # AgoraAppServer
 AgoraAppServer用来获取声网Token
 
+## 获取声网token
+
 **API说明:** 获取声网token。
 
 **Path:** `http://localhost:8080/token/rtcToken/v1`
@@ -55,6 +57,8 @@ curl -X GET "http://localhost:8080/token/rtcToken/v1?userAccount=test1&channelNa
 }
 ```
 
+
+## 获取声网频道信息
 
 **API说明:** 根据频道名称获取频道详情。
 
