@@ -1,6 +1,7 @@
 # AgoraAppServer
 AgoraAppServer用来获取声网Token
-环信AppServer通过http接口获取Token
+
+**API说明:** 获取声网token。
 
 **Path:** `http://localhost:8080/token/rtcToken/v1`
 
@@ -26,14 +27,25 @@ AgoraAppServer用来获取声网Token
 | Content-Type  | application/json |
 | Authorization | Bearer ${token} |
 
-**Request Body示例:**
+**Request Body示例:** 无
 
 **Request Body参数说明:** 无
+
 
 **请求示例:**
 
 ```
 curl -X GET "http://localhost:8080/token/rtcToken/v1?userAccount=test1&channelName=live&appkey=easemob-demo%23test&agoraUserId=0" -H 'Authorization: Bearer YWMthkKMWmqAEeuWOHGo9_t4wU1-S6DcShHjkNXh_7qs2vUf00sg7jER6bLYLZbUGGVWAwMAAAF3hKuxYwBPGgCO8gCSzYq-vmRwQVc23oJ2n1HxZmHJIJPedliCLokptg'
+```
+
+**Response Parameters:**
+
+```json
+| 参数 | 类型 | 说明  |
+| --- | --- | --- |
+| code | String | 结果状态码 |
+| accessToken | String | 声网token |
+| expireTime | int | 过期时间单位（秒） |
 ```
 
 **返回示例:**
@@ -45,3 +57,61 @@ curl -X GET "http://localhost:8080/token/rtcToken/v1?userAccount=test1&channelNa
     "expireTime": 86400,
     "agoraUserId":123
 }
+```
+
+
+**API说明:** 根据频道名称获取频道详情。
+
+**Path:** `http://localhost:8080/channel/mapper`
+
+**HTTP Method:** `GET`
+
+**Permission:** App管理员
+
+**Request Parameters:**
+
+```json
+| 参数 | 类型 | 说明  |
+| --- | --- | --- |
+| channelName | String | 要加入的声网频道名称 |
+| userAccount | String | 用户名（环信的用户名） |
+| appkey      | String| 环信的appkey |
+```
+
+**Request Headers:** 
+
+| 参数 | 说明  |
+| --- | --- |
+| Content-Type  | application/json |
+| Authorization | Bearer ${token} |
+
+**Request Body示例:** 无
+
+**Request Body参数说明:** 无
+
+
+**请求示例:**
+
+```
+curl -X GET "http://localhost:8080/channel/mapper?channelName=live&appkey=easemob-demo%23test&userAccount=test1" -H 'Authorization: Bearer YWMthkKMWmqAEeuWOHGo9_t4wU1-S6DcShHjkNXh_7qs2vUf00sg7jER6bLYLZbUGGVWAwMAAAF3hKuxYwBPGgCO8gCSzYq-vmRwQVc23oJ2n1HxZmHJIJPedliCLokptg'
+```
+
+**Response Parameters:**
+
+```json
+| 参数 | 类型 | 说明  |
+| --- | --- | --- |
+| code | String | 结果状态码 |
+| channelName | String | 声网频道名称 |
+| result | JSON| agoraUserId与环信id的映射 |
+```
+
+**返回示例:**
+
+```json
+{
+    "code": "RES_0K",
+    "channelName": "channelName",
+    "result": {"123":"1"}
+}
+```
