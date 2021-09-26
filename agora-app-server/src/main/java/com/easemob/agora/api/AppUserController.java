@@ -1,7 +1,7 @@
 package com.easemob.agora.api;
 
 import com.easemob.agora.exception.ASGetTokenReachedLimitException;
-import com.easemob.agora.limit.AppUserLimitService;
+//import com.easemob.agora.limit.AppUserLimitService;
 import com.easemob.agora.model.AppUser;
 import com.easemob.agora.model.ResCode;
 import com.easemob.agora.model.ResponseParam;
@@ -17,11 +17,11 @@ public class AppUserController {
     @Autowired
     private AppUserService appUserService;
 
-    @Autowired
-    private AppUserLimitService appUserLimitService;
+//    @Autowired
+//    private AppUserLimitService appUserLimitService;
 
-    @Value("${spring.redis.get.token.limit.count}")
-    private int getTokenLimitCount;
+//    @Value("${spring.redis.get.token.limit.count}")
+//    private int getTokenLimitCount;
 
     public AppUserController(AppUserService appUserService) {
         this.appUserService = appUserService;
@@ -42,9 +42,9 @@ public class AppUserController {
 
     @PostMapping("/app/user/login")
     public ResponseParam login(@RequestBody AppUser appUser) {
-        if (appUserLimitService.getTokenReachedLimit(appUser.getUserAccount()) > getTokenLimitCount) {
-            throw new ASGetTokenReachedLimitException("get token reached limit");
-        }
+//        if (appUserLimitService.getTokenReachedLimit(appUser.getUserAccount()) > getTokenLimitCount) {
+//            throw new ASGetTokenReachedLimitException("get token reached limit");
+//        }
 
         TokenInfo token = appUserService.loginUser(appUser);
         ResponseParam responseParam = new ResponseParam();

@@ -1,7 +1,7 @@
 package com.easemob.agora.api;
 
 import com.easemob.agora.exception.ASGetTokenReachedLimitException;
-import com.easemob.agora.limit.AppUserLimitService;
+//import com.easemob.agora.limit.AppUserLimitService;
 import com.easemob.agora.model.ResponseParam;
 import com.easemob.agora.model.TokenInfo;
 import com.easemob.agora.service.TokenService;
@@ -22,11 +22,11 @@ public class TokenController {
     @Autowired
     private TokenService tokenService;
 
-    @Autowired
-    private AppUserLimitService appUserLimitService;
+//    @Autowired
+//    private AppUserLimitService appUserLimitService;
 
-    @Value("${spring.redis.get.token.limit.count}")
-    private int getTokenLimitCount;
+//    @Value("${spring.redis.get.token.limit.count}")
+//    private int getTokenLimitCount;
 
     public TokenController(TokenService tokenService) {
         this.tokenService = tokenService;
@@ -34,9 +34,9 @@ public class TokenController {
 
     @GetMapping("/token/{userAccount}/chatUserToken")
     public ResponseParam getAgoraChatToken(@PathVariable String userAccount) {
-        if (this.appUserLimitService.getTokenReachedLimit(userAccount) > getTokenLimitCount) {
-            throw new ASGetTokenReachedLimitException("get token reached limit");
-        }
+//        if (this.appUserLimitService.getTokenReachedLimit(userAccount) > getTokenLimitCount) {
+//            throw new ASGetTokenReachedLimitException("get token reached limit");
+//        }
 
         TokenInfo token = tokenService.getUserToken(userAccount);
         ResponseParam responseParam = new ResponseParam();
