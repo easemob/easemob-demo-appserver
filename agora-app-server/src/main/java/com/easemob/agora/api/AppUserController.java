@@ -1,15 +1,15 @@
 package com.easemob.agora.api;
 
-import com.easemob.agora.exception.ASGetTokenReachedLimitException;
-//import com.easemob.agora.limit.AppUserLimitService;
 import com.easemob.agora.model.AppUser;
 import com.easemob.agora.model.ResCode;
 import com.easemob.agora.model.ResponseParam;
 import com.easemob.agora.model.TokenInfo;
 import com.easemob.agora.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 public class AppUserController {
@@ -17,42 +17,40 @@ public class AppUserController {
     @Autowired
     private AppUserService appUserService;
 
-//    @Autowired
-//    private AppUserLimitService appUserLimitService;
-
-//    @Value("${spring.redis.get.token.limit.count}")
-//    private int getTokenLimitCount;
-
     public AppUserController(AppUserService appUserService) {
         this.appUserService = appUserService;
     }
 
     @PostMapping("/app/user/register")
-    public ResponseParam register(@RequestBody AppUser appUser) {
+    public ResponseEntity register(@RequestBody @Valid AppUser appUser) {
         ResponseParam responseParam = new ResponseParam();
 
-        if (appUserService.registerUser(appUser)) {
-            responseParam.setCode(ResCode.RES_OK);
-        } else {
-            responseParam.setCode(ResCode.RES_USER_ALREADY_EXISTS);
-            responseParam.setErrorInfo(String.format("%s already exists", appUser.getUserAccount()));
-        }
-        return responseParam;
+        appUserService.registerUser(appUser);
+        responseParam.setCode(ResCode.RES_OK);
+        return ResponseEntity.ok(responseParam);
     }
 
     @PostMapping("/app/user/login")
-    public ResponseParam login(@RequestBody AppUser appUser) {
-//        if (appUserLimitService.getTokenReachedLimit(appUser.getUserAccount()) > getTokenLimitCount) {
-//            throw new ASGetTokenReachedLimitException("get token reached limit");
-//        }
+    public ResponseEntity login(@RequestBody @Valid AppUser appUser) {
+        ResponseParam responseParam = new ResponseParam();
 
         TokenInfo token = appUserService.loginUser(appUser);
-        ResponseParam responseParam = new ResponseParam();
         responseParam.setAccessToken(token.getToken());
         responseParam.setExpireTimestamp(token.getExpireTimestamp());
-        responseParam.setEasemobUserName(token.getEasemobUserName());
+        responseParam.setChatUserName(token.getChatUserName());
         responseParam.setAgoraUid(token.getAgoraUid());
-        return responseParam;
+
+        return ResponseEntity.ok(responseParam);
+    }
+
+    // 仅客户端 chat demo 使用
+    @PostMapping("/app/chat/user/register")
+    public ResponseEntity registerWithChatUser(@RequestBody @Valid AppUser appUser) {
+        ResponseParam responseParam = new ResponseParam();
+
+        this.appUserService.registerWithChatUser(appUser);
+        responseParam.setCode(ResCode.RES_OK);
+        return ResponseEntity.ok(responseParam);
     }
 
 }

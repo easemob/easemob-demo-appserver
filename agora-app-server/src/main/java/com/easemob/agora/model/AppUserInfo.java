@@ -25,11 +25,8 @@ public class AppUserInfo {
     @Column(name = "user_password")
     private String userPassword;
 
-    @Column(name = "easemob_user_name")
-    private String easemobUserName;
-
-    @Column(name = "easemob_user_id")
-    private String easemobUserId;
+    @Column(name = "chat_user_name")
+    private String chatUserName;
 
     @Column(name = "agora_uid")
     private String agoraUid;

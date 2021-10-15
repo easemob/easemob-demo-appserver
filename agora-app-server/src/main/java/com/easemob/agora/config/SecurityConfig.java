@@ -25,6 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override public void configure(WebSecurity http) throws Exception {
-        http.ignoring().antMatchers("/token/**", "/app/user/**", "/management/**");
+        http.ignoring().antMatchers("/token/**", "/app/user/**", "/app/chat/user/**", "/management/**");
     }
 }

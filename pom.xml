@@ -7,7 +7,7 @@
     <groupId>com.easemob.im</groupId>
     <artifactId>easemob-im-app-server</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.9.5.Final</version>
+    <version>1.0.9.9.Final</version>
     <modules>
         <module>easemob-im-live-server</module>
         <module>qiniu-service</module>

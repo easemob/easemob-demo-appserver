@@ -14,7 +14,7 @@ public enum ResCode {
     RES_APPKEY_ERROR(400),  //appkey错误
     RES_UNAUTHORIZED_ERROR(401), //表示未授权[无token、token错误、token过期]
     RES_USER_NOT_FOUND(404), //此用户不存在
-    RES_REACH_LIMIT(429), //请求达到限制
+    RES_REACH_LIMIT(429), //超过限制
     RES_UNKNOWN(500);  //其他未知错误
 
     public int code;

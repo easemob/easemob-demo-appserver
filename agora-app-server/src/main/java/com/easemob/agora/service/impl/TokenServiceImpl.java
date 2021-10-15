@@ -30,22 +30,34 @@ public class TokenServiceImpl implements TokenService {
     private AssemblyService assemblyService;
 
     @Override
-    public TokenInfo getUserToken(String userAccount) {
+    public TokenInfo getUserTokenWithAccount(String userAccount) {
         log.info("userAccount get user token :{}", userAccount);
         AppUserInfo appUserInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
         if(appUserInfo != null) {
             appUserInfo = this.assemblyService.checkAppUserInfo(appUserInfo);
-            return getTokenInfo(appUserInfo.getEasemobUserName(), appUserInfo.getEasemobUserId(), appUserInfo.getAgoraUid());
+            String chatUserName = appUserInfo.getChatUserName();
+            String chatUserId = this.serverSDKService.getChatUserId(chatUserName);
+            return getTokenInfo(chatUserName, chatUserId, appUserInfo.getAgoraUid());
         } else {
             throw new ASNotFoundException(String.format("%s not exists", userAccount));
         }
     }
 
-    private TokenInfo getTokenInfo(String easemobUserName, String easemobUserId, String agoraUid) {
+    @Override
+    public TokenInfo getRtcToken(String channelName, Integer agoraUid) {
         TokenInfo tokenInfo = new TokenInfo();
-        tokenInfo.setToken(this.serverSDKService.generateAgoraChatUserToken(easemobUserName, easemobUserId));
+        tokenInfo.setToken(this.serverSDKService.generateAgoraRtcToken(channelName, agoraUid));
         tokenInfo.setExpireTimestamp(System.currentTimeMillis() + this.expirePeriod * 1000);
-        tokenInfo.setEasemobUserName(easemobUserName);
+//        tokenInfo.setChatUserName(easemobUserName);
+//        tokenInfo.setAgoraUid(agoraUid);
+        return tokenInfo;
+    }
+
+    private TokenInfo getTokenInfo(String chatUserName, String chatUserId, String agoraUid) {
+        TokenInfo tokenInfo = new TokenInfo();
+        tokenInfo.setToken(this.serverSDKService.generateAgoraChatUserToken(chatUserName, chatUserId));
+        tokenInfo.setExpireTimestamp(System.currentTimeMillis() + this.expirePeriod * 1000);
+        tokenInfo.setChatUserName(chatUserName);
         tokenInfo.setAgoraUid(agoraUid);
         return tokenInfo;
     }

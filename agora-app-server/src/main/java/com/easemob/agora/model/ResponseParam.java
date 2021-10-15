@@ -19,6 +19,6 @@ public class ResponseParam {
     private String token;
     private String errorInfo;
     private Long expireTimestamp;
-    private String easemobUserName;
+    private String chatUserName;
     private String agoraUid;
 }

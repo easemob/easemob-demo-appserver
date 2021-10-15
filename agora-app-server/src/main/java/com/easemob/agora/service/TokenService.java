@@ -9,9 +9,17 @@ import com.easemob.agora.model.TokenInfo;
  */
 public interface TokenService {
     /**
-     * 获取USER权限的token
+     * 根据用户账号获取USER权限的token
      * @param userAccount 用户账号
      * @return
      */
-    TokenInfo getUserToken(String userAccount);
+    TokenInfo getUserTokenWithAccount(String userAccount);
+
+    /**
+     * 根据频道名称与agoraUid获取声网rtc token
+     * @param channelName 频道名称
+     * @param agoraUid 声网uid
+     * @return
+     */
+    TokenInfo getRtcToken(String channelName, Integer agoraUid);
 }

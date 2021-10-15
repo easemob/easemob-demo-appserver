@@ -11,6 +11,6 @@ import lombok.Data;
 public class TokenInfo {
     private String token;
     private Long expireTimestamp;
-    private String easemobUserName;
+    private String chatUserName;
     private String agoraUid;
 }

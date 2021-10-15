@@ -1,11 +1,12 @@
 package com.easemob.agora.service.impl;
 
-import com.easemob.agora.exception.ASGetEasemobUserIdException;
-import com.easemob.agora.exception.ASGetEasemobUserNameException;
-import com.easemob.agora.exception.ASRegisterEasemobUserNameException;
+import com.easemob.agora.exception.ASGetChatUserIdException;
+import com.easemob.agora.exception.ASGetChatUserNameException;
+import com.easemob.agora.exception.ASRegisterChatUserNameException;
 import com.easemob.agora.service.ServerSDKService;
 import com.easemob.im.server.EMException;
 import com.easemob.im.server.EMService;
+import com.easemob.im.server.api.token.agora.AccessToken2;
 import com.easemob.im.server.exception.EMNotFoundException;
 import com.easemob.im.server.model.EMUser;
 import lombok.extern.slf4j.Slf4j;
@@ -25,43 +26,54 @@ public class ServerSDKServiceImpl implements ServerSDKService {
     private EMService serverSdk;
 
     @Override
-    public void registerEasemobUserName(String easemobUserName) {
+    public void registerChatUserName(String chatUserName) {
         try {
-            this.serverSdk.user().create(easemobUserName, EASEMOB_USER_PASSWORD).block();
-            log.info("register easemobUserName success :{}", easemobUserName);
+            this.serverSdk.user().create(chatUserName, EASEMOB_USER_PASSWORD).block();
+            log.info("register chatUserName success :{}", chatUserName);
         } catch (EMException e) {
-            throw new ASRegisterEasemobUserNameException(String.format("register easemobUserName %s fail. Message : %s", easemobUserName ,e.getMessage()));
+            throw new ASRegisterChatUserNameException(String.format("register chatUserName %s fail. Message : %s", chatUserName ,e.getMessage()));
         }
     }
 
     @Override
-    public boolean checkIfEasemobUserNameExists(String easemobUserName) {
+    public boolean checkIfChatUserNameExists(String chatUserName) {
         try {
-            this.serverSdk.user().get(easemobUserName).block();
+            this.serverSdk.user().get(chatUserName).block();
         } catch (EMException e) {
             if (e.getClass() == EMNotFoundException.class) {
-                log.info("easemobUserName not exists :{}", easemobUserName);
+                log.info("chatUserName not exists :{}", chatUserName);
                 return false;
             }
-            throw new ASGetEasemobUserNameException(String.format("get easemobUserName %s fail. Message : %s", easemobUserName ,e.getMessage()));
+            throw new ASGetChatUserNameException(String.format("get chatUserName %s fail. Message : %s", chatUserName ,e.getMessage()));
         }
         return true;
     }
 
     @Override
-    public String getEasemobUserId(String easemobUserName) {
+    public String getChatUserId(String chatUserName) {
         EMUser user;
         try {
-            user = this.serverSdk.user().get(easemobUserName).block();
+            user = this.serverSdk.user().get(chatUserName).block();
         } catch (EMException e) {
-            throw new ASGetEasemobUserIdException(String.format("get easemobUserId %s fail. Message : %s", easemobUserName ,e.getMessage()));
+            throw new ASGetChatUserIdException(String.format("get chatUserId %s fail. Message : %s", chatUserName ,e.getMessage()));
         }
         return user.getUuid();
     }
 
     @Override
-    public String generateAgoraChatUserToken(String easemobUserName, String easemobUserId) {
-        EMUser user = new EMUser(easemobUserName, easemobUserId, true);
+    public String generateAgoraChatUserToken(String chatUserName, String chatUserId) {
+        EMUser user = new EMUser(chatUserName, chatUserId, true);
         return this.serverSdk.token().getUserToken(user, this.expirePeriod, null, null);
+    }
+
+    @Override
+    public String generateAgoraRtcToken(String channelName, Integer agorauid) {
+        EMUser bob = new EMUser("bob", "da921111-ecf9-11eb-9af3-296ff79acb67", true);
+        String bobAgoraChatRtcToken = this.serverSdk.token().getUserToken(bob, this.expirePeriod, token -> {
+            AccessToken2.ServiceRtc serviceRtc = new AccessToken2.ServiceRtc(channelName, String.valueOf(agorauid));
+            serviceRtc.addPrivilegeRtc(AccessToken2.PrivilegeRtc.PRIVILEGE_JOIN_CHANNEL, this.expirePeriod);
+            token.addService(serviceRtc);
+        }, null);
+        return bobAgoraChatRtcToken;
     }
 }

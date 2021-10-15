@@ -9,7 +9,14 @@ public interface AppUserService {
      * @param appUser appUser
      * @return 注册成功或失败
      */
-    boolean registerUser(AppUser appUser);
+    void registerUser(AppUser appUser);
+
+    /**
+     * 在应用中为用户注册一个账号（此账号是与chat username一致，是为了兼容chat客户端demo，开发者无需关注此方法）
+     * @param appUser appUser
+     * @return 注册成功或失败
+     */
+    void registerWithChatUser(AppUser appUser);
 
     /**
      * 用户在应用上登录并获取一个token

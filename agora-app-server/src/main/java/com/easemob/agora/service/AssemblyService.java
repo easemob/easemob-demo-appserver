@@ -41,11 +41,10 @@ public interface AssemblyService {
      * 将用户信息存入DB
      * @param userAccount 用户的账号
      * @param userPassword 用户的密码
-     * @param easemobUserName 环信用户名
-     * @param easemobUserId 环信用户id
+     * @param chatUserName chat用户名
      * @param agoraUid 声网uid
      */
-    void saveAppUserToDB(String userAccount, String userPassword, String easemobUserName, String easemobUserId, String agoraUid);
+    void saveAppUserToDB(String userAccount, String userPassword, String chatUserName, String agoraUid);
 
 
     AppUserInfo checkAppUserInfo(AppUserInfo appUserInfo);

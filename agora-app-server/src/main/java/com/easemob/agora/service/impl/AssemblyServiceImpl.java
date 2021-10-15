@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AssemblyServiceImpl implements AssemblyService {
 
-    private static final String EASEMOB_USER_NAME_PREFIX = "em";
+    private static final String CHAT_USER_NAME_PREFIX = "em";
 
     @Autowired
     private ServerSDKService serverSDKService;
@@ -25,18 +25,17 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public void registerUserAccount(String userAccount, String userPassword) {
         String agoraUid = generateUniqueAgoraUid();
-        String easemobUserName = EASEMOB_USER_NAME_PREFIX + agoraUid;
+        String chatUserName = CHAT_USER_NAME_PREFIX + agoraUid;
         while (true) {
-            if (this.serverSDKService.checkIfEasemobUserNameExists(easemobUserName)) {
+            if (this.serverSDKService.checkIfChatUserNameExists(chatUserName)) {
                 agoraUid = generateUniqueAgoraUid();
-                easemobUserName = EASEMOB_USER_NAME_PREFIX + agoraUid;
+                chatUserName = CHAT_USER_NAME_PREFIX + agoraUid;
             } else {
                 break;
             }
         }
-        this.serverSDKService.registerEasemobUserName(easemobUserName);
-        String easemobUserId = this.serverSDKService.getEasemobUserId(easemobUserName);
-        saveAppUserToDB(userAccount, userPassword, easemobUserName, easemobUserId, agoraUid);
+        this.serverSDKService.registerChatUserName(chatUserName);
+        saveAppUserToDB(userAccount, userPassword, chatUserName, agoraUid);
     }
 
     @Override
@@ -70,12 +69,11 @@ public class AssemblyServiceImpl implements AssemblyService {
     }
 
     @Override
-    public void saveAppUserToDB(String userAccount, String userPassword, String easemobUserName, String easemobUserId, String agoraUid) {
+    public void saveAppUserToDB(String userAccount, String userPassword, String chatUserName, String agoraUid) {
         AppUserInfo appUserInfo = new AppUserInfo();
         appUserInfo.setUserAccount(userAccount);
         appUserInfo.setUserPassword(userPassword);
-        appUserInfo.setEasemobUserName(easemobUserName);
-        appUserInfo.setEasemobUserId(easemobUserId);
+        appUserInfo.setChatUserName(chatUserName);
         appUserInfo.setAgoraUid(agoraUid);
         this.appUserInfoRepository.save(appUserInfo);
         log.info("userAccount info save to db successfully :{}", userAccount);
@@ -84,34 +82,28 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public AppUserInfo checkAppUserInfo(AppUserInfo appUserInfo) {
         String userAccount = appUserInfo.getUserAccount();
-        String easemobUserName = appUserInfo.getEasemobUserName();
-        String easemobUserId = appUserInfo.getEasemobUserId();
+        String chatUserName = appUserInfo.getChatUserName();
         String agoraUid = appUserInfo.getAgoraUid();
-        if (Strings.isNotBlank(easemobUserName) && Strings.isNotBlank(easemobUserId) && Strings.isNotBlank(agoraUid)) {
-            if (!this.serverSDKService.checkIfEasemobUserNameExists(easemobUserName)) {
-                this.serverSDKService.registerEasemobUserName(easemobUserName);
-                easemobUserId = this.serverSDKService.getEasemobUserId(easemobUserName);
-                appUserInfo.setEasemobUserId(easemobUserId);
-                this.appUserInfoRepository.save(appUserInfo);
+        if (Strings.isNotBlank(chatUserName) && Strings.isNotBlank(agoraUid)) {
+            if (!this.serverSDKService.checkIfChatUserNameExists(chatUserName)) {
+                this.serverSDKService.registerChatUserName(chatUserName);
             }
         } else {
             if (Strings.isBlank(agoraUid)) {
                 agoraUid = generateUniqueAgoraUid();
             }
 
-            if (Strings.isBlank(easemobUserName) || Strings.isBlank(easemobUserId)) {
-                easemobUserName = EASEMOB_USER_NAME_PREFIX + agoraUid;
-                if (!this.serverSDKService.checkIfEasemobUserNameExists(easemobUserName)) {
-                    this.serverSDKService.registerEasemobUserName(easemobUserName);
+            if (Strings.isBlank(chatUserName)) {
+                chatUserName = CHAT_USER_NAME_PREFIX + agoraUid;
+                if (!this.serverSDKService.checkIfChatUserNameExists(chatUserName)) {
+                    this.serverSDKService.registerChatUserName(chatUserName);
                 }
-                easemobUserId = this.serverSDKService.getEasemobUserId(easemobUserName);
             }
 
-            appUserInfo.setEasemobUserName(easemobUserName);
-            appUserInfo.setEasemobUserId(easemobUserId);
+            appUserInfo.setChatUserName(chatUserName);
             appUserInfo.setAgoraUid(agoraUid);
             this.appUserInfoRepository.save(appUserInfo);
-            log.info("appUserInfo update to db successfully : {}, {}, {}, {}", userAccount, easemobUserName, easemobUserId, agoraUid);
+            log.info("appUserInfo update to db successfully : {}, {}, {}", userAccount, chatUserName, agoraUid);
         }
         return appUserInfo;
     }
