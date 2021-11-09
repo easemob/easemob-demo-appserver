@@ -9,7 +9,6 @@ import com.easemob.agora.service.AppUserService;
 import com.easemob.agora.service.AssemblyService;
 import com.easemob.agora.service.ServerSDKService;
 import com.easemob.agora.service.TokenService;
-import com.easemob.agora.utils.RestManger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +23,6 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Autowired
     private ServerSDKService sdkService;
-
-    @Autowired
-    private RestManger restManger;
 
     @Override
     public void registerUser(AppUser appUser) {
@@ -47,7 +43,7 @@ public class AppUserServiceImpl implements AppUserService {
             if (this.sdkService.checkIfChatUserNameExists(chatUserName)) {
                 throw new ASDuplicateUniquePropertyExistsException("chatUserName " + chatUserName + " already exists");
             } else {
-                this.restManger.registerChatUser(chatUserName, chatUserPassword);
+                this.sdkService.registerChatUserName(chatUserName);
                 this.assemblyService.saveAppUserToDB(chatUserName, chatUserPassword, chatUserName, this.assemblyService.generateUniqueAgoraUid());
             }
         }
@@ -58,6 +54,25 @@ public class AppUserServiceImpl implements AppUserService {
         String userAccount = appUser.getUserAccount();
         if (!this.assemblyService.checkIfUserAccountExistsDB(userAccount)) {
             this.assemblyService.registerUserAccount(userAccount, appUser.getUserPassword());
+        } else {
+            AppUserInfo userInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
+            if (!appUser.getUserPassword().equals(userInfo.getUserPassword())) {
+                throw new ASPasswordErrorException("user password error");
+            }
+        }
+        return this.tokenService.getUserTokenWithAccount(userAccount);
+    }
+
+    @Override
+    public TokenInfo loginWithChatUser(AppUser appUser) {
+        String userAccount = appUser.getUserAccount();
+        if (!this.assemblyService.checkIfUserAccountExistsDB(userAccount)) {
+            if (this.sdkService.checkIfChatUserNameExists(userAccount)) {
+                throw new ASDuplicateUniquePropertyExistsException("chatUserName " + userAccount + " already exists");
+            } else {
+                this.sdkService.registerChatUserName(userAccount);
+                this.assemblyService.saveAppUserToDB(userAccount, appUser.getUserPassword(), userAccount, this.assemblyService.generateUniqueAgoraUid());
+            }
         } else {
             AppUserInfo userInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
             if (!appUser.getUserPassword().equals(userInfo.getUserPassword())) {

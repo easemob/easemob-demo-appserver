@@ -30,6 +30,11 @@ public class TokenServiceImpl implements TokenService {
     private AssemblyService assemblyService;
 
     @Override
+    public TokenInfo getAppToken() {
+        return null;
+    }
+
+    @Override
     public TokenInfo getUserTokenWithAccount(String userAccount) {
         log.info("userAccount get user token :{}", userAccount);
         AppUserInfo appUserInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);

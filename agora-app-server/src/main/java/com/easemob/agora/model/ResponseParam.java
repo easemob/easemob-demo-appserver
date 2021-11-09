@@ -3,11 +3,6 @@ package com.easemob.agora.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
-/**
- * description:
- * author: lijian
- * date: 2021-01-25
- **/
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseParam {

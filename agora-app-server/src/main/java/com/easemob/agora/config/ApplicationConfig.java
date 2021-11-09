@@ -37,6 +37,7 @@ public class ApplicationConfig {
                 .setAppkey(this.appkey)
                 .setAppId(this.agoraAppId)
                 .setAppCert(this.agoraCert)
+                .turnOffUserNameValidation()
                 .build();
 
         return new EMService(properties);

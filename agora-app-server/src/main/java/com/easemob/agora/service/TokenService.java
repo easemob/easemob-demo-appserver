@@ -8,6 +8,13 @@ import com.easemob.agora.model.TokenInfo;
  * @email skyzhang@easemob.com
  */
 public interface TokenService {
+
+    /**
+     * 获取APP权限的token
+     * @return
+     */
+    TokenInfo getAppToken();
+
     /**
      * 根据用户账号获取USER权限的token
      * @param userAccount 用户账号

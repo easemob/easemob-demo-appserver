@@ -4,8 +4,7 @@ create table app_user_info (
     id bigint(20) AUTO_INCREMENT primary key,
 	user_account varchar(32) not null commit '用户的账号',
 	user_password varchar(32) commit '用户的密码',
-    easemob_user_name varchar(32) not null commit '环信用户名',
-    easemob_user_id varchar(64) not null commit '环信用户的id',
+    chat_user_name varchar(32) not null commit '环信用户名',
     agora_uid varchar(20) not null commit '声网用户id'
 );
 
