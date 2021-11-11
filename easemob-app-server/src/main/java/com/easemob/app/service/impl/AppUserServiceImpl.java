@@ -30,7 +30,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private ServerSDKService sdkService;
 
-    private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
             Runtime.getRuntime().availableProcessors(),
             Runtime.getRuntime().availableProcessors() * 2 + 1,
             60,

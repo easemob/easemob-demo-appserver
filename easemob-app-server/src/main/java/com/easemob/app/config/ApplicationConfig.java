@@ -35,7 +35,7 @@ public class ApplicationConfig {
                 .setRealm(EMProperties.Realm.AGORA_REALM)
                 .setBaseUri(this.baseUri)
                 .setAppkey(this.appkey)
-                .setClientId(this.agoraAppId)
+                .setAppId(this.agoraAppId)
                 .setAppCert(this.agoraCert)
                 .turnOffUserNameValidation()
                 .build();

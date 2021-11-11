@@ -10,10 +10,8 @@ import com.easemob.im.server.EMService;
 import com.easemob.im.server.api.token.agora.AccessToken2;
 import com.easemob.im.server.exception.EMNotFoundException;
 import com.easemob.im.server.model.EMAttachment;
-import com.easemob.im.server.model.EMGroup;
 import com.easemob.im.server.model.EMUser;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.platform.commons.util.ClassLoaderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,11 +29,14 @@ public class ServerSDKServiceImpl implements ServerSDKService {
     @Value("${agora.token.expire.period.seconds}")
     private int expirePeriod;
 
-    @Autowired
-    private EMService serverSdk;
-
     @Value("${easemob.chat.group.id}")
     private String groupId;
+
+    @Value("${send.image.path}")
+    private String imagePath;
+
+    @Autowired
+    private EMService serverSdk;
 
     private List<String> groupMembers;
 
@@ -120,7 +121,7 @@ public class ServerSDKServiceImpl implements ServerSDKService {
         }
 
         if (createGroupId != null) {
-            String member = this.contacts[1];
+            String member = this.groupMembers.get(1);
 
             try {
                 this.serverSdk.message().send()
@@ -129,8 +130,8 @@ public class ServerSDKServiceImpl implements ServerSDKService {
                         .send()
                         .block();
 
-                String greatPath =
-                        ClassLoaderUtils.getDefaultClassLoader().getResource("great.jpg").getPath();
+                String greatPath = imagePath + "great.jpg";
+                log.info("greatPath : {}", greatPath);
 
                 EMAttachment greatAttachment = this.serverSdk.attachment().uploadFile(FileSystems.getDefault().getPath(greatPath))
                         .block();
@@ -143,20 +144,21 @@ public class ServerSDKServiceImpl implements ServerSDKService {
                         .send()
                         .block();
 
+                log.info("great url : {}", URI.create(greatAttachment.getUrl()));
+
                 this.serverSdk.message().send()
-                        .fromUser(this.contacts[3]).toGroup(createGroupId)
+                        .fromUser(this.groupMembers.get(3)).toGroup(createGroupId)
                         .text(msg -> msg.text("Yes, and the hotel has a very local style."))
                         .send()
                         .block();
 
-                String stylePath =
-                        ClassLoaderUtils.getDefaultClassLoader().getResource("style.jpg").getPath();
+                String stylePath = imagePath + "style.jpg";
 
                 EMAttachment styleAttachment = this.serverSdk.attachment().uploadFile(FileSystems.getDefault().getPath(stylePath))
                         .block();
 
                 this.serverSdk.message().send()
-                        .fromUser(this.contacts[3]).toGroup(createGroupId)
+                        .fromUser(this.groupMembers.get(3)).toGroup(createGroupId)
                         .image(msg -> msg.uri(URI.create(styleAttachment.getUrl()))
                                 .secret(styleAttachment.getSecret())
                         )
@@ -180,11 +182,13 @@ public class ServerSDKServiceImpl implements ServerSDKService {
 
     @Override
     public void joinChatGroup(String chatUserName) {
+        log.info("join chat group, chatUserName : {}", chatUserName);
+
         try {
             this.serverSdk.group().addGroupMember(groupId, chatUserName).block();
 
             this.serverSdk.message().send()
-                    .fromUser(this.contacts[0]).toGroup(groupId)
+                    .fromUser(this.groupMembers.get(0)).toGroup(groupId)
                     .text(msg -> msg.text(" Welcome to join Agora Chat developer group!"))
                     .send()
                     .block();
@@ -198,7 +202,8 @@ public class ServerSDKServiceImpl implements ServerSDKService {
 
     @Override
     public void sendMessage(String chatUserName) {
-        String sender = this.contacts[0];
+        String sender = this.groupMembers.get(0);
+        log.info("send message, sender : {}, chatUserName : {}", sender, chatUserName);
 
         try {
             this.serverSdk.message().send()

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>easemob-im-app-server</artifactId>
         <groupId>com.easemob.im</groupId>
-        <version>1.1.0.7.Final</version>
+        <version>1.1.0.1.Final</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>agora-app-server</artifactId>
+    <artifactId>easemob-app-server</artifactId>
 
     <dependencyManagement>
         <dependencies>
@@ -88,9 +89,19 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.easemob.im</groupId>
             <artifactId>im-sdk-core</artifactId>
             <version>0.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
         </dependency>
     </dependencies>
 
