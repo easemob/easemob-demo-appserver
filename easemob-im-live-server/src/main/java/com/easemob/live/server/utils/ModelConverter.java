@@ -13,7 +13,7 @@ public class ModelConverter {
 
     public static LiveRoomInfo detailsConverterLiveRoomInfo(LiveRoomDetails liveRoomDetails) {
 
-        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live) {
+        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live || liveRoomDetails.getVideoType() == VideoType.agora_interaction_live) {
             return LiveRoomInfo.builder()
                     .id(liveRoomDetails.getId().toString())
                     .name(liveRoomDetails.getName())

@@ -93,7 +93,7 @@ public class LiveRoomService {
         liveRoomInfo.setExt(liveRoomRequest.getExt());
 
         LiveRoomDetails liveRoomDetails = null;
-        if (liveRoomInfo.getVideoType() == VideoType.agora_speed_live) {
+        if (liveRoomInfo.getVideoType() == VideoType.agora_speed_live || liveRoomInfo.getVideoType() == VideoType.agora_interaction_live) {
             // 创建声网极速直播间
             liveRoomDetails = LiveRoomDetails.builder()
                     .id(Long.valueOf(liveRoomInfo.getId()))
@@ -168,7 +168,7 @@ public class LiveRoomService {
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
         liveRoomInfo.setExt(JsonUtils.parse(liveRoomDetails.getExt(), Map.class));
 
-        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live) {
+        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live || liveRoomDetails.getVideoType() == VideoType.agora_interaction_live) {
             liveRoomInfo.setChannel(liveRoomDetails.getChannel());
         }
         return liveRoomInfo;
@@ -192,6 +192,10 @@ public class LiveRoomService {
 
         if (videoType == VideoType.agora_vod) {
             liveRoomDetailsList = liveRoomDetailsRepository.findAgoraVodRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == VideoType.agora_interaction_live) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findAgoraInteractionLiveRoomsBeforeId(cursor, limit);
         }
 
         if (videoType == null) {
@@ -221,6 +225,10 @@ public class LiveRoomService {
 
         if (videoType == VideoType.agora_vod) {
             liveRoomDetailsList = liveRoomDetailsRepository.findOngoingAgoraVodRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == VideoType.agora_interaction_live) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findOngoingAgoraInteractionLiveRoomsBeforeId(cursor, limit);
         }
 
         if (videoType == null) {
@@ -288,7 +296,7 @@ public class LiveRoomService {
         liveRoomInfo.setStatus(liveRoomDetails.getStatus());
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
         liveRoomInfo.setExt(JsonUtils.parse(liveRoomDetails.getExt(), Map.class));
-        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live) {
+        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live || liveRoomDetails.getVideoType() == VideoType.agora_interaction_live) {
             liveRoomInfo.setChannel(liveRoomDetails.getChannel());
         }
 

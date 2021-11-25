@@ -25,4 +25,9 @@ public enum VideoType {
      */
     agora_vod,
 
+    /**
+     * 声网互动直播
+     */
+    agora_interaction_live,
+
 }
