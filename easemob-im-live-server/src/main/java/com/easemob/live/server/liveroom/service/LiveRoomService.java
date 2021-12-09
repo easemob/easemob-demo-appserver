@@ -93,8 +93,9 @@ public class LiveRoomService {
         liveRoomInfo.setExt(liveRoomRequest.getExt());
 
         LiveRoomDetails liveRoomDetails = null;
-        if (liveRoomInfo.getVideoType() == VideoType.agora_speed_live || liveRoomInfo.getVideoType() == VideoType.agora_interaction_live) {
-            // 创建声网极速直播间
+        if (liveRoomInfo.getVideoType() == VideoType.agora_speed_live || liveRoomInfo.getVideoType() == VideoType.agora_interaction_live ||
+                liveRoomInfo.getVideoType() == VideoType.agora_cdn_live) {
+            // 创建声网极速直播间/声网互动直播/声网cdn直播
             liveRoomDetails = LiveRoomDetails.builder()
                     .id(Long.valueOf(liveRoomInfo.getId()))
                     .name(liveRoomInfo.getName())
@@ -168,7 +169,8 @@ public class LiveRoomService {
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
         liveRoomInfo.setExt(JsonUtils.parse(liveRoomDetails.getExt(), Map.class));
 
-        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live || liveRoomDetails.getVideoType() == VideoType.agora_interaction_live) {
+        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live || liveRoomDetails.getVideoType() == VideoType.agora_interaction_live ||
+                liveRoomDetails.getVideoType() == VideoType.agora_cdn_live) {
             liveRoomInfo.setChannel(liveRoomDetails.getChannel());
         }
         return liveRoomInfo;
@@ -196,6 +198,10 @@ public class LiveRoomService {
 
         if (videoType == VideoType.agora_interaction_live) {
             liveRoomDetailsList = liveRoomDetailsRepository.findAgoraInteractionLiveRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == VideoType.agora_cdn_live) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findAgoraCdnLiveRoomsBeforeId(cursor, limit);
         }
 
         if (videoType == null) {
@@ -229,6 +235,10 @@ public class LiveRoomService {
 
         if (videoType == VideoType.agora_interaction_live) {
             liveRoomDetailsList = liveRoomDetailsRepository.findOngoingAgoraInteractionLiveRoomsBeforeId(cursor, limit);
+        }
+
+        if (videoType == VideoType.agora_cdn_live) {
+            liveRoomDetailsList = liveRoomDetailsRepository.findOngoingAgoraCdnLiveRoomsBeforeId(cursor, limit);
         }
 
         if (videoType == null) {
@@ -296,7 +306,8 @@ public class LiveRoomService {
         liveRoomInfo.setStatus(liveRoomDetails.getStatus());
         liveRoomInfo.setShowid(liveRoomDetails.getShowid());
         liveRoomInfo.setExt(JsonUtils.parse(liveRoomDetails.getExt(), Map.class));
-        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live || liveRoomDetails.getVideoType() == VideoType.agora_interaction_live) {
+        if (liveRoomDetails.getVideoType() == VideoType.agora_speed_live || liveRoomDetails.getVideoType() == VideoType.agora_interaction_live ||
+                liveRoomDetails.getVideoType() == VideoType.agora_cdn_live) {
             liveRoomInfo.setChannel(liveRoomDetails.getChannel());
         }
 
