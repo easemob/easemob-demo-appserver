@@ -65,11 +65,17 @@ public class AppUserServiceImpl implements AppUserService {
                 throw new ASDuplicateUniquePropertyExistsException("chatUserName " + userAccount + " already exists");
             } else {
                 this.sdkService.registerChatUserName(userAccount);
-                this.sdkService.addContacts(userAccount);
-                this.sdkService.createChatGroup(userAccount);
-                this.sdkService.joinChatGroup(userAccount);
-                this.sdkService.sendMessage(userAccount);
                 this.assemblyService.saveAppUserToDB(userAccount, null, appUser.getUserPassword(), userAccount, this.assemblyService.generateUniqueAgoraUid());
+
+                threadPoolExecutor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        sdkService.addContacts(userAccount);
+                        sdkService.createChatGroup(userAccount);
+                        sdkService.joinChatGroup(userAccount);
+                        sdkService.sendMessage(userAccount);
+                    }
+                });
             }
         } else {
             AppUserInfo userInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
