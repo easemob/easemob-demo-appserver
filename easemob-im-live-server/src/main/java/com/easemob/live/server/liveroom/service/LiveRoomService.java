@@ -391,9 +391,11 @@ public class LiveRoomService {
         return ModelConverter.detailsConverterLiveRoomInfo(liveRoomDetails);
     }
 
-    public LiveRoomInfo deleteLiveRoom(String liveroomId, String token) {
+    public LiveRoomInfo deleteLiveRoom(String liveroomId) {
 
         log.info("delete liveroom, liveroomId : {}", liveroomId);
+
+        String token = restClient.retrieveAppToken();
 
         infoCache.invalidate(liveroomId);
 

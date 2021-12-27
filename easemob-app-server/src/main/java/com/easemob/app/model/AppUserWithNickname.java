@@ -11,4 +11,5 @@ public class AppUserWithNickname {
 
     @NotEmpty(message = "userNickname cannot be empty")
     private String userNickname;
+
 }

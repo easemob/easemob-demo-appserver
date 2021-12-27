@@ -9,6 +9,7 @@ public class AppUser {
     @NotEmpty(message = "userAccount cannot be empty")
     private String userAccount;
 
-    @NotEmpty(message = "userPassword cannot be empty")
     private String userPassword;
+
+    private String userNickname;
 }
