@@ -123,10 +123,6 @@ docker run -p 8080:8080 easemob/easemob-im-live-server
 
 - 直播间服务需调用环信REST接口，该模块提供调用环信REST服务，包含token、user、chatroom API的调用，封装了调用所需的RequestBody、ResponseBody。
 
-#### [qiniu-service](./qiniu-service)
-
-- 获取七牛云直播推拉流地址。
-
 #### [agora-server](./agora-app-server)
 
 - 获取声网token。
@@ -145,6 +141,3 @@ docker run -p 8080:8080 easemob/easemob-im-live-server
 - 直播间支持点播功能
 - 直播间支持Docker部署
 - 直播间详情返回的成员列表过滤了owner
-
-### 1.0.2.Final
-- 支持获取七牛云推拉流地址
