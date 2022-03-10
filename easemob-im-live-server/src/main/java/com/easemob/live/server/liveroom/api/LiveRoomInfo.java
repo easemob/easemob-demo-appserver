@@ -61,6 +61,8 @@ public class LiveRoomInfo {
     @JsonProperty("affiliations")
     private List<Map<String, Object>> affiliations;
 
+    private String channel;
+
     /**
      * 因为affiliations列表中可能包含owner，需要将owner排除后返回member列表
      * @param maxAffiliationsSize affiliations 最大长度

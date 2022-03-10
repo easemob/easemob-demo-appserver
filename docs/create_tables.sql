@@ -1,5 +1,13 @@
 create database app_server character set utf8mb4;
 
+create table app_user_info (
+    id bigint(20) AUTO_INCREMENT primary key,
+	user_account varchar(32) not null commit '用户的账号',
+	user_password varchar(32) commit '用户的密码',
+    chat_user_name varchar(32) not null commit '环信用户名',
+    agora_uid varchar(20) not null commit '声网用户id'
+);
+
 create table live_room_details (
     id bigint not null comment '直播间ID，即对应的聊天室 ID，聊天室唯一标识符，由环信服务器生成',
     name varchar(512) not null comment '直播间名称，即对应的聊天室名称，任意字符串',
@@ -18,3 +26,5 @@ create table live_room_details (
 ALTER TABLE live_room_details ADD persistent bit NOT NULL DEFAULT 1;
 
 ALTER TABLE live_room_details ADD video_type integer NOT NULL DEFAULT 0;
+
+ALTER TABLE live_room_details ADD channel varchar(64) NOT NULL;

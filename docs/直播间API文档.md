@@ -39,7 +39,7 @@
 | owner       | String | 直播间的主播，此属性为必须的 |
 | members     | Array  | 直播间成员，此属性为可选的，但是如果加了此项，数组元素至少一个 |
 | persistent  | Boolean| 直播间是否持久化，此属性为可选的，默认为true，设为false后，直播间停播后一小时内未有状态更新，会自动清理直播间 |
-| video_type  | String | 直播间视频类型，此属性为可选的，默认是live，即直播，还可设为vod，即点播类型 |
+| video_type  | String | 直播间视频类型，此属性为可选的，默认是live，即直播，可设为vod，即点播类型，可设为agora_speed_live，即声网极速直播，可设为agora_vod，即声网点播 |
 | cover       | String | 直播间封面Url |
 | ext         | Map    | 直播间自定义属性 |
 
@@ -166,7 +166,7 @@ curl -X GET http://localhost:8080/appserver/liverooms/107776865009665 -H 'Author
 | owner       | String | 直播间的主播 |
 | cover       | String | 直播间封面Url |
 | persistent  | Boolean| 直播间是否持久化，默认为true，设为false后，直播间停播后一小时内未有状态更新，会自动清理直播间 |
-| video_type  | String | 直播间视频类型，默认是live，即直播，还可设为vod，即点播类型 |
+| video_type  | String | 直播间视频类型，默认是live，即直播，可设为vod，即点播类型，可设为agora_speed_live，即声网极速直播，可设为agora_vod，即声网点播 |
 | ext         | Map    | 直播间自定义属性 |
 
 **请求示例:**

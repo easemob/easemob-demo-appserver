@@ -5,7 +5,7 @@
     <parent>
         <artifactId>easemob-im-app-server</artifactId>
         <groupId>com.easemob.im</groupId>
-        <version>1.0.2.Final</version>
+        <version>1.1.6.Final</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,6 +17,13 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>qiniu-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 集成声网CDN直播服务，如不需要可移除 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>agora-cdn-live-service</artifactId>
             <version>${project.version}</version>
         </dependency>
 

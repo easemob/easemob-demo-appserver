@@ -174,10 +174,10 @@ public class LiveRoomController {
     public ResponseEntity deleteLiveRoom(@PathVariable("liveroomId") String liveroomId,
                                          HttpServletRequest request) {
 
-        String token = RequestUtils
+        RequestUtils
                 .resolveAuthorizationToken(request.getHeader(AUTHORIZATION));
 
-        return ResponseEntity.ok(liveRoomService.deleteLiveRoom(liveroomId, token));
+        return ResponseEntity.ok(liveRoomService.deleteLiveRoom(liveroomId));
     }
 
     private int getLimit(Integer limit) {

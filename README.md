@@ -127,6 +127,9 @@ docker run -p 8080:8080 easemob/easemob-im-live-server
 
 - 获取七牛云直播推拉流地址。
 
+#### [agora-server](./agora-app-server)
+
+- 获取声网token。
 
 ## 环信文档
 
@@ -135,6 +138,8 @@ docker run -p 8080:8080 easemob/easemob-im-live-server
 
 ## Release Note
 
+### 1.0.4.Final
+- 增加声网server模块，获取声网token
 ### 1.0.3.Final
 - 直播间支持过期自动清理
 - 直播间支持点播功能
