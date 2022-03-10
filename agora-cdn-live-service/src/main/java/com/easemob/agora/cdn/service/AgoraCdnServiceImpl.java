@@ -1,10 +1,10 @@
 package com.easemob.agora.cdn.service;
 
+import cn.hutool.crypto.SecureUtil;
 import com.easemob.agora.cdn.config.AgoraCdnProperties;
 import com.easemob.agora.cdn.enums.PlayProtocol;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
 
 @Slf4j
 @Component
@@ -110,14 +110,20 @@ public class AgoraCdnServiceImpl implements AgoraCdnService {
 
         String sign = "agora-cdn-push-stream" + urlPath + expire;
 
-        return DigestUtils.md5DigestAsHex(sign.getBytes()).substring(8, 24);
+        String md5 = SecureUtil.md5(sign);
+
+        log.info("push sign. urlPath : {}, sign : {}, md5 : {}", urlPath, sign, md5);
+        return md5;
     }
 
     private String pullSign(String urlPath, long expire) {
 
         String sign = "agora-cdn-pull-stream" + urlPath + expire;
 
-        return DigestUtils.md5DigestAsHex(sign.getBytes()).substring(8, 24);
+        String md5 = SecureUtil.md5(sign);
+
+        log.info("pull sign. urlPath : {}, sign : {}, md5 : {}", urlPath, sign, md5);
+        return md5;
     }
 
 }

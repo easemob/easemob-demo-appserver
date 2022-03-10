@@ -26,6 +26,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     public void registerUserAccount(String userAccount, String userPassword) {
         String agoraUid = generateUniqueAgoraUid();
         String chatUserName = CHAT_USER_NAME_PREFIX + agoraUid;
+
         while (true) {
             if (this.serverSDKService.checkIfChatUserNameExists(chatUserName)) {
                 agoraUid = generateUniqueAgoraUid();
@@ -34,13 +35,16 @@ public class AssemblyServiceImpl implements AssemblyService {
                 break;
             }
         }
+
         this.serverSDKService.registerChatUserName(chatUserName);
+
         saveAppUserToDB(userAccount, userPassword, chatUserName, agoraUid);
     }
 
     @Override
     public String generateUniqueAgoraUid() {
         String uid = RandomUidUtil.getUid();
+
         while (true) {
             if (checkIfAgoraUidExistsDB(uid)) {
                 uid = RandomUidUtil.getUid();
@@ -48,6 +52,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                 break;
             }
         }
+
         return uid;
     }
 
@@ -75,7 +80,9 @@ public class AssemblyServiceImpl implements AssemblyService {
         appUserInfo.setUserPassword(userPassword);
         appUserInfo.setChatUserName(chatUserName);
         appUserInfo.setAgoraUid(agoraUid);
+
         this.appUserInfoRepository.save(appUserInfo);
+
         log.info("userAccount info save to db successfully :{}", userAccount);
     }
 
@@ -84,6 +91,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         String userAccount = appUserInfo.getUserAccount();
         String chatUserName = appUserInfo.getChatUserName();
         String agoraUid = appUserInfo.getAgoraUid();
+
         if (Strings.isNotBlank(chatUserName) && Strings.isNotBlank(agoraUid)) {
             if (!this.serverSDKService.checkIfChatUserNameExists(chatUserName)) {
                 this.serverSDKService.registerChatUserName(chatUserName);
@@ -102,9 +110,12 @@ public class AssemblyServiceImpl implements AssemblyService {
 
             appUserInfo.setChatUserName(chatUserName);
             appUserInfo.setAgoraUid(agoraUid);
+
             this.appUserInfoRepository.save(appUserInfo);
+
             log.info("appUserInfo update to db successfully : {}, {}, {}", userAccount, chatUserName, agoraUid);
         }
+
         return appUserInfo;
     }
 }

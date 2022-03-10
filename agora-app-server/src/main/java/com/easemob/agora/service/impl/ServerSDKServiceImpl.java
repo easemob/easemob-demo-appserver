@@ -44,19 +44,23 @@ public class ServerSDKServiceImpl implements ServerSDKService {
                 log.info("chatUserName not exists :{}", chatUserName);
                 return false;
             }
+
             throw new ASGetChatUserNameException(String.format("get chatUserName %s fail. Message : %s", chatUserName ,e.getMessage()));
         }
+
         return true;
     }
 
     @Override
     public String getChatUserId(String chatUserName) {
         EMUser user;
+
         try {
             user = this.serverSdk.user().get(chatUserName).block();
         } catch (EMException e) {
             throw new ASGetChatUserIdException(String.format("get chatUserId %s fail. Message : %s", chatUserName ,e.getMessage()));
         }
+
         return user.getUuid();
     }
 
@@ -69,11 +73,13 @@ public class ServerSDKServiceImpl implements ServerSDKService {
     @Override
     public String generateAgoraRtcToken(String channelName, Integer agorauid) {
         EMUser bob = new EMUser("bob", "da921111-ecf9-11eb-9af3-296ff79acb67", true);
+
         String bobAgoraChatRtcToken = this.serverSdk.token().getUserToken(bob, this.expirePeriod, token -> {
             AccessToken2.ServiceRtc serviceRtc = new AccessToken2.ServiceRtc(channelName, String.valueOf(agorauid));
             serviceRtc.addPrivilegeRtc(AccessToken2.PrivilegeRtc.PRIVILEGE_JOIN_CHANNEL, this.expirePeriod);
             token.addService(serviceRtc);
         }, null);
+
         return bobAgoraChatRtcToken;
     }
 }

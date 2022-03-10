@@ -37,11 +37,15 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public TokenInfo getUserTokenWithAccount(String userAccount) {
         log.info("userAccount get user token :{}", userAccount);
+
         AppUserInfo appUserInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
+
         if(appUserInfo != null) {
             appUserInfo = this.assemblyService.checkAppUserInfo(appUserInfo);
+
             String chatUserName = appUserInfo.getChatUserName();
             String chatUserId = this.serverSDKService.getChatUserId(chatUserName);
+
             return getTokenInfo(chatUserName, chatUserId, appUserInfo.getAgoraUid());
         } else {
             throw new ASNotFoundException(String.format("%s not exists", userAccount));
@@ -51,6 +55,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public TokenInfo getRtcToken(String channelName, Integer agoraUid) {
         TokenInfo tokenInfo = new TokenInfo();
+
         tokenInfo.setToken(this.serverSDKService.generateAgoraRtcToken(channelName, agoraUid));
         tokenInfo.setExpireTimestamp(System.currentTimeMillis() + this.expirePeriod * 1000);
 //        tokenInfo.setChatUserName(easemobUserName);
@@ -64,6 +69,7 @@ public class TokenServiceImpl implements TokenService {
         tokenInfo.setExpireTimestamp(System.currentTimeMillis() + this.expirePeriod * 1000);
         tokenInfo.setChatUserName(chatUserName);
         tokenInfo.setAgoraUid(agoraUid);
+
         return tokenInfo;
     }
 }

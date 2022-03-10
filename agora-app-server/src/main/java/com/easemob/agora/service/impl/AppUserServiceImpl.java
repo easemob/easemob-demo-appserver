@@ -27,16 +27,20 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public void registerUser(AppUser appUser) {
         String userAccount = appUser.getUserAccount();
+
         if (this.assemblyService.checkIfUserAccountExistsDB(userAccount)) {
             throw new ASDuplicateUniquePropertyExistsException("userAccount " + userAccount + " already exists");
         }
+
         this.assemblyService.registerUserAccount(appUser.getUserAccount(), appUser.getUserPassword());
     }
 
     @Override
     public void registerWithChatUser(AppUser appUser) {
         String chatUserName = appUser.getUserAccount();
+
         String chatUserPassword = appUser.getUserPassword();
+
         if (this.assemblyService.checkIfUserAccountExistsDB(chatUserName)) {
             throw new ASDuplicateUniquePropertyExistsException("userAccount " + chatUserName + " already exists");
         } else {
@@ -44,6 +48,7 @@ public class AppUserServiceImpl implements AppUserService {
                 throw new ASDuplicateUniquePropertyExistsException("chatUserName " + chatUserName + " already exists");
             } else {
                 this.sdkService.registerChatUserName(chatUserName);
+
                 this.assemblyService.saveAppUserToDB(chatUserName, chatUserPassword, chatUserName, this.assemblyService.generateUniqueAgoraUid());
             }
         }
@@ -52,33 +57,40 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public TokenInfo loginUser(AppUser appUser) {
         String userAccount = appUser.getUserAccount();
+
         if (!this.assemblyService.checkIfUserAccountExistsDB(userAccount)) {
             this.assemblyService.registerUserAccount(userAccount, appUser.getUserPassword());
         } else {
             AppUserInfo userInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
+
             if (!appUser.getUserPassword().equals(userInfo.getUserPassword())) {
                 throw new ASPasswordErrorException("user password error");
             }
         }
+
         return this.tokenService.getUserTokenWithAccount(userAccount);
     }
 
     @Override
     public TokenInfo loginWithChatUser(AppUser appUser) {
         String userAccount = appUser.getUserAccount();
+
         if (!this.assemblyService.checkIfUserAccountExistsDB(userAccount)) {
             if (this.sdkService.checkIfChatUserNameExists(userAccount)) {
                 throw new ASDuplicateUniquePropertyExistsException("chatUserName " + userAccount + " already exists");
             } else {
                 this.sdkService.registerChatUserName(userAccount);
+
                 this.assemblyService.saveAppUserToDB(userAccount, appUser.getUserPassword(), userAccount, this.assemblyService.generateUniqueAgoraUid());
             }
         } else {
             AppUserInfo userInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
+
             if (!appUser.getUserPassword().equals(userInfo.getUserPassword())) {
                 throw new ASPasswordErrorException("user password error");
             }
         }
+
         return this.tokenService.getUserTokenWithAccount(userAccount);
     }
 
