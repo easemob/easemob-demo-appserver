@@ -7,13 +7,10 @@
     <groupId>com.easemob.im</groupId>
     <artifactId>easemob-im-app-server</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.6.Final</version>
+    <version>1.0.0.Final</version>
     <modules>
-        <module>easemob-im-live-server</module>
-        <module>qiniu-service</module>
-        <module>agora-app-server</module>
-        <module>easemob-app-server</module>
-        <module>agora-cdn-live-service</module>
+        <module>discord-server</module>
+        <module>discord-server</module>
     </modules>
 
     <name>easemob-im-app-server</name>
@@ -39,6 +36,7 @@
                 <artifactId>log4j-api</artifactId>
                 <version>2.17.0</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-to-slf4j</artifactId>
@@ -52,23 +50,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
-            <version>${spring.cloud.version}</version>
         </dependency>
 
         <dependency>
@@ -76,16 +71,10 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>mysql</groupId>-->
-<!--            <artifactId>mysql-connector-java</artifactId>-->
-<!--            <version>5.1.36</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.23</version>
+            <version>5.1.36</version>
         </dependency>
 
         <dependency>
@@ -99,11 +88,12 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.51</version>
         </dependency>
+
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.7.17</version>
         </dependency>
     </dependencies>
-    
+
 </project>
