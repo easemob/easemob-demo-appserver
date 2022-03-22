@@ -11,6 +11,11 @@
     <modules>
         <module>discord-server</module>
         <module>discord-server</module>
+        <module>discord-commons</module>
+        <module>discord-channel</module>
+        <module>discord-thread</module>
+        <module>discord-message</module>
+        <module>discord-notification</module>
     </modules>
 
     <name>easemob-im-app-server</name>
