@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 import java.util.Collections;
 
 @Slf4j
-@Component
+//@Component
 public class TokenAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
