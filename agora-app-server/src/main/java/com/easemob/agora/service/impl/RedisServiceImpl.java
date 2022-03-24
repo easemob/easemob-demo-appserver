@@ -5,16 +5,18 @@ import com.easemob.agora.config.redis.RedisKeyConstants;
 import com.easemob.agora.service.RedisService;
 import com.easemob.agora.utils.RandomUidUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.params.SetParams;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -22,43 +24,55 @@ public class RedisServiceImpl implements RedisService {
 
     @Autowired
     @Qualifier("channelRedis")
-    private JedisPool channelRedis;
+    private StringRedisTemplate redisTemplate;
 
     @Autowired
     private ApplicationConf applicationConf;
 
     @Value("${spring.redis.channel.expireTime}")
-    private int expireTime;
+    private long expireTime;
 
     @Override
     public void saveAgoraChannelInfo(boolean isRandomUid, String channelName, String uid) {
         Long result;
-        try (Jedis jedis = channelRedis.getResource()) {
-            while (true) {
-                if (isRandomUid) {
-                    result = jedis.sadd(String.format(RedisKeyConstants.AGORA_CHANNEL_INFO, applicationConf.getAgoraAppId(), channelName), uid);
-                    if (result == 1) {
-                        jedis.expire(String.format(RedisKeyConstants.AGORA_CHANNEL_INFO, applicationConf.getAgoraAppId(), channelName), expireTime);
-                        break;
+        String redisKey = String.format(RedisKeyConstants.AGORA_CHANNEL_INFO, applicationConf.getAgoraAppId(), channelName);
+
+        while (true) {
+            if (isRandomUid) {
+                try {
+
+                    result = redisTemplate.opsForSet().add(redisKey, uid);
+
+                    if (result != null) {
+                        if (result == 1) {
+                            redisTemplate.expire(redisKey, 600, TimeUnit.SECONDS);
+                            break;
+                        } else {
+                            uid = RandomUidUtil.randomUid();
+                        }
                     } else {
-                        uid = RandomUidUtil.randomUid();
+                        log.error("result is empty. channelName : {}, uid : {}", channelName, uid);
                     }
-                } else {
-                    jedis.sadd(String.format(RedisKeyConstants.AGORA_CHANNEL_INFO, applicationConf.getAgoraAppId(), channelName), uid);
-                    jedis.expire(String.format(RedisKeyConstants.AGORA_CHANNEL_INFO, applicationConf.getAgoraAppId(), channelName), expireTime);
-                    break;
+                } catch (Exception e) {
+                    log.error("save agora channel info failed - isRandomUid. Message - {}", e.getMessage(), e);
                 }
+            } else {
+                try {
+                    redisTemplate.opsForSet().add(redisKey, uid);
+                    redisTemplate.expire(redisKey, 600, TimeUnit.SECONDS);
+                } catch (Exception e) {
+                    log.error("save agora channel info failed. Message - {}", e.getMessage(), e);
+                }
+                break;
             }
-        } catch (Exception e) {
-            log.error("save agora channel info failed. Message - {}", e.getMessage(), e);
         }
     }
 
     @Override
     public void saveUidMapper(String uid, String easemobUserId) {
-        try (Jedis jedis = channelRedis.getResource()) {
-            jedis.set(String.format(RedisKeyConstants.AGORA_UID, applicationConf.getAgoraAppId(), uid), easemobUserId, SetParams.setParams().ex(expireTime));
-
+        try {
+            String redisKey = String.format(RedisKeyConstants.AGORA_UID, applicationConf.getAgoraAppId(), uid);
+            redisTemplate.opsForValue().set(redisKey, easemobUserId, Duration.ofSeconds(expireTime));
         } catch (Exception e) {
             log.error("save uid mapper failed. Message - {}", e.getMessage(), e);
         }
@@ -66,41 +80,38 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public Set<String> getAgoraChannelInfo(String channelName) {
-        Jedis jedis = null;
         Set<String> channelInfo = null;
+
         try {
-            jedis = channelRedis.getResource();
-            channelInfo = jedis.smembers(String.format(RedisKeyConstants.AGORA_CHANNEL_INFO, applicationConf.getAgoraAppId(), channelName));
+            String rediskey = String.format(RedisKeyConstants.AGORA_CHANNEL_INFO, applicationConf.getAgoraAppId(), channelName);
+
+            channelInfo = redisTemplate.opsForSet().members(rediskey);
         } catch (Exception e) {
-            log.error("get agora channel info failed. Message - {}", e.getMessage(), e);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
+            log.error("get agora channel info failed. Message - {}", e.getMessage());
         }
-        if (channelInfo.isEmpty()) {
+
+        if (channelInfo == null) {
             return Collections.emptySet();
         }
+
         return channelInfo;
     }
 
     @Override
     public String getUidMapper(String uid) {
-        Jedis jedis = null;
         String easemobUserId = null;
+
         try {
-            jedis = channelRedis.getResource();
-            easemobUserId = jedis.get(String.format(RedisKeyConstants.AGORA_UID, applicationConf.getAgoraAppId(), uid));
+            String redisKey = String.format(RedisKeyConstants.AGORA_UID, applicationConf.getAgoraAppId(), uid);
+            easemobUserId = redisTemplate.opsForValue().get(redisKey);
         } catch (Exception e) {
             log.error("get uid mapper failed. Message - {}", e.getMessage(), e);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
         }
-        if (easemobUserId == null || easemobUserId.isEmpty()) {
+
+        if (StringUtils.isBlank(easemobUserId)) {
             return "";
         }
+
         return easemobUserId;
     }
 }
