@@ -1,0 +1,58 @@
+@startuml
+title Discord Overview
+
+box Discord Server
+
+
+end box
+
+box IM Server
+
+end box
+
+box Client SDK
+
+end box
+
+actor User
+participant App <<Discord Demo>> #palegreen
+participant ClientSDK
+participant Gateway <<网关>> #palegreen
+participant DiscordServer
+participant IMServer
+database db
+
+
+User -> App : 1.用户登录
+App -> ClientSDK : 登录
+ClientSDK -> IMServer : 建立连接
+ClientSDK --> App : 登录成功
+User -> App : 2.创建Server
+App -> Gateway : 创建Server Request\n使用userToken
+Gateway -> Gateway : 效验userToken
+alt token合法
+    Gateway -> DiscordServer : 创建Server Request
+else token不合法
+    Gateway --> App : 创建Server失败
+    end
+DiscordServer -> db : 将Server存到db
+DiscordServer --> App : 返回ServerId
+User -> App : 3.创建Channel
+App -> Gateway : 创建Channel Request\n使用userToken、ServerId
+Gateway -> Gateway : 效验userToken
+alt token合法
+    Gateway -> DiscordServer : 创建Channel Request
+else token不合法
+    Gateway --> App : 创建Channel失败
+    end
+DiscordServer -> IMServer : 创建ChatGroup，使用superToken/调用不走鉴权的api
+IMServer --> DiscordServer : 返回ChatGroupId
+DiscordServer -> DiscordServer : 将Channel与ServerId、ChatGroupId进行绑定
+DiscordServer -> db : 将Channel存到db
+DiscordServer --> App : 返回Channel信息，包含ChatGroupId
+User --> App : 4.向channel发消息
+App -> ClientSDK : 向channel发消息
+ClientSDK -> ClientSDK : 根据channel获取ChatGroupId
+ClientSDK -> IMServer : 根据ChatGroupId发送消息
+
+@enduml
