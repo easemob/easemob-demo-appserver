@@ -2,16 +2,13 @@ package com.easemob.app.api;
 
 import com.easemob.app.model.*;
 import com.easemob.app.service.AppUserService;
+import com.easemob.app.service.RedisService;
 import org.apache.commons.lang.StringUtils;
-import org.junit.platform.commons.util.ClassLoaderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.*;
 
 @RestController
 public class AppUserController {
@@ -38,28 +35,7 @@ public class AppUserController {
     public ResponseEntity loginWithChatUser(@RequestBody @Valid AppUser appUser) {
         ResponseParam responseParam = new ResponseParam();
 
-        TokenInfo token = null;
-
-        if (StringUtils.isBlank(appUser.getUserPassword()) && StringUtils.isBlank(appUser.getUserNickname())) {
-            throw new IllegalArgumentException("userPassword and userNickname cannot be empty");
-        }
-
-        if (StringUtils.isNotBlank(appUser.getUserPassword()) && StringUtils.isNotBlank(appUser.getUserNickname())) {
-            throw new IllegalArgumentException("only one of userPassword or userNickname can be selected");
-        }
-
-        if (StringUtils.isNotBlank(appUser.getUserPassword())) {
-            token = appUserService.loginWithChatUser(appUser);
-        }
-
-        if (StringUtils.isNotBlank(appUser.getUserNickname())) {
-            AppUserWithNickname appUserWithNickname = new AppUserWithNickname();
-            appUserWithNickname.setUserAccount(appUser.getUserAccount());
-            appUserWithNickname.setUserNickname(appUser.getUserNickname());
-
-            token = appUserService.loginWithChatUser(appUserWithNickname);
-            responseParam.setChatUserNickname(appUser.getUserNickname());
-        }
+        TokenInfo token = appUserService.loginWithChatUser(appUser);
 
         responseParam.setAccessToken(token.getToken());
         responseParam.setExpireTimestamp(token.getExpireTimestamp());
@@ -68,19 +44,4 @@ public class AppUserController {
 
         return ResponseEntity.ok(responseParam);
     }
-
-    // 仅 agora 客户端 chat demo 使用, 开发者无需关注此 api
-//    @PostMapping("/app/chat/user/login")
-//    public ResponseEntity loginWithChatUser(@RequestBody @Valid AppUserWithNickname appUser) {
-//        ResponseParam responseParam = new ResponseParam();
-//
-//        TokenInfo token = appUserService.loginWithChatUser(appUser);
-//        responseParam.setAccessToken(token.getToken());
-//        responseParam.setExpireTimestamp(token.getExpireTimestamp());
-//        responseParam.setChatUserName(appUser.getUserAccount());
-//        responseParam.setChatUserNickname(appUser.getUserNickname());
-//        responseParam.setAgoraUid(token.getAgoraUid());
-//
-//        return ResponseEntity.ok(responseParam);
-//    }
 }

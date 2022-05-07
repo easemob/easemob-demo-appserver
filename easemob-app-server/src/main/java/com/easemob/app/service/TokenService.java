@@ -10,12 +10,6 @@ import com.easemob.app.model.TokenInfo;
 public interface TokenService {
 
     /**
-     * 获取APP权限的token
-     * @return
-     */
-    TokenInfo getAppToken();
-
-    /**
      * 根据用户账号获取USER权限的token
      * @param userAccount 用户账号
      * @return

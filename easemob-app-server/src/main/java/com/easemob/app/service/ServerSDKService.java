@@ -1,5 +1,7 @@
 package com.easemob.app.service;
 
+import com.easemob.im.server.api.token.Token;
+
 public interface ServerSDKService {
     /**
      * 为用户注册 chat 用户名
@@ -22,34 +24,10 @@ public interface ServerSDKService {
     String getChatUserId(String chatUserName);
 
     /**
-     * 为用户添加好友
-     * @param chatUserName chatUserName
-     */
-    void addContacts(String chatUserName);
-
-    /**
-     * 创建一个群组
-     * @param chatUserName chatUserName
-     */
-    void createChatGroup(String chatUserName);
-
-    /**
-     * 将用户加入群组
-     * @param chatUserName chatUserName
-     */
-    void joinChatGroup(String chatUserName);
-
-    /**
-     * 给用户发送消息
-     * @param chatUserName
-     */
-    void sendMessage(String chatUserName);
-
-    /**
      * 生成声网chatUserToken
      * @param chatUserName chat用户名
      * @param chatUserId chat用户id
-     * @return
+     * @return user token
      */
     String generateAgoraChatUserToken(String chatUserName, String chatUserId);
 
@@ -57,7 +35,7 @@ public interface ServerSDKService {
      * 生成声网rtcToken
      * @param channelName 频道名称
      * @param agorauid 声网uid
-     * @return
+     * @return rtc token
      */
     String generateAgoraRtcToken(String channelName, Integer agorauid);
 }

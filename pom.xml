@@ -7,7 +7,7 @@
     <groupId>com.easemob.im</groupId>
     <artifactId>easemob-im-app-server</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.6.Final</version>
+    <version>1.1.2.1.Final</version>
     <modules>
         <module>easemob-im-live-server</module>
         <module>qiniu-service</module>
@@ -76,17 +76,17 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>mysql</groupId>-->
-<!--            <artifactId>mysql-connector-java</artifactId>-->
-<!--            <version>5.1.36</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.23</version>
+            <version>5.1.36</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>mysql</groupId>-->
+<!--            <artifactId>mysql-connector-java</artifactId>-->
+<!--            <version>8.0.23</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -6,6 +6,7 @@ import com.easemob.app.model.TokenInfo;
 import com.easemob.app.service.AssemblyService;
 import com.easemob.app.service.ServerSDKService;
 import com.easemob.app.service.TokenService;
+import com.easemob.im.server.api.token.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,11 +31,6 @@ public class TokenServiceImpl implements TokenService {
     private AssemblyService assemblyService;
 
     @Override
-    public TokenInfo getAppToken() {
-        return null;
-    }
-
-    @Override
     public TokenInfo getUserTokenWithAccount(String userAccount) {
         log.info("userAccount get user token :{}", userAccount);
         AppUserInfo appUserInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
@@ -53,8 +49,6 @@ public class TokenServiceImpl implements TokenService {
         TokenInfo tokenInfo = new TokenInfo();
         tokenInfo.setToken(this.serverSDKService.generateAgoraRtcToken(channelName, agoraUid));
         tokenInfo.setExpireTimestamp(System.currentTimeMillis() + this.expirePeriod * 1000);
-//        tokenInfo.setChatUserName(easemobUserName);
-//        tokenInfo.setAgoraUid(agoraUid);
         return tokenInfo;
     }
 

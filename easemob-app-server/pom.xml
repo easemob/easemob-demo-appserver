@@ -5,30 +5,11 @@
     <parent>
         <artifactId>easemob-im-app-server</artifactId>
         <groupId>com.easemob.im</groupId>
-        <version>1.1.6.Final</version>
+        <version>1.1.2.1.Final</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>easemob-app-server</artifactId>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-bom</artifactId>
-                <version>4.1.59.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-bom</artifactId>
-                <version>2020.0.4</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -96,12 +77,31 @@
         <dependency>
             <groupId>com.easemob.im</groupId>
             <artifactId>im-sdk-core</artifactId>
-            <version>0.4.5</version>
+            <version>0.5.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>23.0</version>
+        </dependency>
+        <!-- Virgil -->
+        <dependency>
+            <groupId>com.virgilsecurity.sdk</groupId>
+            <artifactId>crypto</artifactId>
+            <version>7.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.virgilsecurity.sdk</groupId>
+            <artifactId>sdk</artifactId>
+            <version>7.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
         </dependency>
     </dependencies>
 
