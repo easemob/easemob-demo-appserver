@@ -12,12 +12,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "APP_USER_INFO")
+@Table(name = "APP_USER_INFO_1")
 public class AppUserInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "appkey")
+    private String appkey;
 
     @Column(name = "user_account")
     private String userAccount;

@@ -1,15 +1,13 @@
 package com.easemob.agora.service.impl;
 
-import com.easemob.agora.exception.ASNotFoundException;
-import com.easemob.agora.model.AppUserInfo;
+import com.easemob.agora.AgoraIO.RtcTokenGenerate;
+import com.easemob.agora.config.ApplicationConf;
 import com.easemob.agora.model.TokenInfo;
-import com.easemob.agora.service.AssemblyService;
-import com.easemob.agora.service.ServerSDKService;
 import com.easemob.agora.service.TokenService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * @author skyfour
@@ -17,59 +15,35 @@ import org.springframework.stereotype.Service;
  * @email skyzhang@easemob.com
  */
 @Service
-@Slf4j
 public class TokenServiceImpl implements TokenService {
 
-    @Value("${agora.token.expire.period.seconds}")
-    private int expirePeriod;
-
     @Autowired
-    private ServerSDKService serverSDKService;
+    private ApplicationConf applicationConf;
 
-    @Autowired
-    private AssemblyService assemblyService;
+    @Value("${agora.expira.time.seconds:86400}")
+    private int expireTime;
 
-    @Override
-    public TokenInfo getAppToken() {
-        return null;
-    }
-
-    @Override
-    public TokenInfo getUserTokenWithAccount(String userAccount) {
-        log.info("userAccount get user token :{}", userAccount);
-
-        AppUserInfo appUserInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
-
-        if(appUserInfo != null) {
-            appUserInfo = this.assemblyService.checkAppUserInfo(appUserInfo);
-
-            String chatUserName = appUserInfo.getChatUserName();
-            String chatUserId = this.serverSDKService.getChatUserId(chatUserName);
-
-            return getTokenInfo(chatUserName, chatUserId, appUserInfo.getAgoraUid());
-        } else {
-            throw new ASNotFoundException(String.format("%s not exists", userAccount));
+    @Override public TokenInfo getRtcToken(String channelName, String userId) {
+        if (StringUtils.isEmpty(channelName) || StringUtils.isEmpty(userId)) {
+            throw new IllegalArgumentException("channelName or userId must not null.");
         }
-    }
-
-    @Override
-    public TokenInfo getRtcToken(String channelName, Integer agoraUid) {
         TokenInfo tokenInfo = new TokenInfo();
-
-        tokenInfo.setToken(this.serverSDKService.generateAgoraRtcToken(channelName, agoraUid));
-        tokenInfo.setExpireTimestamp(System.currentTimeMillis() + this.expirePeriod * 1000);
-//        tokenInfo.setChatUserName(easemobUserName);
-//        tokenInfo.setAgoraUid(agoraUid);
+        tokenInfo.setExpireTime(expireTime);
+        tokenInfo.setToken(RtcTokenGenerate
+                .generateToken(applicationConf.getAgoraAppId(), applicationConf.getAgoraCert(),
+                        channelName, userId, expireTime));
         return tokenInfo;
     }
 
-    private TokenInfo getTokenInfo(String chatUserName, String chatUserId, String agoraUid) {
+    @Override public TokenInfo getRtcToken(String channelName, Integer uid) {
+        if (StringUtils.isEmpty(channelName) || uid == null) {
+            throw new IllegalArgumentException("channelName or userId must not null.");
+        }
         TokenInfo tokenInfo = new TokenInfo();
-        tokenInfo.setToken(this.serverSDKService.generateAgoraChatUserToken(chatUserName, chatUserId));
-        tokenInfo.setExpireTimestamp(System.currentTimeMillis() + this.expirePeriod * 1000);
-        tokenInfo.setChatUserName(chatUserName);
-        tokenInfo.setAgoraUid(agoraUid);
-
+        tokenInfo.setExpireTime(expireTime);
+        tokenInfo.setToken(RtcTokenGenerate
+                .generateToken(applicationConf.getAgoraAppId(), applicationConf.getAgoraCert(),
+                        channelName, uid, expireTime));
         return tokenInfo;
     }
 }

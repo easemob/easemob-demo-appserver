@@ -110,6 +110,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, param, headers, status, request);
     }
 
+    @ExceptionHandler(ASUnAuthorizedException.class)
+    public ResponseEntity<Object> handleDuplicateNoAuthException(ASUnAuthorizedException ex, WebRequest request){
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        HttpHeaders headers = new HttpHeaders();
+        final ResponseParam param = new ResponseParam();
+        param.setErrorInfo(ex.getMessage());
+        param.setCode(ResCode.RES_UNAUTHORIZED_ERROR);
+
+        return handleExceptionInternal(ex, param, headers, status, request);
+    }
+
     @ExceptionHandler(ASServerSDKException.class)
     public ResponseEntity<Object> handleServerSDKException(ASServerSDKException ex, WebRequest request){
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

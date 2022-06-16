@@ -8,6 +8,7 @@ import com.easemob.im.server.EMException;
 import com.easemob.im.server.EMService;
 import com.easemob.im.server.api.token.agora.AccessToken2;
 import com.easemob.im.server.exception.EMNotFoundException;
+import com.easemob.im.server.exception.EMUnknownException;
 import com.easemob.im.server.model.EMUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,11 @@ public class ServerSDKServiceImpl implements ServerSDKService {
                 log.info("chatUserName not exists :{}", chatUserName);
                 return false;
             }
+
+            if (e.getClass() == EMUnknownException.class) {
+                return true;
+            }
+
             log.error("get chatUserName fail. chatUserName : {}, e : {}", chatUserName, e.getMessage());
             throw new ASGetChatUserNameException(chatUserName + " get fail.");
         }
