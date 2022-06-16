@@ -1,6 +1,7 @@
 package com.easemob.app.service.impl;
 
 import com.easemob.app.exception.ASDuplicateUniquePropertyExistsException;
+import com.easemob.app.exception.ASNotFoundException;
 import com.easemob.app.exception.ASPasswordErrorException;
 import com.easemob.app.model.AppUser;
 import com.easemob.app.model.AppUserInfo;
@@ -32,12 +33,11 @@ public class AppUserServiceImpl implements AppUserService {
         if (this.assemblyService.checkIfUserAccountExistsDB(chatUserName)) {
             throw new ASDuplicateUniquePropertyExistsException("userAccount " + chatUserName + " already exists");
         } else {
-            if (this.sdkService.checkIfChatUserNameExists(chatUserName)) {
-                throw new ASDuplicateUniquePropertyExistsException("chatUserName " + chatUserName + " already exists");
-            } else {
+            if (!this.sdkService.checkIfChatUserNameExists(chatUserName)) {
                 this.sdkService.registerChatUserName(chatUserName);
-                this.assemblyService.saveAppUserToDB(chatUserName, null, chatUserPassword, chatUserName, this.assemblyService.generateUniqueAgoraUid());
             }
+
+            this.assemblyService.saveAppUserToDB(chatUserName, null, chatUserPassword, chatUserName, this.assemblyService.generateUniqueAgoraUid());
         }
     }
 
@@ -45,15 +45,18 @@ public class AppUserServiceImpl implements AppUserService {
     public TokenInfo loginWithChatUser(AppUser appUser) {
         String userAccount = appUser.getUserAccount();
 
-        if (!this.assemblyService.checkIfUserAccountExistsDB(userAccount)) {
-            if (this.sdkService.checkIfChatUserNameExists(userAccount)) {
-                throw new ASDuplicateUniquePropertyExistsException("chatUserName " + userAccount + " already exists");
+        if (this.assemblyService.checkIfUserAccountExistsDB(userAccount)) {
+            if (!this.sdkService.checkIfChatUserNameExists(userAccount)) {
+                throw new ASNotFoundException("chatUser " + userAccount + " does not exist");
             }
-        } else {
+
             AppUserInfo userInfo = this.assemblyService.getAppUserInfoFromDB(userAccount);
             if (!appUser.getUserPassword().equals(userInfo.getUserPassword())) {
                 throw new ASPasswordErrorException("user password error");
             }
+
+        } else {
+            throw new ASNotFoundException("userAccount " + userAccount + " does not exist");
         }
 
         return this.tokenService.getUserTokenWithAccount(userAccount);
