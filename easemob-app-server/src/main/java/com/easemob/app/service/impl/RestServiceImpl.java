@@ -21,6 +21,9 @@ public class RestServiceImpl implements RestService {
     @Value("${application.baseUri}")
     private String baseUri;
 
+    @Value("${application.appkey}")
+    private String appkey;
+
     @Autowired
     private Rest2Properties rest2Properties;
 
@@ -99,5 +102,68 @@ public class RestServiceImpl implements RestService {
 
         List<Map<String, Object>> results = (List<Map<String, Object>>) responseEntity.getBody().get("entities");
         return (String) results.get(0).get("uuid");
+    }
+
+    @Override public void sendTextMessageToUser(String from, String to, String messageContent) {
+
+        String orgName = appkey.split("#")[0];
+        String appName = appkey.split("#")[1];
+        String url = baseUri + "/" + orgName + "/" + appName + "/messages/users";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(Objects.requireNonNull(RestUtil.getToken(appkey, restTemplate, rest2Properties)));
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("from", from);
+        List<String> tos = new ArrayList<>();
+        tos.add(to);
+        body.put("to", tos);
+        body.put("type", "txt");
+        Map<String, String> messageBody = new HashMap<>();
+        messageBody.put("msg", messageContent);
+        body.put("body", messageBody);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+        try {
+            restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+        } catch (Exception e) {
+            log.error("send message to user. chatUserName : {}, error : {}", to, e.getMessage());
+            throw new RestClientException("Send message to user error.");
+        }
+    }
+
+    @Override public void sendCmdMessageToUser(String from, String to, String action) {
+
+        String orgName = appkey.split("#")[0];
+        String appName = appkey.split("#")[1];
+        String url = baseUri + "/" + orgName + "/" + appName + "/messages/users";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(Objects.requireNonNull(RestUtil.getToken(appkey, restTemplate, rest2Properties)));
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("from", from);
+        List<String> tos = new ArrayList<>();
+        tos.add(to);
+        body.put("to", tos);
+        body.put("type", "cmd");
+        body.put("routetype", "ROUTE_ONLINE");
+        Map<String, String> messageBody = new HashMap<>();
+        messageBody.put("action", action);
+        body.put("body", messageBody);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+        try {
+            restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+        } catch (Exception e) {
+            log.error("send cmd message to user. chatUserName : {}, error : {}", to, e.getMessage());
+            throw new RestClientException("Send cmd message to user error.");
+        }
     }
 }

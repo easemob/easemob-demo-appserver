@@ -1,6 +1,7 @@
 package com.easemob.agora.api;
 
 import com.alibaba.fastjson.JSONObject;
+import com.easemob.agora.model.ResCode;
 import com.easemob.agora.model.ResponseParam;
 import com.easemob.agora.model.TokenInfo;
 import com.easemob.agora.service.RedisService;
@@ -27,6 +28,28 @@ public class TokenController {
 
     public TokenController(TokenService tokenService) {
         this.tokenService = tokenService;
+    }
+
+    @GetMapping("/token/rtc/channel/{channelName}/agorauid/{agoraUid}")
+    public ResponseParam getAgoraRtcToken(@PathVariable String channelName,
+            @PathVariable Integer agoraUid,
+            @RequestParam("userAccount") String userAccount) {
+
+        redisService.saveAgoraChannelInfo(false, channelName, String.valueOf(agoraUid));
+        redisService.saveUidMapper(String.valueOf(agoraUid), userAccount);
+
+        ResponseParam responseParam = new ResponseParam();
+        if (!StringUtils.isEmpty(channelName) && agoraUid != null) {
+            TokenInfo token = tokenService.getRtcToken(channelName, agoraUid);
+            responseParam.setAccessToken(token.getToken());
+            responseParam.setExpireTime(token.getExpireTime());
+
+        } else {
+            responseParam.setCode(ResCode.RES_REQUEST_PARAM_ERROR);
+            responseParam.setErrorInfo("channelName or agoraUid is not null");
+        }
+
+        return responseParam;
     }
 
     @PostMapping("/token/rtcToken")

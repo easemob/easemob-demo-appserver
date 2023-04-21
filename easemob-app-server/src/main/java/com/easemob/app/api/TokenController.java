@@ -28,7 +28,6 @@ public class TokenController {
         this.tokenService = tokenService;
     }
 
-    // to do 考虑server sdk提供直接生成rtc token的方法
     @GetMapping("/token/rtc/channel/{channelName}/agorauid/{agoraUid}")
     public ResponseEntity getAgoraRtcToken(@PathVariable String channelName,
             @PathVariable Integer agoraUid,

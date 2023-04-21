@@ -24,4 +24,8 @@ public interface RestService {
      */
     String getChatUserUuid(String appkey, String chatUserName);
 
+    void sendTextMessageToUser(String from, String to, String messageContent);
+
+    void sendCmdMessageToUser(String from, String to, String action);
+
 }

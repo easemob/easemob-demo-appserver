@@ -3,7 +3,6 @@ package com.easemob.app.api;
 import com.easemob.app.exception.ASUnAuthorizedException;
 import com.easemob.app.model.*;
 import com.easemob.app.service.AppUserService;
-import com.easemob.app.service.IndexTestService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

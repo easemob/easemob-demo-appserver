@@ -7,6 +7,7 @@ package com.easemob.agora.model;
  **/
 public enum ResCode {
     RES_0K(200),//可以成功返回
+    RES_REQUEST_PARAM_ERROR(400),//请求参数错误
     RES_METHOND_ERROR(411), //请求方法错误
     RES_PARME_ERROR(412),//请求参数错误
     RES_CONTENT_TYPE_ERROR(413), //传参类型错误
