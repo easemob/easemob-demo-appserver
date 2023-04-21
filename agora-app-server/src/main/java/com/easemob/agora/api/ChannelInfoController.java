@@ -17,7 +17,7 @@ public class ChannelInfoController {
     @Autowired
     private RedisService redisService;
 
-    @GetMapping("/channel/mapper")
+    @GetMapping("/agora/channel/mapper")
     public ChannelResponse getAgoraChannelInfo(@RequestParam(name = "channelName") String channelName,
                                                @RequestParam(name = "userAccount", required = false) String userId) {
         Set<String> channelInfo = redisService.getAgoraChannelInfo(channelName);
