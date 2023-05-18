@@ -39,7 +39,7 @@ public class TokenServiceImpl implements TokenService {
         log.info("userAccount get user token :{}", userAccount);
         AppUserInfo appUserInfo = this.assemblyService.getAppUserInfoFromDB(appkey, userAccount);
         if(appUserInfo != null) {
-            String chatUserName = appUserInfo.getChatUserName();
+            String chatUserName = appUserInfo.getChatUserName().toLowerCase();
             String chatUserId = this.serverSDKService.getChatUserId(chatUserName);
             return getTokenInfo(chatUserName, chatUserId, appUserInfo.getAgoraUid());
         } else {
