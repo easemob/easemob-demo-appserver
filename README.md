@@ -1,4 +1,4 @@
-# easemob-inside-app-server
+# easemob-im-app-server
 
 ## 简介
 
