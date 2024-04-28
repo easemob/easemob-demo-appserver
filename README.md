@@ -27,7 +27,7 @@
 ## 数据库使用说明
 
 * 使用MySQL存储用户信息
-* 建表SQL见 [建表SQL](create_tables.sql)
+* 建表SQL见 [建表SQL](./doc/create_tables.sql)
 
 ## 使用
 
@@ -39,7 +39,7 @@
 
 - 成为环信IM开发者并成功注册App后，可在自己的服务器部署服务
 
-    - 服务配置文件参考：[application.properties](./easemob-inside-app-server/src/main/resources/application.properties)
+    - 服务配置文件参考：[application.properties](./easemob-im-app-server/src/main/resources/application.properties)
 
     - AppKey组成规则：${orgName}#${appName}，拿到AppKey后可得到对应的orgName和appName；
 
@@ -52,7 +52,7 @@
         application.intranet.base.https.uri.=https://XXX.easemob.com
     ```
 
-    - 安装MySQL，并根据[建表SQL](create_tables.sql)创建数据库及表，设置服务配置文件：
+    - 安装MySQL，并根据[建表SQL](./doc/create_tables.sql)创建数据库及表，设置服务配置文件：
     ```
         spring.datasource.driver-class-name=com.mysql.jdbc.Driver
         spring.datasource.url=jdbc:mysql://127.0.0.1:3306/app_server?useSSL=false&useUnicode=true&characterEncoding=utf8
