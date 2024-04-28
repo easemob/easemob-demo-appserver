@@ -39,7 +39,7 @@
 
 - 成为环信IM开发者并成功注册App后，可在自己的服务器部署服务
 
-    - 服务配置文件参考：[application.properties](./easemob-im-app-server/src/main/resources/application.properties)
+    - 服务配置文件参考：[application.properties](./app-server/src/main/resources/application.properties)
 
     - AppKey组成规则：${orgName}#${appName}，拿到AppKey后可得到对应的orgName和appName；
 
