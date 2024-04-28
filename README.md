@@ -27,7 +27,7 @@
 ## 数据库使用说明
 
 * 使用MySQL存储用户信息
-* 建表SQL见 [建表SQL](./create_tables.sql)
+* 建表SQL见 [建表SQL](create_tables.sql)
 
 ## 使用
 
@@ -52,7 +52,7 @@
         application.intranet.base.https.uri.=https://XXX.easemob.com
     ```
 
-    - 安装MySQL，并根据[建表SQL](./create_tables.sql)创建数据库及表，设置服务配置文件：
+    - 安装MySQL，并根据[建表SQL](create_tables.sql)创建数据库及表，设置服务配置文件：
     ```
         spring.datasource.driver-class-name=com.mysql.jdbc.Driver
         spring.datasource.url=jdbc:mysql://127.0.0.1:3306/app_server?useSSL=false&useUnicode=true&characterEncoding=utf8
@@ -65,7 +65,7 @@
 
 ## 环信文档
 
-[服务端REST文档](http://docs-im.easemob.com/im/server/ready/intro)
+[服务端REST文档]([http://docs-im.easemob.com/im/server/ready/intro](https://doc.easemob.com/document/server-side/overview.html))
 
 ## API
 
