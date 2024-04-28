@@ -65,7 +65,7 @@
 
 ## 环信文档
 
-[服务端REST文档]([http://docs-im.easemob.com/im/server/ready/intro](https://doc.easemob.com/document/server-side/overview.html))
+[服务端REST文档](https://doc.easemob.com/document/server-side/overview.html)
 
 ## API
 
