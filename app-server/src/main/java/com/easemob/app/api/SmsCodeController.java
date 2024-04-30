@@ -37,10 +37,12 @@ public class SmsCodeController {
 
         AppServerUtils.isPhoneNumber(phoneNumber);
 
-        redisService.checkSmsCodeLimit(phoneNumber, clientIP);
+//        redisService.checkSmsCodeLimit(phoneNumber, clientIP);
 
         ResponseParam responseParam = new ResponseParam();
-        smsCodeService.sendSms(phoneNumber, clientIP);
+
+        // 需要自己集成发送短信服务
+//        smsCodeService.sendSms(phoneNumber, clientIP);
         responseParam.setCode(ResCode.RES_OK.getCode());
         return ResponseEntity.ok(responseParam);
     }
