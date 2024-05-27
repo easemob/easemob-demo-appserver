@@ -6,10 +6,10 @@
 
 为客户端 Demo 提供群聊和单聊机器人功能，搭建 Agora Chat 与 ChatGPT4.0 的通讯桥梁。
 
-AppServer 内对接 OpenAI 的 ChatGPT4.0 模型，可以对模型参数进行配置。
-AppServer 对接 Agora Chat 发送后消息回调服务，将 @群聊机器人 和给单聊机器人发送的消息筛选出来（群聊消息需要保存一定条数的消息上下文）。
-AppServer 将消息发送给 ChatGPT4.0。
-AppServer 内调用 Rest 发送消息 API 以机器人身份将 ChatGPT4.0 回复的消息发送给群组和用户。
+* AppServer 内对接 OpenAI 的 ChatGPT4.0 模型，可以对模型参数进行配置。
+* AppServer 对接 Agora Chat 发送后消息回调服务，将 @群聊机器人 和给单聊机器人发送的消息筛选出来（群聊消息需要保存一定条数的消息上下文）。
+* AppServer 将消息发送给 ChatGPT4.0。
+* AppServer 内调用 Rest 发送消息 API 以机器人身份将 ChatGPT4.0 回复的消息发送给群组和用户。
 
 - 该服务目前主要提供的功能有
 
