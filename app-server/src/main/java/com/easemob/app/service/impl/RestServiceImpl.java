@@ -58,7 +58,6 @@ public class RestServiceImpl implements RestService {
 
         Map<String, String> body = new HashMap<>();
         body.put("username", chatUserName);
-        body.put("password", chatUserPassword);
 
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
         try {
@@ -79,11 +78,12 @@ public class RestServiceImpl implements RestService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(
+                Objects.requireNonNull(RestUtil.getToken(appkey, restTemplate, applicationConfig)));
 
         Map<String, String> body = new HashMap<>();
-        body.put("grant_type", "password");
+        body.put("grant_type", "inherit");
         body.put("username", chatUserName);
-        body.put("password", chatUserPassword);
 
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
         ResponseEntity<Map> responseEntity;
