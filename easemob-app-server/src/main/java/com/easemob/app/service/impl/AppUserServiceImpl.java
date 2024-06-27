@@ -8,12 +8,21 @@ import com.easemob.app.model.AppUserInfo;
 import com.easemob.app.model.ChatGptMessage;
 import com.easemob.app.model.TokenInfo;
 import com.easemob.app.service.*;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+@Slf4j
 @Service
-public class AppUserServiceImpl implements AppUserService {
+public class AppUserServiceImpl implements AppUserService, InitializingBean {
 
     @Value("${application.agora.chat.appkey}")
     private String appkey;
@@ -26,6 +35,21 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Value("${easemob.chat.default.group.member.miles}")
     private String defaultChatGroupMemberMiles;
+
+    @Value("${easemob.thread.pool.core.size}")
+    private Integer coreSize;
+
+    @Value("${easemob.thread.pool.max.size}")
+    private Integer maxSize;
+
+    @Value("${easemob.thread.pool.keepAlive.seconds}")
+    private Integer keepAlive;
+
+    @Value("${easemob.thread.pool.queue.capacity}")
+    private Integer queueCapacity;
+
+    @Value("${easemob.call.rest.api.time.interval.millisecond}")
+    private Long callRestApiTimeIntervalMillisecond;
 
     private final static String USER = "user";
     private static final String ASSISTANT = "assistant";
@@ -57,6 +81,20 @@ public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private RedisService redisService;
 
+    private ThreadPoolExecutor threadPool;
+
+    @Override public void afterPropertiesSet() {
+        threadPool = new ThreadPoolExecutor(
+                coreSize,
+                maxSize,
+                keepAlive,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(queueCapacity),
+                new ThreadFactoryBuilder().setNameFormat("chat-gpt").build(),
+                new ThreadPoolExecutor.CallerRunsPolicy());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void registerWithChatUser(AppUser appUser) {
         String chatUserName = appUser.getUserAccount().toLowerCase();
@@ -66,27 +104,30 @@ public class AppUserServiceImpl implements AppUserService {
             throw new ASDuplicateUniquePropertyExistsException(
                     "userAccount " + chatUserName + " already exists");
         } else {
-            if (!this.restService.checkIfChatUserNameExists(appkey, chatUserName)) {
-                this.restService.registerChatUserName(appkey, chatUserName);
-            }
-
             this.assemblyService.saveAppUserToDB(appkey, chatUserName, null,
                     chatUserPassword, chatUserName,
                     this.assemblyService.generateUniqueAgoraUid(appkey));
 
-            createBusinessData(chatUserName);
+            if (!this.restService.checkIfChatUserNameExists(appkey, chatUserName)) {
+                this.restService.registerChatUserName(appkey, chatUserName);
+            }
+
+            threadPool.execute(() -> {
+                try {
+                    createBusinessData(chatUserName);
+                } catch (InterruptedException e) {
+                    log.error("create business data error. chatUserName : {}", chatUserName, e);
+                }
+            });
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public TokenInfo loginWithChatUser(AppUser appUser) {
         String userAccount = appUser.getUserAccount().toLowerCase();
 
         if (this.assemblyService.checkIfUserAccountExistsDB(appkey, userAccount)) {
-            if (!this.restService.checkIfChatUserNameExists(appkey, userAccount)) {
-                this.restService.registerChatUserName(appkey, userAccount);
-            }
-
             AppUserInfo userInfo =
                     this.assemblyService.getAppUserInfoFromDB(appkey, userAccount);
             if (userInfo.getUserPassword() == null) {
@@ -98,6 +139,10 @@ public class AppUserServiceImpl implements AppUserService {
                 if (!appUser.getUserPassword().equals(userInfo.getUserPassword())) {
                     throw new ASPasswordErrorException("userAccount password error");
                 }
+            }
+
+            if (!this.restService.checkIfChatUserNameExists(appkey, userAccount)) {
+                this.restService.registerChatUserName(appkey, userAccount);
             }
         } else {
             throw new ASNotFoundException("userAccount " + userAccount + " does not exist");
@@ -111,7 +156,7 @@ public class AppUserServiceImpl implements AppUserService {
      *
      * @param chatUserName chatUserName
      */
-    private void createBusinessData(String chatUserName) {
+    private void createBusinessData(String chatUserName) throws InterruptedException {
         this.restService.addContact(appkey, chatUserName, chatRobotName);
         this.restService.sendTextMessageToUser(appkey, chatRobotName, chatUserName,
                 AI_CHAT_BOT_USER_PROMPT, null);
@@ -120,30 +165,35 @@ public class AppUserServiceImpl implements AppUserService {
 
         this.restService.sendTextMessageToGroup(appkey, chatRobotName, groupId,
                 AI_CHAT_BOT_GROUP_PROMPT, null);
+        Thread.sleep(callRestApiTimeIntervalMillisecond);
 
         this.restService.sendTextMessageToGroup(appkey, defaultChatGroupMemberMiles,
                 groupId,
                 assemblyContentMessage(defaultChatGroupMemberMiles, MILES_GROUP_MESSAGE_A), null);
         this.redisService.addGroupMessageToRedis(appkey, groupId,
                 ChatGptMessage.builder().role(USER).content(MILES_GROUP_MESSAGE_A).build());
+        Thread.sleep(callRestApiTimeIntervalMillisecond);
 
         this.restService.sendTextMessageToGroup(appkey, defaultChatGroupMemberBella,
                 groupId,
                 assemblyContentMessage(defaultChatGroupMemberBella, BELLA_GROUP_MESSAGE_A), null);
         this.redisService.addGroupMessageToRedis(appkey, groupId,
                 ChatGptMessage.builder().role(USER).content(BELLA_GROUP_MESSAGE_A).build());
+        Thread.sleep(callRestApiTimeIntervalMillisecond);
 
         this.restService.sendTextMessageToGroup(appkey, defaultChatGroupMemberMiles,
                 groupId,
                 assemblyContentMessage(defaultChatGroupMemberMiles, MILES_GROUP_MESSAGE_B), null);
         this.redisService.addGroupMessageToRedis(appkey, groupId,
                 ChatGptMessage.builder().role(USER).content(MILES_GROUP_MESSAGE_B).build());
+        Thread.sleep(callRestApiTimeIntervalMillisecond);
 
         this.restService.sendTextMessageToGroup(appkey, defaultChatGroupMemberMiles,
                 groupId,
                 assemblyContentMessage(defaultChatGroupMemberMiles, MILES_GROUP_MESSAGE_C), null);
         this.redisService.addGroupMessageToRedis(appkey, groupId,
                 ChatGptMessage.builder().role(USER).content(MILES_GROUP_MESSAGE_C).build());
+        Thread.sleep(callRestApiTimeIntervalMillisecond);
 
         this.restService.sendTextMessageToGroup(appkey, chatRobotName, groupId,
                 AI_CHAT_BOT_GROUP_ANSWER_MESSAGE, null);

@@ -99,7 +99,7 @@ public class CallBackServiceImpl implements CallBackService, InitializingBean {
                 "receive call back message. appKey : {}, from : {}, to : {}, chatType : {}, groupId : {}, callBackPayload : {}",
                 appKey, from, to, chatType, groupId, callBackPayload);
 
-        if (appKey.equals(chatAppkey)) {
+        if (chatAppkey.equals(appKey)) {
             switch (chatType) {
                 case CHAT_TYPE:
                     handleChatMessage(appKey, from, to, callBackPayload);
@@ -114,12 +114,12 @@ public class CallBackServiceImpl implements CallBackService, InitializingBean {
     }
 
     private void handleChatMessage(String appKey, String from, String to, JSONObject callBackPayload) {
-        if (to.equalsIgnoreCase(chatRobotName)) {
+        if (chatRobotName.equalsIgnoreCase(to)) {
             JSONArray messageBodyList = callBackPayload.getJSONArray(BODIES);
             if (messageBodyList != null && messageBodyList.size() > 0) {
                 JSONObject messageBody = messageBodyList.getJSONObject(0);
                 if (messageBody != null) {
-                    if (messageBody.getString(TYPE).equals(TXT_MESSAGE)) {
+                    if (TXT_MESSAGE.equals(messageBody.getString(TYPE))) {
                         threadPool.execute(() -> {
                             if (countLimitSwitch) {
                                 boolean result = redisService.checkIfSendMessageToChatGptLimit(appKey, from);
@@ -153,7 +153,7 @@ public class CallBackServiceImpl implements CallBackService, InitializingBean {
         if (messageBodyList != null && messageBodyList.size() > 0) {
             JSONObject messageBody = messageBodyList.getJSONObject(0);
             if (messageBody != null) {
-                if (messageBody.getString(TYPE).equals(TXT_MESSAGE)) {
+                if (TXT_MESSAGE.equals(messageBody.getString(TYPE))) {
                     JSONObject ext = callBackPayload.getJSONObject(EXT);
                     if (ext != null) {
                         String messageContentUsername;
@@ -172,7 +172,7 @@ public class CallBackServiceImpl implements CallBackService, InitializingBean {
                         JSONArray atList = ext.getJSONArray(EM_AT_LIST);
                         if (atList != null && atList.size() > 0) {
                             for (Object user : atList) {
-                                if (user.toString().equalsIgnoreCase(chatRobotName)) {
+                                if (chatRobotName.equalsIgnoreCase(user.toString())) {
                                     threadPool.execute(() -> {
                                         if (countLimitSwitch) {
                                             boolean result = redisService.checkIfSendMessageToChatGptLimit(appKey, from);

@@ -1,5 +1,6 @@
 package com.easemob.app.service.impl;
 
+import com.easemob.app.exception.ASRequestRestApiException;
 import com.easemob.app.service.RestService;
 import com.easemob.app.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class RestServiceImpl implements RestService {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (HttpClientErrorException e) {
             log.error("register chat user. chatUserName : {}, error : {}", chatUserName, e.getMessage());
-            throw new RestClientException("Register chat user error.");
+            throw new ASRequestRestApiException("Register chat user error.");
         }
     }
 
@@ -77,10 +78,10 @@ public class RestServiceImpl implements RestService {
                 return false;
             }
             log.error("get chat user. chatUserName : {}, error : {}", chatUserName, e.getMessage());
-            throw new RestClientException("Get chat user error.");
+            throw new ASRequestRestApiException("Get chat user error.");
         } catch (Exception e) {
             log.error("get chat user. chatUserName : {}, error : {}", chatUserName, e.getMessage());
-            throw new RestClientException("Get chat user error.");
+            throw new ASRequestRestApiException("Get chat user error.");
         }
 
         return responseEntity.getStatusCode().is2xxSuccessful();
@@ -102,7 +103,7 @@ public class RestServiceImpl implements RestService {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
             log.error("chat user add contact. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName, e.getMessage());
-            throw new RestClientException("Add contact error.");
+            throw new ASRequestRestApiException("Add contact error.");
         }
     }
 
@@ -136,7 +137,7 @@ public class RestServiceImpl implements RestService {
             responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
             log.error("create chat group. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName, e.getMessage());
-            throw new RestClientException("Create chat group error.");
+            throw new ASRequestRestApiException("Create chat group error.");
         }
 
         Map<String, String> data = (Map<String, String>) responseEntity.getBody().get("data");
@@ -158,7 +159,7 @@ public class RestServiceImpl implements RestService {
             responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
         } catch (RestClientException e) {
             log.error("get chat user. chatUserName : {}, error : {}", chatUserName, e.getMessage());
-            throw new RestClientException("Get chat user error.");
+            throw new ASRequestRestApiException("Get chat user error.");
         }
 
         List<Map<String, Object>> results = (List<Map<String, Object>>) responseEntity.getBody().get("entities");
@@ -197,7 +198,7 @@ public class RestServiceImpl implements RestService {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
             log.error("send message to user. chatUserName : {}, error : {}", to, e.getMessage());
-            throw new RestClientException("Send message to user error.");
+            throw new ASRequestRestApiException("Send message to user error.");
         }
     }
 
@@ -231,7 +232,7 @@ public class RestServiceImpl implements RestService {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
             log.error("send message to group. groupId : {}, error : {}", groupId, e.getMessage());
-            throw new RestClientException("Send message to group error.");
+            throw new ASRequestRestApiException("Send message to group error.");
         }
 
     }
@@ -269,7 +270,7 @@ public class RestServiceImpl implements RestService {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
             log.error("send message to group member. groupId : {}, error : {}", groupId, e.getMessage());
-            throw new RestClientException("Send message to group member error.");
+            throw new ASRequestRestApiException("Send message to group member error.");
         }
     }
 
