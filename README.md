@@ -392,7 +392,6 @@ curl -X GET -H 'Accept: application/json' 'http://localhost:8096/inside/token/rt
     "accessToken": "xxx",
     "expireTimestamp": 1710471789995
 }
-}
 ```
 
 ---
