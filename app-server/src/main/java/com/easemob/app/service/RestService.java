@@ -1,11 +1,11 @@
 package com.easemob.app.service;
 
-import com.easemob.app.model.ChatGroupListResponse;
-import reactor.util.function.Tuple2;
+import com.easemob.app.model.AppUserPresenceStatus;
+import org.springframework.util.MultiValueMap;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public interface RestService {
     /**
@@ -20,91 +20,9 @@ public interface RestService {
      * 获取 chat 用户的 token
      * @param appkey appkey
      * @param chatUserName chatUserName
-     * @param chatUserPassword chatUserPassword
-     * @return uuid
+     * @return token
      */
-    String getChatUserToken(String appkey, String chatUserName, String chatUserPassword);
-
-    /**
-     * 添加好友
-     *
-     * @param appkey appkey
-     * @param chatUserName chatUserName
-     */
-    void addContact(String appkey, String chatUserName);
-
-    /**
-     * 创建群组
-     *
-     * @param appkey appkey
-     * @param chatUserName chatUserName
-     * @return chatGroupId
-     */
-    String createChatGroup(String appkey, String chatUserName);
-
-    /**
-     * 发送单聊消息
-     *
-     * @param appkey appkey
-     * @param chatUserName chatUserName
-     * @param messageContent messageContent
-     */
-    void sendMessageToUser(String appkey, String chatUserName, String messageContent);
-
-    void sendMessageToUser(String appkey, String from, String chatUserName, String messageContent);
-
-    /**
-     * 发送群聊消息
-     *
-     * @param appkey appkey
-     * @param chatGroupId chatGroupId
-     * @param messageContent messageContent
-     */
-    void sendMessageToChatGroup(String appkey, String chatGroupId, String messageContent);
-
-    ChatGroupListResponse getUsers(String appkey, String cursor);
-
-    /**
-     * 获取群组 custom
-     *
-     * @param appkey appkey
-     * @param chatGroupId chatGroupId
-     * @return ChatGroup
-     */
-    String getChatGroupCustom(String appkey, String chatGroupId);
-
-    /**
-     * 更新群组自定义属性
-     *
-     * @param appkey appkey
-     * @param chatGroupId chatGroupId
-     * @param custom custom
-     */
-    void updateGroupCustom(String appkey, String chatGroupId, String custom);
-
-    /**
-     * 删除群组
-     *
-     * @param appkey appkey
-     * @param chatGroupId chatGroupId
-     */
-    void deleteChatGroup(String appkey, String chatGroupId);
-
-    /**
-     * 获取指定appkey的clientId和clientSecret
-     * @param appkey
-     * @return
-     */
-    Tuple2<String, String> getAppSecret(String appkey);
-
-    /**
-     * 获取群组成员
-     *
-     * @param appkey appkey
-     * @param chatGroupId chatGroupId
-     * @return List<String>
-     */
-    List<String> getChatGroupMembers(String appkey, String chatGroupId);
+    String getChatUserToken(String appkey, String chatUserName);
 
     /**
      * 上传文件(群组、用户头像)
@@ -117,11 +35,44 @@ public interface RestService {
      String uploadFile(String appkey, String id, File file);
 
     /**
-     * 下载文件(用户头像)
+     * 获取用户presence在线状态
      *
-     * @param appkey
-     * @param urlPath
-     * @return
+     * @param appkey appkey
+     * @param chatUserNames chatUserNames
+     * @return list
      */
-     BufferedInputStream downloadThumbImage(String appkey, String urlPath);
+    List<AppUserPresenceStatus> getUserPresenceStatus(String appkey, List<String> chatUserNames);
+
+    /**
+     * 设置用户属性
+     *
+     * @param appkey       appkey
+     * @param chatUserName chatUserName
+     * @param metadata    metadata
+     */
+    void setUserMetadata(String appkey, String chatUserName, MultiValueMap<String, Object> metadata);
+
+    /**
+     * 检查 chat 用户的 token 权限
+     * @param appkey appkey
+     * @param chatUserName chatUserName
+     * @param token token
+     * @return boolean
+     */
+    boolean checkUserTokenPermissions(String appkey, String chatUserName, String token);
+
+    /**
+     * 发送单聊cmd消息
+     *
+     * @param appkey appkey
+     * @param from from
+     * @param chatUserName chatUserName
+     * @param action action
+     * @param isRouteOnline isRouteOnline
+     * @param ext ext
+     */
+    void sendCmdMessageToUser(String appkey, String from, String chatUserName, String action, boolean isRouteOnline, Map<String, Object> ext);
+
+
+
 }

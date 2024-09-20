@@ -244,6 +244,126 @@ public class RedisServiceImpl implements RedisService {
         }
     }
 
+    @Override public void setUserStatus(String appkey, String chatUsername, String hashKey, String value) {
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_USER_STATUS, appkey, chatUsername);
+            redisTemplate.expire(redisKey, 86400, TimeUnit.SECONDS);
+            if (value == null) {
+                redisTemplate.opsForHash().delete(redisKey, hashKey);
+            } else {
+                redisTemplate.opsForHash().put(redisKey, hashKey, value);
+            }
+        } catch (Exception e) {
+            log.error("set user status failed. appkey : {}, chatUsername : {}, hashKey : {}, value : {}, Message - {}", appkey, chatUsername, hashKey, value, e.getMessage());
+        }
+    }
+
+    @Override public String getUserStatus(String appkey, String chatUsername, String hashKey) {
+        String userStatus = null;
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_USER_STATUS, appkey, chatUsername);
+            userStatus = (String) redisTemplate.opsForHash().get(redisKey, hashKey);
+        } catch (Exception e) {
+            log.error("get user status failed. appkey : {}, chatUsername : {}, hashKey : {}, Message - {}", appkey, chatUsername, hashKey, e.getMessage());
+        }
+
+        return userStatus;
+    }
+
+    @Override public String randomMatchUser(String appkey, String matchUser) {
+        String randomUser;
+        while (true) {
+            try {
+                String matchRedisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_USER_MATCH_LIST, appkey);
+                randomUser = redisTemplate.opsForSet().randomMember(matchRedisKey);
+                if (getMatchListCount(appkey) == 1 && matchUser.equals(randomUser)) {
+                    randomUser = null;
+                    break;
+                }
+
+                if (!matchUser.equals(randomUser)) {
+                    break;
+                }
+            } catch (Exception e) {
+                log.error("random user from match list failed. appkey : {}, matchUser : {}, Message - {}", appkey, matchUser, e.getMessage());
+                return null;
+            }
+        }
+
+        return randomUser;
+    }
+
+    @Override public Long getMatchListCount(String appkey) {
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_USER_MATCH_LIST, appkey);
+            Long size = redisTemplate.opsForSet().size(redisKey);
+            if (size == null) {
+                return 0L;
+            } else {
+                return size;
+            }
+        } catch (Exception e) {
+            log.error("get match list size failed. appkey : {}, Message - {}", appkey, e.getMessage());
+            return 0L;
+        }
+    }
+
+    @Override public void addUserToMatchList(String appkey, String chatUsername) {
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_USER_MATCH_LIST, appkey);
+            redisTemplate.opsForSet().add(redisKey, chatUsername);
+        } catch (Exception e) {
+            log.error("add user to match list failed. appkey : {}, chatUsername : {}, Message - {}", appkey, chatUsername, e.getMessage());
+        }
+    }
+
+    @Override public void removeUserToMatchList(String appkey, String chatUsername) {
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_USER_MATCH_LIST, appkey);
+            redisTemplate.opsForSet().remove(redisKey, chatUsername);
+        } catch (Exception e) {
+            log.error("remove user from match list failed. appkey : {}, chatUsername : {}, Message - {}", appkey, chatUsername, e.getMessage());
+        }
+    }
+
+    @Override public Boolean matchLock(String appkey, String chatUsername) {
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_USER_MATCH_LOCK, appkey, chatUsername);
+            return redisTemplate.opsForValue().setIfAbsent(redisKey, chatUsername, Duration.ofSeconds(60));
+        } catch (Exception e) {
+            log.error("match lock failed. appkey : {}, chatUsername : {}, Message - {}", appkey, chatUsername, e.getMessage());
+            return Boolean.FALSE;
+        }
+    }
+
+    @Override public void matchUnLock(String appkey, String chatUsername) {
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_USER_MATCH_LOCK, appkey, chatUsername);
+            redisTemplate.delete(redisKey);
+        } catch (Exception e) {
+            log.error("match unlock failed. appkey : {}, chatUsername : {}, Message - {}", appkey, chatUsername, e.getMessage());
+        }
+    }
+
+    @Override public Boolean randomMatchUserLock(String appkey) {
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_RANDOM_MATCH_USER_LOCK, appkey);
+            return redisTemplate.opsForValue().setIfAbsent(redisKey, redisKey, Duration.ofSeconds(60));
+        } catch (Exception e) {
+            log.error("random match user lock failed. appkey : {}, Message - {}", appkey, e.getMessage());
+            return Boolean.FALSE;
+        }
+    }
+
+    @Override public void randomMatchUserUnLock(String appkey) {
+        try {
+            String redisKey = String.format(RedisKeyConstants.ONE_TO_ONE_VIDEO_RANDOM_MATCH_USER_LOCK, appkey);
+            redisTemplate.delete(redisKey);
+        } catch (Exception e) {
+            log.error("random match user unlock failed. appkey : {}, Message - {}", appkey, e.getMessage());
+        }
+    }
+
     public static long getRemainSecondsOneDay() {
         Date date = new Date();
         LocalDateTime midnight = LocalDateTime.ofInstant(date.toInstant(),

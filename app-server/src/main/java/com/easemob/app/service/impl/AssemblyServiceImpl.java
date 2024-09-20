@@ -1,8 +1,8 @@
 package com.easemob.app.service.impl;
 
 import cn.hutool.core.lang.UUID;
-import com.easemob.app.model.AppUserInfoNew;
-import com.easemob.app.repository.AppUserInfoNewRepository;
+import com.easemob.app.model.AppUserOneToOneVideoInfo;
+import com.easemob.app.repository.AppUserOneToOneVideoInfoRepository;
 import com.easemob.app.service.AssemblyService;
 import com.easemob.app.utils.RandomUidUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class AssemblyServiceImpl implements AssemblyService {
 
     @Autowired
-    private AppUserInfoNewRepository appUserInfoNewRepository;
+    private AppUserOneToOneVideoInfoRepository appUserOneToOneVideoInfoRepository;
 
     @Override
     public String generateUniqueAgoraUid(String appKey) {
@@ -44,44 +44,54 @@ public class AssemblyServiceImpl implements AssemblyService {
         return chatUsername;
     }
 
-    @Override public AppUserInfoNew getAppUserInfoNewFromDB(String appKey, String phoneNumber) {
-        return this.appUserInfoNewRepository.findByAppkeyAndPhoneNumber(appKey, phoneNumber);
-    }
-
-    @Override
-    public AppUserInfoNew getAppUserInfoNewByChatUserName(String appKey, String chatUserName) {
-        return this.appUserInfoNewRepository.findByAppkeyAndChatUserName(appKey, chatUserName);
-    }
-
     @Override
     public boolean checkIfChatUsernameExistsDB(String appKey, String chatUsername) {
-        AppUserInfoNew appUserInfo = this.appUserInfoNewRepository.findByAppkeyAndChatUserName(appKey, chatUsername);
+        AppUserOneToOneVideoInfo appUserInfo = this.appUserOneToOneVideoInfoRepository.findByAppkeyAndChatUserName(appKey, chatUsername);
         return appUserInfo != null;
     }
 
     @Override
     public boolean checkIfAgoraUidExistsDB(String appKey, String agoraUid) {
-        AppUserInfoNew appUserInfo = this.appUserInfoNewRepository.findByAppkeyAndAgoraUid(appKey, agoraUid);
+        AppUserOneToOneVideoInfo appUserInfo = this.appUserOneToOneVideoInfoRepository.findByAppkeyAndAgoraUid(appKey, agoraUid);
         return appUserInfo != null;
     }
 
-    @Override public void saveAppUserNewToDB(String appKey, String phoneNumber, String chatUsername,
-            String chatUserPassword, String agoraUid) {
-        AppUserInfoNew appUserInfo = new AppUserInfoNew();
-        appUserInfo.setAppkey(appKey);
-        appUserInfo.setPhoneNumber(phoneNumber);
-        appUserInfo.setChatUserName(chatUsername);
-        appUserInfo.setChatUserPassword(chatUserPassword);
-        appUserInfo.setAgoraUid(agoraUid);
-        appUserInfo.setCreatedAt(LocalDateTime.now());
-        appUserInfo.setUpdatedAt(LocalDateTime.now());
-        this.appUserInfoNewRepository.save(appUserInfo);
-        log.info("userAccount info new save to db successfully :{}", appUserInfo);
+    @Override
+    public AppUserOneToOneVideoInfo getAppUserOneToOneVideoInfoFromDB(String appKey, String phoneNumber) {
+        return this.appUserOneToOneVideoInfoRepository.findByAppkeyAndPhoneNumber(appKey, phoneNumber);
     }
 
-    @Override public void updateAppUserInfoToDB(AppUserInfoNew appUserInfo) {
-        this.appUserInfoNewRepository.save(appUserInfo);
-        log.info("userAccount avatar url update to db successfully :{}", appUserInfo);
+    @Override
+    public AppUserOneToOneVideoInfo getAppUserOneToOneVideoInfoByChatUsername(String appKey, String chatUsername) {
+        return this.appUserOneToOneVideoInfoRepository.findByAppkeyAndChatUserName(appKey, chatUsername);
+    }
+
+    @Override
+    public void saveAppUserToOneToOneVideoToDB(String appKey, String phoneNumber, String chatUsername,
+            String agoraUid, String avatarUrl) {
+
+        AppUserOneToOneVideoInfo appUserOneToOneVideoInfo = new AppUserOneToOneVideoInfo();
+        appUserOneToOneVideoInfo.setAppkey(appKey);
+        appUserOneToOneVideoInfo.setPhoneNumber(phoneNumber);
+        appUserOneToOneVideoInfo.setChatUserName(chatUsername);
+        appUserOneToOneVideoInfo.setAvatarUrl(avatarUrl);
+        appUserOneToOneVideoInfo.setAgoraUid(agoraUid);
+        appUserOneToOneVideoInfo.setUpdatedAt(LocalDateTime.now());
+        appUserOneToOneVideoInfo.setCreatedAt(LocalDateTime.now());
+
+        try {
+            this.appUserOneToOneVideoInfoRepository.save(appUserOneToOneVideoInfo);
+        } catch (Exception e) {
+            log.error("app user 1v1 video save to db fail. appKey : {}, chatUsername : {}, error : {}", appKey, chatUsername, e.getMessage());
+            throw new IllegalArgumentException("Save app group error.");
+        }
+
+        log.info("userAccount 1v1 video info save to db successfully :{}", appUserOneToOneVideoInfo);
+    }
+
+    @Override public void updateAppUserToOneToOneVideoToDB(AppUserOneToOneVideoInfo appUserOneToOneVideoInfo) {
+        this.appUserOneToOneVideoInfoRepository.save(appUserOneToOneVideoInfo);
+        log.info("userAccount 1v1 video update to db successfully :{}", appUserOneToOneVideoInfo);
     }
 
 }

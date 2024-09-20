@@ -7,11 +7,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-/**
- * @author skyfour
- * @date 2021/2/2
- * @email skyzhang@easemob.com
- */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(

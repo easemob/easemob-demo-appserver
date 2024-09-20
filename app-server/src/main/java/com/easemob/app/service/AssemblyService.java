@@ -1,6 +1,6 @@
 package com.easemob.app.service;
 
-import com.easemob.app.model.AppUserInfoNew;
+import com.easemob.app.model.AppUserOneToOneVideoInfo;
 
 public interface AssemblyService {
 
@@ -20,24 +20,6 @@ public interface AssemblyService {
      */
     String generateUniqueChatUsername(String appKey);
 
-    /**
-     * 根据appKey、手机号从DB获取对象
-     *
-     * @param appKey      appKey
-     * @param phoneNumber 手机号
-     * @return AppUserInfoNew
-     */
-    AppUserInfoNew getAppUserInfoNewFromDB(String appKey, String phoneNumber);
-
-    /**
-     * 根据appKey、chat用户名从DB获取对象
-     *
-     * @param appKey       appKey
-     * @param chatUserName chatUserName
-     * @return AppUserInfoNew
-     */
-    AppUserInfoNew getAppUserInfoNewByChatUserName(String appKey, String chatUserName);
-
     boolean checkIfChatUsernameExistsDB(String appKey, String chatUsername);
 
     /**
@@ -50,21 +32,40 @@ public interface AssemblyService {
     boolean checkIfAgoraUidExistsDB(String appKey, String agoraUid);
 
     /**
-     * 将用户信息存入DB
+     * 根据appKey、手机号从1v1视频通话DB获取对象
      *
-     * @param appKey           appKey
-     * @param phoneNumber      用户的手机号
-     * @param chatUsername     环信用户名
-     * @param chatUserPassword 环信用户密码
-     * @param agoraUid         声网uid
+     * @param appKey      appKey
+     * @param phoneNumber 手机号
+     * @return AppUserOneToOneVideoInfo
      */
-    void saveAppUserNewToDB(String appKey, String phoneNumber, String chatUsername,
-            String chatUserPassword, String agoraUid);
+    AppUserOneToOneVideoInfo getAppUserOneToOneVideoInfoFromDB(String appKey, String phoneNumber);
 
     /**
-     * 将用户db信息更新
-     * @param appUserInfo 头像url
+     * 根据appKey、用户名从1v1视频通话DB获取对象
+     *
+     * @param appKey      appKey
+     * @param chatUsername chatUsername
+     * @return AppUserOneToOneVideoInfo
      */
-    void updateAppUserInfoToDB(AppUserInfoNew appUserInfo);
+    AppUserOneToOneVideoInfo getAppUserOneToOneVideoInfoByChatUsername(String appKey, String chatUsername);
+
+    /**
+     * 将用户信息存入1v1视频通话DB
+     *
+     * @param appKey       appKey
+     * @param phoneNumber  phoneNumber
+     * @param chatUsername 环信用户名
+     * @param agoraUid     agoraUid
+     * @param avatarUrl    avatarUrl
+     */
+    void saveAppUserToOneToOneVideoToDB(String appKey, String phoneNumber, String chatUsername,
+            String agoraUid, String avatarUrl);
+
+    /**
+     * 更新1v1视频通话用户DB信息
+     *
+     * @param appUserOneToOneVideoInfo appUserOneToOneVideoInfo
+     */
+    void updateAppUserToOneToOneVideoToDB(AppUserOneToOneVideoInfo appUserOneToOneVideoInfo);
 
 }

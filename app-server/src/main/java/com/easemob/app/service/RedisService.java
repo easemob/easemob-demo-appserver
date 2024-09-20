@@ -71,4 +71,89 @@ public interface RedisService {
      */
     void saveUid(String agoraUid);
 
+    /**
+     * 设置用户状态，包括用户在线状态，匹配状态，匹配到的用户
+     *
+     * @param appkey appkey
+     * @param chatUsername chatUsername
+     * @param hashKey hashKey
+     * @param value value
+     */
+    void setUserStatus(String appkey, String chatUsername, String hashKey, String value);
+
+    /**
+     * 获取用户状态
+     *
+     * @param appkey appkey
+     * @param chatUsername chatUsername
+     * @param hashKey hashKey
+     * @return status
+     */
+    String getUserStatus(String appkey, String chatUsername, String hashKey);
+
+    /**
+     * 随机匹配用户
+     *
+     * @param appkey appkey
+     * @param matchUser matchUser
+     * @return user
+     */
+    String randomMatchUser(String appkey, String matchUser);
+
+    /**
+     * 获取匹配用户列表数量
+     *
+     * @param appkey appkey
+     * @return count
+     */
+    Long getMatchListCount(String appkey);
+
+    /**
+     * 将用户添加到匹配列表
+     *
+     * @param appkey appkey
+     * @param chatUsername chatUsername
+     */
+    void addUserToMatchList(String appkey, String chatUsername);
+
+    /**
+     * 从匹配列表中移除用户
+     *
+     * @param appkey appkey
+     * @param chatUsername chatUsername
+     */
+    void removeUserToMatchList(String appkey, String chatUsername);
+
+    /**
+     * 用户匹配加锁
+     *
+     * @param appkey appkey
+     * @param chatUsername chatUsername
+     * @return true/false
+     */
+    Boolean matchLock(String appkey, String chatUsername);
+
+    /**
+     * 用户匹配解锁
+     *
+     * @param appkey appkey
+     * @param chatUsername chatUsername
+     */
+    void matchUnLock(String appkey, String chatUsername);
+
+    /**
+     * 随机匹配用户加锁
+     *
+     * @param appkey appkey
+     * @return true/false
+     */
+    Boolean randomMatchUserLock(String appkey);
+
+    /**
+     * 随机匹配用户解锁
+     *
+     * @param appkey appkey
+     */
+    void randomMatchUserUnLock(String appkey);
+
 }

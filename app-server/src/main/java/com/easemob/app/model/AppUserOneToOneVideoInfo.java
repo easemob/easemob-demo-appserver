@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "EASEMOB_APP_USER_INFO_NEW")
-public class AppUserInfoNew {
+@Table(name = "EASEMOB_APP_USER_1V1_VIDEO_INFO")
+public class AppUserOneToOneVideoInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,9 +32,6 @@ public class AppUserInfoNew {
 
     @Column(name = "chat_user_name")
     private String chatUserName;
-
-    @Column(name = "chat_user_password")
-    private String chatUserPassword;
 
     @Column(name = "agora_uid")
     private String agoraUid;

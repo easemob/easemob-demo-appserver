@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChatGroup {
-    private String custom;
+public class AppUserPresenceStatus {
 
-    private Long created;
+    private String username;
+
+    private Boolean onlineStatus;
 }

@@ -15,8 +15,8 @@ import javax.validation.Valid;
 @RestController
 public class AppUserController {
 
-    @Value("${application.appkey}")
-    private String defaultAppKey;
+    @Value("${application.1v1.video.appkey}")
+    private String videoAppKey;
 
     @Autowired
     private AppUserService appUserService;
@@ -25,26 +25,26 @@ public class AppUserController {
         this.appUserService = appUserService;
     }
 
-    @PostMapping("/inside/app/user/login/V2")
-    public ResponseEntity loginWithPhoneNumber(@RequestBody @Valid LoginAppUser appUser) {
-
+    @PostMapping("/inside/app/user/1v1/video/login")
+    public ResponseEntity oneToOneVideoLogin(@RequestBody @Valid LoginAppUser appUser) {
         ResponseParam responseParam = new ResponseParam();
 
-        UserLoginResponse loginResponse = appUserService.loginWithPhoneNumber(defaultAppKey, appUser);
+        UserLoginResponse loginResponse = appUserService.oneToOneVideoLogin(videoAppKey, appUser);
 
         responseParam.setCode(ResCode.RES_OK.getCode());
         responseParam.setToken(loginResponse.getToken());
         responseParam.setPhoneNumber(loginResponse.getPhoneNumber());
         responseParam.setChatUserName(loginResponse.getUserName());
         responseParam.setAvatarUrl(loginResponse.getAvatarUrl());
+        responseParam.setAgoraUid(loginResponse.getAgoraUid());
         return ResponseEntity.ok(responseParam);
     }
 
-    @PostMapping(value = "/inside/app/user/{chatUsername}/avatar/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity appUserAvatarUpload(@PathVariable("chatUsername") String chatUsername, MultipartFile file) {
+    @PostMapping(value = "/inside/app/user/{phoneNumber}/1v1/video/avatar/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity appUserOneToOneVideoAvatarUpload(@PathVariable("phoneNumber") String phoneNumber, MultipartFile file) {
 
-        if (StringUtils.isBlank(chatUsername)) {
-            throw new IllegalArgumentException("Chat username cannot be empty.");
+        if (StringUtils.isBlank(phoneNumber)) {
+            throw new IllegalArgumentException("Phone number cannot be empty.");
         }
 
         if (file == null) {
@@ -52,7 +52,7 @@ public class AppUserController {
         }
 
         ResponseParam responseParam = new ResponseParam();
-        String url = appUserService.uploadAvatar(defaultAppKey, chatUsername, file);
+        String url = appUserService.oneToOneVideoUploadAvatar(videoAppKey, phoneNumber, file);
         responseParam.setCode(ResCode.RES_OK.getCode());
         responseParam.setAvatarUrl(url);
 

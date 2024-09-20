@@ -22,4 +22,9 @@ public class ResponseParam {
     private Map<String, String> data;
     private String phoneNumber;
     private String avatarUrl;
+    private String matchStatus;
+    private String channelName;
+    private String rtcToken;
+    private String matchedUser;
+    private String matchedChatUser;
 }

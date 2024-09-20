@@ -13,4 +13,8 @@ public class UserLoginResponse {
     private String avatarUrl;
 
     private String token;
+
+    private String agoraUid;
+
+    private String roomId;
 }

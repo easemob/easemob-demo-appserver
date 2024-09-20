@@ -1,6 +1,5 @@
 package com.easemob.app.exception;
 
-import com.easemob.app.exception.*;
 import com.easemob.app.model.ResCode;
 import com.easemob.app.model.ResponseParam;
 import org.springframework.http.HttpHeaders;
@@ -15,11 +14,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-/**
- * @author skyfour
- * @date 2021/2/9
- * @email skyzhang@easemob.com
- */
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -122,17 +116,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, param, headers, status, request);
     }
 
-    @ExceptionHandler(ASServerSDKException.class)
-    public ResponseEntity<Object> handleServerSDKException(ASServerSDKException ex, WebRequest request){
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        HttpHeaders headers = new HttpHeaders();
-        final ResponseParam param = new ResponseParam();
-        param.setErrorInfo(ex.getMessage());
-        param.setCode(ResCode.RES_UNKNOWN.getCode());
-
-        return handleExceptionInternal(ex, param, headers, status, request);
-    }
-
     @ExceptionHandler(ASRestException.class)
     public ResponseEntity<Object> handleRestException(ASRestException ex, WebRequest request){
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -144,17 +127,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, param, headers, status, request);
     }
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-        BindingResult result = ex.getBindingResult();
-        FieldError error = result.getFieldError();
-        final ResponseParam param = new ResponseParam();
-        param.setErrorInfo(error.getDefaultMessage());
-        param.setCode(ResCode.RES_REQUEST_PARAM_ERROR.getCode());
-
-        return handleExceptionInternal(ex, param, headers, status, request);
-    }
-
     @ExceptionHandler(ASUnAuthorizedException.class)
     public ResponseEntity<Object> handleDuplicateNoAuthException(ASUnAuthorizedException ex, WebRequest request){
         HttpStatus status = HttpStatus.UNAUTHORIZED;
@@ -162,6 +134,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final ResponseParam param = new ResponseParam();
         param.setErrorInfo(ex.getMessage());
         param.setCode(ResCode.RES_UNAUTHORIZED_ERROR.getCode());
+
+        return handleExceptionInternal(ex, param, headers, status, request);
+    }
+
+    @ExceptionHandler(ASOneToOneVideoMatchException.class)
+    public ResponseEntity<Object> handleOneToOneVideoMatchException(ASOneToOneVideoMatchException ex, WebRequest request){
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpHeaders headers = new HttpHeaders();
+        final ResponseParam param = new ResponseParam();
+        param.setErrorInfo(ex.getMessage());
+        param.setCode(ResCode.RES_REQUEST_PARAM_ERROR.getCode());
 
         return handleExceptionInternal(ex, param, headers, status, request);
     }

@@ -190,7 +190,6 @@ public final class RedisUtils {
                 .closeStaleConnections(true)
                 .enablePeriodicRefresh()
                 .enablePeriodicRefresh(Duration.ofSeconds(5))
-                .enableAdaptiveRefreshTrigger()
                 .enableAllAdaptiveRefreshTriggers()
                 .build();
         ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
