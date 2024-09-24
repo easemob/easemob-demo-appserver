@@ -32,7 +32,7 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private RedisService redisService;
 
-    @Override public TokenInfo getRtcToken(String channelName, String phoneNumber) {
+    @Override public TokenInfo getOneToOneVideoRtcToken(String channelName, String phoneNumber) {
         AppUserOneToOneVideoInfo appUserInfo = this.assemblyService.getAppUserOneToOneVideoInfoFromDB(videoAppKey, phoneNumber);
         if (appUserInfo == null) {
             throw new ASNotFoundException("phoneNumber " + phoneNumber + " does not exist.");
@@ -69,6 +69,7 @@ public class TokenServiceImpl implements TokenService {
 
         tokenInfo.setToken(token);
         tokenInfo.setExpireTimestamp(System.currentTimeMillis() + this.expirePeriod * 1000);
+        tokenInfo.setAgoraUid(String.valueOf(agoraUid));
         return tokenInfo;
     }
 

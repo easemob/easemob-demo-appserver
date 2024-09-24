@@ -10,7 +10,7 @@ public interface TokenService {
      * @param phoneNumber 手机号
      * @return TokenInfo
      */
-    TokenInfo getRtcToken(String channelName, String phoneNumber);
+    TokenInfo getOneToOneVideoRtcToken(String channelName, String phoneNumber);
 
     /**
      * 根据频道名称与agoraUid获取声网rtc token

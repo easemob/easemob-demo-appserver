@@ -21,14 +21,11 @@ public class TokenController {
     @Autowired
     private TokenService tokenService;
 
-    @Autowired
-    private RedisService redisService;
-
     public TokenController(TokenService tokenService) {
         this.tokenService = tokenService;
     }
 
-    @GetMapping("/inside/token/rtc/channel/{channelName}/phoneNumber/{phoneNumber}")
+    @GetMapping("/inside/token/rtc/channel/{channelName}/phoneNumber/{phoneNumber}/1v1video")
     public ResponseEntity getAgoraRtcTokenWithPhoneNumber(@PathVariable String channelName,
             @PathVariable String phoneNumber) {
 
@@ -38,9 +35,10 @@ public class TokenController {
             responseParam.setErrorInfo("channelName or phoneNumber is not null.");
         }
 
-        TokenInfo token = tokenService.getRtcToken(channelName, phoneNumber);
+        TokenInfo token = tokenService.getOneToOneVideoRtcToken(channelName, phoneNumber);
         responseParam.setAccessToken(token.getToken());
         responseParam.setExpireTimestamp(token.getExpireTimestamp());
+        responseParam.setAgoraUid(token.getAgoraUid());
 
         return ResponseEntity.ok(responseParam);
     }
