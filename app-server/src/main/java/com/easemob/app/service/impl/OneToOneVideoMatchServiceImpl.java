@@ -187,6 +187,13 @@ public class OneToOneVideoMatchServiceImpl implements OneToOneVideoMatchService 
                 Map<String, Object> messageExt = new HashMap<>();
                 messageExt.put(AppConstants.USER_MATCHED_CHAT_USER, chatUsername);
                 restService.sendCmdMessageToUser(appkey, AppConstants.MESSAGE_ADMIN, matchedUser, AppConstants.MESSAGE_ONE_TO_ONE_VIDEO_CANCEL_MATCHED, true, messageExt);
+
+
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    log.error("Thread sleep error: {}", e.getMessage());
+                }
             }
         }
 
