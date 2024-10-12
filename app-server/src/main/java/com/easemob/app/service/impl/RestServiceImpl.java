@@ -1,6 +1,7 @@
 package com.easemob.app.service.impl;
 
 import com.easemob.app.config.ApplicationConfig;
+import com.easemob.app.model.AppUserOnlineStatus;
 import com.easemob.app.model.AppUserPresenceStatus;
 import com.easemob.app.service.RestService;
 import com.easemob.app.utils.RestUtil;
@@ -113,11 +114,11 @@ public class RestServiceImpl implements RestService {
         return fileUrl;
     }
 
-    @Override public List<AppUserPresenceStatus> getUserPresenceStatus(String appkey,
+    @Override public List<AppUserOnlineStatus> getUserOnlineStatus(String appkey,
             List<String> chatUserNames) {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
-        String url = baseUri + "/" + orgName + "/" + appName + "/users/u1/presence";
+        String url = baseUri + "/" + orgName + "/" + appName + "/users/batch/status";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -137,29 +138,16 @@ public class RestServiceImpl implements RestService {
             throw new RestClientException("Get user presence status error.");
         }
 
-        List<Map<String, Object>> result = (List<Map<String, Object>>) responseEntity.getBody().get("result");
-        List<AppUserPresenceStatus> appUserPresenceStatuses = new ArrayList<>();
-        for (Map<String, Object> userStatus : result) {
-            String username = (String) userStatus.get("uid");
-            if (userStatus.get("status") instanceof List) {
-                appUserPresenceStatuses.add(new AppUserPresenceStatus(username, Boolean.FALSE));
-                continue;
-            }
+        List<Map<String, String>> result = (List<Map<String, String>>) responseEntity.getBody().get("data");
+        List<AppUserOnlineStatus> appUserOnlineStatuses = new ArrayList<>();
+        for (Map<String, String> userStatus : result) {
+            String username = userStatus.keySet().iterator().next();
+            Boolean onlineStatus = userStatus.values().iterator().next().equals("online");
 
-            Map<String, String> statusMap = (Map<String, String>) userStatus.get("status");
-            if (statusMap == null) {
-                appUserPresenceStatuses.add(new AppUserPresenceStatus(username, Boolean.FALSE));
-                continue;
-            }
-
-            if (statusMap.containsValue("0")) {
-                appUserPresenceStatuses.add(new AppUserPresenceStatus(username, Boolean.FALSE));
-            } else {
-                appUserPresenceStatuses.add(new AppUserPresenceStatus(username, Boolean.TRUE));
-            }
+            appUserOnlineStatuses.add(new AppUserOnlineStatus(username, onlineStatus));
         }
 
-        return appUserPresenceStatuses;
+        return appUserOnlineStatuses;
     }
 
     @Override

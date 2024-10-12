@@ -2,7 +2,7 @@ package com.easemob.app.service;
 
 import com.easemob.app.config.AppConstants;
 import com.easemob.app.model.AppUserOneToOneVideoInfo;
-import com.easemob.app.model.AppUserPresenceStatus;
+import com.easemob.app.model.AppUserOnlineStatus;
 import com.easemob.app.repository.AppUserOneToOneVideoInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
-public class PresenceService {
+public class UserOnlineStatusService {
 
     @Value("${application.1v1.video.appkey}")
     private String videoAppKey;
@@ -47,17 +47,17 @@ public class PresenceService {
                 });
 
                 if (usernames.size() != 0) {
-                    List<AppUserPresenceStatus> userPresenceStatuses;
+                    List<AppUserOnlineStatus> userOnlineStatuses;
                     try {
-                        userPresenceStatuses = restService.getUserPresenceStatus(videoAppKey, usernames);
+                        userOnlineStatuses = restService.getUserOnlineStatus(videoAppKey, usernames);
                     } catch (Exception e) {
                         log.error("get user presence | rest service error. e : {}", e.getMessage());
                         continue;
                     }
 
-                    userPresenceStatuses.forEach(userPresenceStatus -> {
-                        String username = userPresenceStatus.getUsername();
-                        Boolean isOnline = userPresenceStatus.getOnlineStatus();
+                    userOnlineStatuses.forEach(userOnlineStatus -> {
+                        String username = userOnlineStatus.getUsername();
+                        Boolean isOnline = userOnlineStatus.getOnlineStatus();
                         if (!isOnline) {
                             String userMatchStatus = redisService.getUserStatus(videoAppKey, username, AppConstants.USER_MATCH_STATUS);
                             if (!AppConstants.ONE_TO_ONE_VIDEO_UNMATCH.equals(userMatchStatus)) {

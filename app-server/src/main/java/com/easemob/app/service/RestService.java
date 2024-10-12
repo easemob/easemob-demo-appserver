@@ -1,5 +1,6 @@
 package com.easemob.app.service;
 
+import com.easemob.app.model.AppUserOnlineStatus;
 import com.easemob.app.model.AppUserPresenceStatus;
 import org.springframework.util.MultiValueMap;
 
@@ -35,13 +36,13 @@ public interface RestService {
      String uploadFile(String appkey, String id, File file);
 
     /**
-     * 获取用户presence在线状态
+     * 获取用户在线状态
      *
      * @param appkey appkey
      * @param chatUserNames chatUserNames
      * @return list
      */
-    List<AppUserPresenceStatus> getUserPresenceStatus(String appkey, List<String> chatUserNames);
+    List<AppUserOnlineStatus> getUserOnlineStatus(String appkey, List<String> chatUserNames);
 
     /**
      * 设置用户属性
