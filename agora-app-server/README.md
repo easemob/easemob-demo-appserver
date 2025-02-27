@@ -44,11 +44,11 @@ AgoraAppServer是用来获取声网 Rtc Token 的开源项目以及简单的维�
         application.agoraCert=XXX
         
         ## redis
-        spring.redis.channel.host=localhost
-        spring.redis.channel.port=6379
-        spring.redis.channel.password=123456
-        spring.redis.channel.timeout=10000
-        ### channel 映射关系过期时间
+        spring.redis.channel.nodes=tcp://localhost:6379
+        spring.redis.channel.password=
+        spring.redis.channel.type=standalone
+        spring.redis.channel.ssl=false
+
         spring.redis.channel.expireTime=86400
         
     ```
