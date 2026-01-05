@@ -10,6 +10,6 @@ CREATE TABLE `easemob_app_user_info_new`
     `updated_at`         datetime(6) NOT NULL COMMENT '用户更新时间',
     `created_at`         datetime(6) NOT NULL COMMENT '用户创建时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uniq_appkey_phone_number` (`appkey`,`phone_number`),
+    UNIQUE KEY `uniq_appkey_phone_number` (`appkey`(100),`phone_number`),
     KEY `idx_appkey_chat_username` (`appkey`(100),`chat_user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
