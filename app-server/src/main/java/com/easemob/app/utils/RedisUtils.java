@@ -4,6 +4,7 @@ import com.easemob.app.config.redis.RedisConfigProperties;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import io.lettuce.core.resource.ClientResources;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -29,7 +30,7 @@ public final class RedisUtils {
 
     public static RedisConnectionFactory connectionFactory(
             RedisConfigProperties.Property property) {
-        Class clazz = JedisConnectionFactory.class;
+        Class<? extends RedisConnectionFactory> clazz = JedisConnectionFactory.class;
         if ("lettuce".equals(property.getConnectionFactory())) {
             clazz = LettuceConnectionFactory.class;
         }
@@ -175,22 +176,32 @@ public final class RedisUtils {
                 .connectTimeout(Duration.ofMillis(property.getConnectTimeout()))
                 .build();
     }
-
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static LettuceClientConfiguration getPoolClientConfiguration(
             RedisConfigProperties.Property property, ClientResources clientResources) {
 
-        JedisPoolConfig jedisPoolConfig = getJedisPoolConfig(property);
+        GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
+        if (property.getMaxTotal() != null) {
+            poolConfig.setMaxTotal(property.getMaxTotal());
+        }
+        if (property.getMaxIdle() != null) {
+            poolConfig.setMaxIdle(property.getMaxIdle());
+        }
+        if (property.getMinIdle() != null) {
+            poolConfig.setMinIdle(property.getMinIdle());
+        }
+        if (property.getMaxWait() != null) {
+            poolConfig.setMaxWait(Duration.ofMillis(property.getMaxWait()));
+        }
 
         LettucePoolingClientConfiguration.LettucePoolingClientConfigurationBuilder builder =
                 LettucePoolingClientConfiguration.builder();
-        builder.poolConfig(jedisPoolConfig);
+        builder.poolConfig(poolConfig);
 
         ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions
                 .builder()
                 .closeStaleConnections(true)
-                .enablePeriodicRefresh()
                 .enablePeriodicRefresh(Duration.ofSeconds(5))
-                .enableAdaptiveRefreshTrigger()
                 .enableAllAdaptiveRefreshTriggers()
                 .build();
         ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
@@ -225,14 +236,14 @@ public final class RedisUtils {
         }
 
         if (property.getMaxWait() != null) {
-            jedisPoolConfig.setMaxWaitMillis(property.getMaxWait());
+            jedisPoolConfig.setMaxWait(Duration.ofMillis(property.getMaxWait()));
         }
         if (property.getTimeBetweenEvictionRuns() != null) {
-            jedisPoolConfig.setTimeBetweenEvictionRunsMillis(property.getTimeBetweenEvictionRuns());
+            jedisPoolConfig.setTimeBetweenEvictionRuns(Duration.ofMillis(property.getTimeBetweenEvictionRuns()));
         }
 
         if (property.getMinEvictableIdleTimeMillis() != null) {
-            jedisPoolConfig.setMinEvictableIdleTimeMillis(property.getMinEvictableIdleTimeMillis());
+            jedisPoolConfig.setMinEvictableIdleDuration(Duration.ofMillis(property.getMinEvictableIdleTimeMillis()));
         }
 
         if (property.getTestOnBorrow() != null) {

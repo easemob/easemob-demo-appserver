@@ -1,4 +1,4 @@
-CREATE TABLE `easemob_app_user_info_new`
+CREATE TABLE IF NOT EXISTS `easemob_app_user_info_new`
 (
     `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
     `appkey`             varchar(512) NOT NULL COMMENT 'appkey',
@@ -9,7 +9,34 @@ CREATE TABLE `easemob_app_user_info_new`
     `agora_uid`          varchar(20)  NOT NULL COMMENT '声网用户id',
     `updated_at`         datetime(6) NOT NULL COMMENT '用户更新时间',
     `created_at`         datetime(6) NOT NULL COMMENT '用户创建时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uniq_appkey_phone_number` (`appkey`(100),`phone_number`),
+    PRIMARY KEY (`id`, `phone_number`, `chat_user_name`),
+    UNIQUE KEY `uniq_appkey_phone_number` (`appkey`,`phone_number`),
+    KEY `idx_appkey_phone_number` (`appkey`(100),`phone_number`),
     KEY `idx_appkey_chat_username` (`appkey`(100),`chat_user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `easemob_app_user_info`
+(
+    `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
+    `phone_number`       varchar(11) NOT NULL COMMENT '手机号',
+    `appkey`             varchar(512) NOT NULL  COMMENT 'appkey',
+    `chat_user_name`     varchar(32) NOT NULL COMMENT '环信用户名',
+    `chat_user_password` varchar(32) NOT NULL COMMENT '用户的密码',
+    `agora_uid`          varchar(20) NOT NULL COMMENT '声网用户id',
+    `updated_at`         datetime(6) NOT NULL COMMENT '用户更新时间',
+    `created_at`         datetime(6) NOT NULL COMMENT '用户创建时间',
+    PRIMARY KEY (`id`, `phone_number`, `chat_user_name`),
+    KEY `idx_appkey` (`appkey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE IF NOT EXISTS `easemob_app_group`
+(
+    `id`         bigint(20) NOT NULL AUTO_INCREMENT,
+    `appkey`     varchar(512) NOT NULL COMMENT 'appkey',
+    `group_id`   varchar(32)  NOT NULL COMMENT '群组id',
+    `created_at` datetime(6) NOT NULL COMMENT '群组创建时间',
+    PRIMARY KEY (`id`),
+    KEY          `idx_appkey` (`appkey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

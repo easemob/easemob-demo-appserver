@@ -1,4 +1,4 @@
-package com.easemob.app.model;
+package com.easemob.app.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

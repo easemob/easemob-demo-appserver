@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GenerateGroupAvatarUtil {
 
-    public static BufferedImage getCombinationOfHead(RestService restService, String appkey, String groupId, List<String> urls)
+    public static BufferedImage getCombinationOfHead(RestService restService, String appkey, String groupId,
+            List<String> urls)
             throws IOException {
 
         List<URL> paths = new ArrayList<>();
@@ -30,7 +31,8 @@ public class GenerateGroupAvatarUtil {
             size = urls.size();
         }
         for (int i = 0; i < size; i++) {
-            paths.add(new URL(urls.get(i)));
+            // 推荐写法：先构建 URI，再转为 URL
+            paths.add(java.net.URI.create(urls.get(i)).toURL());
         }
 
         List<BufferedImage> bufferedImages = new ArrayList<BufferedImage>();
@@ -80,7 +82,8 @@ public class GenerateGroupAvatarUtil {
             }
         }).join();
 
-        log.info("resize group avatar end. appkey : {}, groupId : {}, time : {}", appkey, groupId, (System.currentTimeMillis() - handleTime));
+        log.info("resize group avatar end. appkey : {}, groupId : {}, time : {}", appkey, groupId,
+                (System.currentTimeMillis() - handleTime));
 
         int width = 336; // 这是画板的宽高
         int height = 336; // 这是画板的高度
@@ -96,7 +99,7 @@ public class GenerateGroupAvatarUtil {
 
         // 设置背景色
         g2d.setBackground(new Color(227, 230, 232));
-        //g2d.setBackground(new Color(231, 0, 4));
+        // g2d.setBackground(new Color(231, 0, 4));
 
         // 通过使用当前绘图表面的背景色进行填充来清除指定的矩形。
         g2d.clearRect(0, 0, width, height);
@@ -110,23 +113,23 @@ public class GenerateGroupAvatarUtil {
                 if (i <= 3) {
                     int x = imageSize * i + padding * i - imageSize;
                     int y = padding;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                 } else if (i <= 6) {
                     int x = imageSize * j + padding * j - imageSize;
                     int y = imageSize + padding * 2;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     j++;
                 } else {
                     int x = imageSize * k + padding * k - imageSize;
                     int y = imageSize * 2 + padding * 3;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     k++;
@@ -137,23 +140,23 @@ public class GenerateGroupAvatarUtil {
                 if (i <= 2) {
                     int x = imageSize * (i - 1) + padding * (i - 1) + borderPadding;
                     int y = padding;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                 } else if (i <= 5) {
                     int x = imageSize * j + padding * j - imageSize;
                     int y = imageSize + padding * 2;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     j++;
                 } else {
                     int x = imageSize * k + padding * k - imageSize;
                     int y = imageSize * 2 + padding * 3;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     k++;
@@ -162,23 +165,23 @@ public class GenerateGroupAvatarUtil {
                 int padding = (width - imageSize * 3) / 4; // 图片间距
                 int borderPadding = (width - imageSize) / 2;
                 if (i <= 1) {
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(borderPadding, padding, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(borderPadding, padding, imageSize,
+                            imageSize, cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), borderPadding, padding, null);
                 } else if (i <= 4) {
                     int x = imageSize * j + padding * j - imageSize;
                     int y = imageSize + padding * 2;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     j++;
                 } else {
                     int x = imageSize * k + padding * k - imageSize;
                     int y = imageSize * 2 + padding * 3;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     k++;
@@ -189,15 +192,15 @@ public class GenerateGroupAvatarUtil {
                 if (i <= 3) {
                     int x = imageSize * i + padding * i - imageSize;
                     int y = borderPadding;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                 } else {
                     int x = imageSize * j + padding * j - imageSize;
                     int y = imageSize + borderPadding + padding;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     j++;
@@ -209,15 +212,15 @@ public class GenerateGroupAvatarUtil {
                 if (i <= 2) {
                     int x = imageSize * (i - 1) + padding * (i - 1) + leftBorderPadding;
                     int y = topBorderPadding;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                 } else {
                     int x = imageSize * j + padding * j - imageSize;
                     int y = imageSize + topBorderPadding + padding;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     j++;
@@ -227,15 +230,15 @@ public class GenerateGroupAvatarUtil {
                 if (i <= 2) {
                     int x = imageSize * i + padding * i - imageSize;
                     int y = padding;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                 } else {
                     int x = imageSize * j + padding * j - imageSize;
                     int y = imageSize + padding * 2;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     j++;
@@ -244,15 +247,15 @@ public class GenerateGroupAvatarUtil {
                 int padding = (width - imageSize * 2) / 3;
                 int borderPadding = (width - imageSize) / 2;
                 if (i <= 1) {
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(borderPadding, padding, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(borderPadding, padding, imageSize,
+                            imageSize, cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), borderPadding, padding, null);
                 } else {
                     int x = imageSize * j + padding * j - imageSize;
                     int y = imageSize + padding * 2;
-                    RoundRectangle2D
-                            roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize,
+                            cornerRadius, cornerRadius);
                     g2d.setClip(roundedRectangle);
                     g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
                     j++;
@@ -262,16 +265,16 @@ public class GenerateGroupAvatarUtil {
                 int padding = (width - imageSize * 2) / 3;
                 int x = imageSize * i + padding * i - imageSize;
                 int y = (height - imageSize) / 2;
-                RoundRectangle2D
-                        roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius,
+                        cornerRadius);
                 g2d.setClip(roundedRectangle);
                 g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
 
             } else if (bufferedImages.size() == 1) {
                 int x = (width - imageSize) / 2;
                 int y = x;
-                RoundRectangle2D
-                        roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius, cornerRadius);
+                RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(x, y, imageSize, imageSize, cornerRadius,
+                        cornerRadius);
                 g2d.setClip(roundedRectangle);
                 g2d.drawImage(bufferedImages.get(i - 1), x, y, null);
             }
@@ -285,27 +288,27 @@ public class GenerateGroupAvatarUtil {
     /**
      * 图片缩放
      *
-     * @param bi      图片数据流
-     * @param height   高度
-     * @param width    宽度
-     * @param bb       比例不对时是否需要补白
+     * @param bi     图片数据流
+     * @param height 高度
+     * @param width  宽度
+     * @param bb     比例不对时是否需要补白
      */
     private static BufferedImage resize(BufferedImage bi, int height, int width,
             boolean bb) {
 
         double ratio = 0; // 缩放比例
 
-        //File f = new File(dis);
-        //            BufferedImage bi = ImageIO.read(dis);
+        // File f = new File(dis);
+        // BufferedImage bi = ImageIO.read(dis);
         Image itemp = bi.getScaledInstance(width, height,
                 Image.SCALE_SMOOTH);
         // 计算比例
         if ((bi.getHeight() > height) || (bi.getWidth() > width)) {
             if (bi.getHeight() > bi.getWidth()) {
-                ratio = (new Integer(height)).doubleValue()
+                ratio = ((double) height)
                         / bi.getHeight();
             } else {
-                ratio = (new Integer(width)).doubleValue() / bi.getWidth();
+                ratio = ((double) height) / bi.getWidth();
             }
             AffineTransformOp op = new AffineTransformOp(
                     AffineTransform.getScaleInstance(ratio, ratio), null);

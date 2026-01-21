@@ -1,6 +1,6 @@
 package com.easemob.app.api;
 
-import com.easemob.app.model.ChannelResponse;
+import com.easemob.app.model.response.ChannelResponse;
 import com.easemob.app.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

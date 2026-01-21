@@ -1,6 +1,7 @@
 package com.easemob.app.service;
 
-import com.easemob.app.model.*;
+import com.easemob.app.model.request.*;
+import com.easemob.app.model.response.*;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AppUserService {

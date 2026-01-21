@@ -1,8 +1,10 @@
 package com.easemob.app.api;
 
-import com.easemob.app.model.*;
+import com.easemob.app.model.request.*;
+import com.easemob.app.model.response.*;
+import com.easemob.app.model.enums.*;
 import com.easemob.app.service.AppUserService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -10,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 public class AppUserController {
@@ -26,7 +28,7 @@ public class AppUserController {
     }
 
     @PostMapping("/inside/app/user/login/V2")
-    public ResponseEntity loginWithPhoneNumber(@RequestBody @Valid LoginAppUser appUser) {
+    public ResponseEntity<ResponseParam> loginWithPhoneNumber(@RequestBody @Valid LoginAppUser appUser) {
 
         ResponseParam responseParam = new ResponseParam();
 
@@ -41,7 +43,7 @@ public class AppUserController {
     }
 
     @PostMapping(value = "/inside/app/user/{chatUsername}/avatar/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity appUserAvatarUpload(@PathVariable("chatUsername") String chatUsername, MultipartFile file) {
+    public ResponseEntity<ResponseParam> appUserAvatarUpload(@PathVariable("chatUsername") String chatUsername, MultipartFile file) {
 
         if (StringUtils.isBlank(chatUsername)) {
             throw new IllegalArgumentException("Chat username cannot be empty.");

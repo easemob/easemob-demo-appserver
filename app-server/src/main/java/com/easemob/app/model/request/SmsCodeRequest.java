@@ -1,4 +1,4 @@
-package com.easemob.app.model;
+package com.easemob.app.model.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

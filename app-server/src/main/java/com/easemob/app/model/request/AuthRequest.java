@@ -1,4 +1,4 @@
-package com.easemob.app.model;
+package com.easemob.app.model.request;
 
 public class AuthRequest {
 

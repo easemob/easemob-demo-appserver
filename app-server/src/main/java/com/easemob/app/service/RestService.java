@@ -1,6 +1,6 @@
 package com.easemob.app.service;
 
-import com.easemob.app.model.ChatGroupListResponse;
+import com.easemob.app.model.response.ChatGroupListResponse;
 import reactor.util.function.Tuple2;
 
 import java.io.BufferedInputStream;

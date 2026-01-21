@@ -1,10 +1,10 @@
 package com.easemob.app.utils;
 
-import org.apache.commons.lang.math.RandomUtils;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUidUtils {
     public static String getUid() {
-        int randomUid = RandomUtils.nextInt(Integer.MAX_VALUE);
+        int randomUid = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
         if (randomUid == 0) {
             return String.valueOf(randomUid + 1);
         }
