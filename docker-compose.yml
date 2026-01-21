@@ -28,6 +28,9 @@ services:
     ports:
       - "8096:8096"
     environment:
+      # Activate Docker Profile
+      SPRING_PROFILES_ACTIVE: docker
+      
       # Application Credentials
       APPLICATION_APPKEY: ${APP_KEY}
       APPLICATION_CLIENTID: ${CLIENT_ID}
