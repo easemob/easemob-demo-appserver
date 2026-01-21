@@ -1,13 +1,12 @@
 package com.easemob.app.service.impl;
 
-import com.easemob.app.model.AppUserInfoNew;
+import com.easemob.app.model.entity.AppUserInfoNew;
 import com.easemob.app.service.AppGroupService;
 import com.easemob.app.service.AssemblyService;
 import com.easemob.app.service.RestService;
 import com.easemob.app.utils.GenerateGroupAvatarUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.aspectj.util.FileUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

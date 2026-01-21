@@ -1,6 +1,6 @@
 package com.easemob.app.service.impl;
 
-import com.easemob.app.model.TokenInfo;
+import com.easemob.app.model.dto.TokenInfo;
 import com.easemob.app.service.*;
 import com.easemob.app.utils.DynamicTokenGenerator;
 import com.easemob.app.utils.RandomUidUtils;

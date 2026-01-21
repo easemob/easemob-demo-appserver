@@ -1,12 +1,12 @@
 package com.easemob.app.api;
 
-import com.easemob.app.model.ResCode;
-import com.easemob.app.model.ResponseParam;
-import com.easemob.app.model.TokenInfo;
+import com.easemob.app.model.enums.ResCode;
+import com.easemob.app.model.response.ResponseParam;
+import com.easemob.app.model.dto.TokenInfo;
 import com.easemob.app.service.RedisService;
 import com.easemob.app.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +29,7 @@ public class TokenController {
     }
 
     @GetMapping("/token/rtc/channel/{channelName}/agorauid/{agoraUid}")
-    public ResponseEntity getAgoraRtcToken(@PathVariable String channelName,
+    public ResponseEntity<ResponseParam> getAgoraRtcToken(@PathVariable String channelName,
             @PathVariable Integer agoraUid,
             @RequestParam("userAccount") String userAccount) {
 
@@ -50,7 +50,7 @@ public class TokenController {
     }
 
     @GetMapping("/inside/token/rtc/channel/{channelName}/user/{chatUsername}")
-    public ResponseEntity getInsideAgoraRtcToken(@PathVariable String channelName,
+    public ResponseEntity<ResponseParam> getInsideAgoraRtcToken(@PathVariable String channelName,
             @PathVariable String chatUsername) {
 
         ResponseParam responseParam = new ResponseParam();
@@ -73,7 +73,7 @@ public class TokenController {
     }
 
     @GetMapping("/inside/token/rtc/channel/{channelName}")
-    public ResponseEntity getInsideAgoraRtcTokenV1(@PathVariable String channelName) {
+    public ResponseEntity<ResponseParam> getInsideAgoraRtcTokenV1(@PathVariable String channelName) {
 
         ResponseParam responseParam = new ResponseParam();
         if (StringUtils.isBlank(channelName)) {
@@ -90,7 +90,7 @@ public class TokenController {
     }
 
     @GetMapping("/inside/token/rtc/channel/{channelName}/agorauid/{agoraUid}")
-    public ResponseEntity getInsideAgoraRtcTokenV2(@PathVariable String channelName,
+    public ResponseEntity<ResponseParam> getInsideAgoraRtcTokenV2(@PathVariable String channelName,
             @PathVariable Integer agoraUid) {
 
         ResponseParam responseParam = new ResponseParam();
@@ -107,7 +107,7 @@ public class TokenController {
     }
 
     @GetMapping("/inside/token/dynamic/{org}/{app}/users/{username}")
-    public ResponseEntity getInsideDynamicToken(@PathVariable("org") String org,
+    public ResponseEntity<ResponseParam> getInsideDynamicToken(@PathVariable("org") String org,
             @PathVariable("app") String app,
             @PathVariable("username") String username,
             @RequestParam(name = "ttl", required = false, defaultValue = "600") Long ttl) {

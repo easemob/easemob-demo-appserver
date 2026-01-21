@@ -1,10 +1,9 @@
 package com.easemob.app.exception;
-
-import com.easemob.app.exception.*;
-import com.easemob.app.model.ResCode;
-import com.easemob.app.model.ResponseParam;
+import com.easemob.app.model.enums.ResCode;
+import com.easemob.app.model.response.ResponseParam;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -145,7 +144,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
         BindingResult result = ex.getBindingResult();
         FieldError error = result.getFieldError();
         final ResponseParam param = new ResponseParam();
@@ -166,11 +165,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, param, headers, status, request);
     }
 
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
-            WebRequest request) {
-        HttpStatus status = HttpStatus.REQUEST_ENTITY_TOO_LARGE;
-        HttpHeaders headers = new HttpHeaders();
+    @Override
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         final ResponseParam param = new ResponseParam();
         param.setErrorInfo("upload avatar too large.");
         param.setCode(ResCode.RES_UPLOAD_AVATAR_TOO_LARGE.getCode());

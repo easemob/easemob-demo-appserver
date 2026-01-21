@@ -75,11 +75,9 @@ public class Utils {
     }
 
     public static byte[] compress(byte[] data) {
-        byte[] output;
         Deflater deflater = new Deflater();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
-
         try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
             deflater.reset();
             deflater.setInput(data);
             deflater.finish();
@@ -89,21 +87,18 @@ public class Utils {
                 int i = deflater.deflate(buf);
                 bos.write(buf, 0, i);
             }
-            output = bos.toByteArray();
+            return bos.toByteArray();
         } catch (Exception e) {
-            output = data;
             e.printStackTrace();
+            return data;
         } finally {
             deflater.end();
         }
-
-        return output;
     }
 
     public static byte[] decompress(byte[] data) {
-        Inflater inflater = new Inflater();
         ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
-
+        Inflater inflater = new Inflater();
         try {
             inflater.setInput(data);
             byte[] buf = new byte[data.length];

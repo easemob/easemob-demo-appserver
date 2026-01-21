@@ -1,10 +1,10 @@
 package com.easemob.app.service.impl;
 
 import com.easemob.app.feign.SmsCodeFeign;
-import com.easemob.app.model.*;
+import com.easemob.app.model.request.*;
+import com.easemob.app.model.response.*;
 import com.easemob.app.service.RedisService;
 import com.easemob.app.service.SmsCodeService;
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class SmsCodeServiceImpl implements SmsCodeService {
 
         try {
             redisService.saveSmsCode(phoneNumber, response.getData(), resourceIp);
-        } catch (FeignException e) {
+        } catch (Exception e) {
             log.error("save sms code error : {}", e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
         }

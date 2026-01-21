@@ -1,7 +1,7 @@
 package com.easemob.app.feign;
 
-import com.easemob.app.model.GetSmsCodeResponse;
-import com.easemob.app.model.SmsCodeRequest;
+import com.easemob.app.model.response.GetSmsCodeResponse;
+import com.easemob.app.model.request.SmsCodeRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

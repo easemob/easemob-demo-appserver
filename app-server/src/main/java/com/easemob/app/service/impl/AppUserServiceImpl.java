@@ -1,7 +1,9 @@
 package com.easemob.app.service.impl;
 
 import com.easemob.app.exception.*;
-import com.easemob.app.model.*;
+import com.easemob.app.model.entity.*;
+import com.easemob.app.model.request.*;
+import com.easemob.app.model.response.*;
 import com.easemob.app.service.*;
 import com.easemob.app.utils.AppServerUtils;
 import com.easemob.app.utils.FileCovert;
@@ -13,8 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 @Slf4j
 @Service
@@ -29,8 +30,6 @@ public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private RestService restService;
 
-    @Autowired
-    private RedisService redisService;
 
     @Override
     public UserLoginResponse loginWithPhoneNumber(String appKey, LoginAppUser appUser) {

@@ -1,15 +1,18 @@
 package com.easemob.app.config;
 
 import lombok.Data;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+// 移除旧的 SSLConnectionSocketFactory 导入（如果不需要了）
+// import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory; 
+// 引入新的 DefaultClientTlsStrategy
+import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy; 
+import org.apache.hc.core5.ssl.SSLContexts;
+import org.apache.hc.core5.util.Timeout;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,26 +36,24 @@ public class ApplicationConfig {
 
     @Bean
     public ClientHttpRequestFactory httpRequestFactory() {
-
         return new HttpComponentsClientHttpRequestFactory(httpClient());
-
     }
 
     @Bean
     public HttpClient httpClient() {
-        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", SSLConnectionSocketFactory.getSocketFactory())
+        // 使用 Builder 构建连接管理器
+        PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+                .setTlsSocketStrategy(new DefaultClientTlsStrategy(SSLContexts.createDefault())) 
+                .setMaxConnTotal(200)
+                .setMaxConnPerRoute(100)
+                .setDefaultConnectionConfig(ConnectionConfig.custom()
+                        .setConnectTimeout(Timeout.ofMilliseconds(5000))
+                        .setSocketTimeout(Timeout.ofMilliseconds(10000))
+                        .build())
                 .build();
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(registry);
-        //设置整个连接池最大连接数 根据自己的场景决定
-        connectionManager.setMaxTotal(200);
-        //路由是对maxTotal的细分
-        connectionManager.setDefaultMaxPerRoute(100);
+
         RequestConfig requestConfig = RequestConfig.custom()
-                .setSocketTimeout(10000) //服务器返回数据(response)的时间，超过该时间抛出read timeout
-                .setConnectTimeout(5000)//连接上服务器(握手成功)的时间，超出该时间抛出connect timeout
-                .setConnectionRequestTimeout(1000)//从连接池中获取连接的超时时间，超过该时间未拿到可用连接，会抛出org.apache.http.conn.ConnectionPoolTimeoutException: Timeout waiting for connection from pool
+                .setConnectionRequestTimeout(Timeout.ofMilliseconds(1000))
                 .build();
 
         return HttpClientBuilder.create()

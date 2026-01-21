@@ -1,8 +1,8 @@
-package com.easemob.app.model;
+package com.easemob.app.model.request;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 @Data
 public class SendSmsRequest {

@@ -1,6 +1,6 @@
 package com.easemob.app.utils;
 
-import com.easemob.app.model.DynamicTokenResource;
+import com.easemob.app.model.dto.DynamicTokenResource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;

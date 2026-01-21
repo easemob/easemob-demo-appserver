@@ -1,6 +1,6 @@
 package com.easemob.app.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.easemob.app.config.ApplicationConfig;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -46,7 +46,7 @@ public class RestUtil {
                         body.put("grant_type", "client_credentials");
 
                         HttpHeaders header = new HttpHeaders();
-                        header.setContentType(MediaType.APPLICATION_JSON_UTF8);
+                        header.setContentType(MediaType.APPLICATION_JSON);
 
                         //  pull request
                         ResponseEntity<String> responseEntity = restTemplate

@@ -1,7 +1,7 @@
 package com.easemob.app.service.impl;
 
 import cn.hutool.core.lang.UUID;
-import com.easemob.app.model.AppUserInfoNew;
+import com.easemob.app.model.entity.AppUserInfoNew;
 import com.easemob.app.repository.AppUserInfoNewRepository;
 import com.easemob.app.service.AssemblyService;
 import com.easemob.app.utils.RandomUidUtils;

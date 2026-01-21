@@ -1,6 +1,6 @@
 package com.easemob.app.service;
 
-import com.easemob.app.model.AppUserInfoNew;
+import com.easemob.app.model.entity.AppUserInfoNew;
 
 public interface AssemblyService {
 

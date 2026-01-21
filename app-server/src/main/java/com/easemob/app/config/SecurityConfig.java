@@ -1,11 +1,11 @@
 package com.easemob.app.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * @author skyfour
@@ -14,17 +14,21 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
+@EnableMethodSecurity(
         securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true
+        jsr250Enabled = true
 )
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    @Override protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    }
-
-    @Override public void configure(WebSecurity http) throws Exception {
-        http.ignoring().antMatchers("/**", "/agora/channel/mapper", "/token/**", "/app/user/**", "/app/chat/user/**", "/management/**");
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/**", "/agora/channel/mapper", "/token/**", "/app/user/**", "/app/chat/user/**", "/management/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+        );
+        http.csrf(csrf -> csrf.disable());
+        return http.build();
     }
 }

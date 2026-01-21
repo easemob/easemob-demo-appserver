@@ -1,4 +1,4 @@
-package com.easemob.app.model;
+package com.easemob.app.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,9 +1,9 @@
 package com.easemob.app.api;
 
-import com.easemob.app.model.ResCode;
-import com.easemob.app.model.ResponseParam;
+import com.easemob.app.model.enums.ResCode;
+import com.easemob.app.model.response.ResponseParam;
 import com.easemob.app.service.AppGroupService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class AppGroupController {
     private AppGroupService appGroupService;
 
     @GetMapping("/inside/app/group/{groupId}/avatarurl")
-    public ResponseEntity getAppGroupAvatarUrl(@PathVariable("groupId") String groupId,
+    public ResponseEntity<ResponseParam> getAppGroupAvatarUrl(@PathVariable("groupId") String groupId,
             @RequestParam(value = "appkey", required = false) String appKey) {
 
         if (StringUtils.isBlank(groupId)) {

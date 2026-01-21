@@ -1,5 +1,5 @@
-package com.easemob.app.model;
-
+package com.easemob.app.model.response;
+import com.easemob.app.model.enums.ResCode;
 import lombok.Data;
 
 @Data

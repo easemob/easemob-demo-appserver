@@ -1,0 +1,45 @@
+# 使用阿里云 Dragonwell 官方镜像，避免手动下载失败
+# 直接使用 registry.cn-hangzhou.aliyuncs.com 作为源，不通过 DOCKER_MIRROR 变量拼接
+# 这样可以确保一定会去阿里云拉取，不受 DOCKER_MIRROR 设置的影响
+
+# ==========================================
+# Stage 1: Build the application
+# ==========================================
+FROM registry.cn-hangzhou.aliyuncs.com/dragonwell/dragonwell:21-ubuntu AS build
+
+WORKDIR /app
+
+# 安装 Maven
+# 替换 Ubuntu 软件源为阿里云
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y maven && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy Maven project definition
+COPY pom.xml .
+COPY app-server/pom.xml app-server/
+
+# Copy source code
+COPY app-server/src app-server/src
+COPY doc doc
+
+# Build the application
+RUN mvn clean package -pl app-server -am -DskipTests
+
+# ==========================================
+# Stage 2: Create the runtime image
+# ==========================================
+FROM registry.cn-hangzhou.aliyuncs.com/dragonwell/dragonwell:21-ubuntu
+
+WORKDIR /app
+
+# Copy the compiled JAR from the build stage
+COPY --from=build /app/app-server/target/*.jar app.jar
+
+# Expose the application port
+EXPOSE 8096
+
+# Define the entry point
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,6 +1,6 @@
 package com.easemob.app.repository;
 
-import com.easemob.app.model.AppUserInfoNew;
+import com.easemob.app.model.entity.AppUserInfoNew;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
