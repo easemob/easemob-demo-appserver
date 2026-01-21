@@ -13,9 +13,9 @@
 ```
 
 ## 技术选择与版本信息
-* [JDK-21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
-* [Spring Boot-4.0.1](https://docs.spring.io/spring-boot/system-requirements.html)
-* [Spring Cloud-2025.1.0](https://spring.io/projects/spring-cloud#learn)
+* [JDK 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+* [Spring Boot 4.0.1](https://docs.spring.io/spring-boot/system-requirements.html)
+* [Spring Cloud 2025.1.0](https://spring.io/projects/spring-cloud#learn)
 * [Spring Data JPA 4.0.2](https://spring.io/projects/spring-data-jpa)
 * [lombok 1.18.42](https://projectlombok.org/)
 * [Hutool 5.8.35](https://github.com/dromara/hutool)
@@ -23,7 +23,7 @@
 * [Commons Lang3 3.18.0](https://commons.apache.org/proper/commons-lang/)
 * [Guava 33.4.0-jre](https://github.com/google/guava)
 * [Jackson 2.19.1](https://github.com/FasterXML/jackson)
-* [mysql-connector-j 9.1.0] (https://github.com/mysql/mysql-connector-j/tree/9.1.0)
+* [mysql-connector-j 9.1.0](https://github.com/mysql/mysql-connector-j/tree/9.1.0)
 
 
 ## 数据库使用说明
@@ -40,6 +40,38 @@
 - 管理后台的使用可参考文档：[环信管理后台使用指南](http://docs-im.easemob.com/im/quickstart/essential/console)
 
 - 成为环信IM开发者并成功注册App后，可在自己的服务器部署服务
+ - 服务配置文件参考：[application.properties](./app-server/src/main/resources/application.properties)
+
+    - AppKey组成规则：orgName#appName，拿到AppKey后可得到对应的orgName和appName；
+
+    - 使用自己的orgName和appName以及AppKey的clientId和clientSecret修改配置文件，如下：
+    - 其中baseHttpUri和intranet.base.https.uri中的XXX是REST API服务的服务器域名前缀
+    ```
+        application.appkey=XXX
+        application.baseHttpUri=http://XXX.easemob.com
+        application.clientId=XXX
+        application.clientSecret=XXX
+        application.intranet.base.https.uri.=https://XXX.easemob.com
+    ```
+
+    - 安装MySQL 8.0+，并根据[建表SQL](./doc/create_tables.sql)创建数据库及表，设置服务配置文件：
+    ```
+        spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+        spring.datasource.url=jdbc:mysql://127.0.0.1:3306/app_server?useSSL=false&useUnicode=true&characterEncoding=utf8
+        spring.datasource.username=root
+        spring.datasource.password=123456
+    ```
+
+    - 启动服务即可
+
+## maven一键打包操作流程
+- 按照上述操作完成JDK、Spring Boot、MySQL等环境的安装配置；
+- 进入项目根目录，终端执行如下命令，即可完成'一键式'构建流程，涵盖：代码编译、测试运行、打包jar文件等内容；
+```
+mvn clean install
+```
+
+- 打包完成后，在`app-server/target`目录下可找到打包好的jar文件；
 
 ## Docker 环境快速部署
 
