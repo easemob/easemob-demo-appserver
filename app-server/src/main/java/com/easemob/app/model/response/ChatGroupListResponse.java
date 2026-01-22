@@ -9,7 +9,13 @@ import java.util.List;
 @AllArgsConstructor
 public class ChatGroupListResponse {
 
+    /**
+     * 群组 ID 列表
+     */
     private List<String> chatGroupIds;
 
+    /**
+     * 分页游标
+     */
     private String cursor;
 }

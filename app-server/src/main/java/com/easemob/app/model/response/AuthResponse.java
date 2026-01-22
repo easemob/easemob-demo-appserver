@@ -2,6 +2,9 @@ package com.easemob.app.model.response;
 
 public class AuthResponse {
 
+    /**
+     * 认证令牌
+     */
     private String authToken;
 
     public AuthResponse() {

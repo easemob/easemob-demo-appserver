@@ -27,7 +27,8 @@ public class AppGroupServiceImpl implements AppGroupService {
     @Autowired
     private RestService restService;
 
-    @Override public String getAvatarUrl(String appKey, String groupId) {
+    @Override
+    public String getAvatarUrl(String appKey, String groupId) {
         String chatGroupCustom = restService.getChatGroupCustom(appKey, groupId);
         if (StringUtils.isNotBlank(chatGroupCustom)) {
             return chatGroupCustom;
@@ -52,12 +53,12 @@ public class AppGroupServiceImpl implements AppGroupService {
 
             BufferedImage outImage;
             try {
-                outImage = GenerateGroupAvatarUtil.getCombinationOfHead(restService, appKey, groupId, groupMemberAvatarUrlList);
+                outImage = GenerateGroupAvatarUtil.getCombinationOfHead(restService, appKey, groupId,
+                        groupMemberAvatarUrlList);
             } catch (Exception e) {
                 log.error("Generate group avatar failed, appKey: {}, groupId: {}", appKey, groupId, e);
                 throw new IllegalArgumentException("Generate group avatar failed.");
             }
-
 
             String groupAvatarUrl;
             File tempFile;

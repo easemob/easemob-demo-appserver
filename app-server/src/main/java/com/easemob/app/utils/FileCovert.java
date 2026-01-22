@@ -15,7 +15,8 @@ public class FileCovert {
             FileCopyUtils.copy(multipartFile.getBytes(), file);
             return file;
         } catch (Exception e) {
-            log.error("convert multipart file to file fail. appkey : {}, userId : {}, error : {}", appkey, userId, e.getMessage());
+            log.error("convert multipart file to file fail. appkey : {}, userId : {}, error : {}", appkey, userId,
+                    e.getMessage());
             throw new IllegalArgumentException("Convert multipart file to chat file error.");
         }
     }

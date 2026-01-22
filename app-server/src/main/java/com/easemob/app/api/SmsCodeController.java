@@ -1,4 +1,5 @@
 package com.easemob.app.api;
+
 import com.easemob.app.model.enums.ResCode;
 import com.easemob.app.model.response.ResponseParam;
 import com.easemob.app.utils.AppServerUtils;
@@ -16,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 public class SmsCodeController {
 
-
     @PostMapping("/inside/app/sms/send/{phoneNumber}")
     public ResponseEntity<ResponseParam> sendSms(@PathVariable("phoneNumber") String phoneNumber) {
 
@@ -30,12 +30,12 @@ public class SmsCodeController {
 
         AppServerUtils.isPhoneNumber(phoneNumber);
 
-//        redisService.checkSmsCodeLimit(phoneNumber, clientIP);
+        // redisService.checkSmsCodeLimit(phoneNumber, clientIP);
 
         ResponseParam responseParam = new ResponseParam();
 
         // 需要自己集成发送短信服务
-//        smsCodeService.sendSms(phoneNumber, clientIP);
+        // smsCodeService.sendSms(phoneNumber, clientIP);
         responseParam.setCode(ResCode.RES_OK.getCode());
         return ResponseEntity.ok(responseParam);
     }

@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo [INFO] Starting Easemob App Server Environment...
+echo [INFO] Starting Easemob App Server (All-in-One Docker)...
 
 :: 1. Check if .env exists, create if missing
 if not exist .env (
@@ -19,58 +19,39 @@ if not exist .env (
     )
 )
 
-:: 2. Load DOCKER_MIRROR from .env if set
-set "ENV_MIRROR="
-for /f "tokens=1,2 delims==" %%a in (.env) do (
-    if "%%a"=="DOCKER_MIRROR" set "ENV_MIRROR=%%b"
-)
-
-:: 3. Determine Mirror Strategy
-:: Priority: 1. .env config  2. Huawei Cloud (Reliable) 3. DaoCloud 4. Official
-if not "!ENV_MIRROR!"=="" (
-    set "DOCKER_MIRROR=!ENV_MIRROR!"
-    echo [INFO] Using configured Docker Mirror: !DOCKER_MIRROR!
-) else (
-    echo [INFO] No Docker Mirror configured in .env. Using Huawei Cloud mirror.
-    set "DOCKER_MIRROR=swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io"
-)
-
-:: 4. Attempt Start
-echo [INFO] Building and starting services using mirror: !DOCKER_MIRROR!
-echo [INFO] This may take a few minutes for the first run (Maven Build)...
-
-docker-compose up -d --build
+:: 2. Build the Docker Image
+echo.
+echo [INFO] Building Docker Image (easemob/im-server-allinone:latest)...
+echo [INFO] This might take a few minutes...
+docker build -f Dockerfile.easemob -t easemob/im-server-allinone:latest .
 
 if %ERRORLEVEL% neq 0 (
     echo.
-    echo [WARN] Start failed with mirror: !DOCKER_MIRROR!
-    
-    :: Retry Strategy
-    echo [INFO] Retrying with alternative mirrors...
-    
-    :: List of mirrors to try (space separated)
-    set "MIRROR_LIST=docker.m.daocloud.io docker.1panel.live docker.rainbond.cc docker.io"
-    
-    for %%M in (!MIRROR_LIST!) do (
-        if "%%M" neq "!DOCKER_MIRROR!" (
-             echo.
-             echo [INFO] Retrying with mirror: %%M
-             set "DOCKER_MIRROR=%%M"
-             docker-compose up -d --build
-             
-             if !ERRORLEVEL! equ 0 (
-                 goto :success
-             ) else (
-                 echo [WARN] Mirror %%M failed.
-             )
-        )
-    )
-    
-    :: All failed
+    echo [ERROR] Docker build failed.
+    echo [TIP] Please check if Docker Desktop is running.
+    pause
+    exit /b 1
+)
+
+:: 3. Clean up existing container
+echo.
+echo [INFO] Cleaning up old container...
+docker rm -f easemob-server-instance >nul 2>&1
+
+:: 4. Run the Container
+echo.
+echo [INFO] Starting Container...
+docker run -d ^
+  --name easemob-server-instance ^
+  -p 8096:8096 ^
+  -p 3307:3306 ^
+  -p 6379:6379 ^
+  --env-file .env ^
+  easemob/im-server-allinone:latest
+
+if %ERRORLEVEL% neq 0 (
     echo.
-    echo [ERROR] All mirror attempts failed.
-    echo [TIP] Your Docker Daemon might be configured with a broken registry mirror (e.g. ustc).
-    echo [TIP] Please check your internet connection or try a VPN.
+    echo [ERROR] Failed to start container.
     pause
     exit /b 1
 )
@@ -80,8 +61,8 @@ echo.
 echo [SUCCESS] Environment started!
 echo.
 echo App Server: http://localhost:8096
-echo MySQL:      localhost:3307
+echo MySQL:      localhost:3307 (User: root / Pass: cy990810)
 echo Redis:      localhost:6379
 echo.
-echo Logs:       docker-compose logs -f
+echo Logs:       docker logs -f easemob-server-instance
 pause

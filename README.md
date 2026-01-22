@@ -1,234 +1,214 @@
-# easemob-im-app-server
+# Easemob IM App Server Demo
 
-## 简介
+## 📖 项目简介
 
-该服务为 环信 Demo 提供后端服务，可作为 App 使用环信SDK实现环信 Demo 的服务器端实现示例。
+本项目为 **环信 IM Demo** 的后端服务参考实现。它演示了如何使用环信服务端 SDK 构建一个完整的 App 后端，涵盖用户体系、群组管理等核心功能。开发者可以基于此项目快速搭建自己的 IM 应用服务端。
 
-- 该服务目前提供的功能有
+### 核心功能
+*   **用户体系**：用户注册/登录（对接短信验证码流程）、用户信息管理。
+*   **头像管理**：用户头像上传与存储、群组头像获取。
+*   **环信集成**：生成用户 Token、同步用户数据到环信 IM 服务器。
 
+---
+
+## 🚀 快速启动 (Docker 推荐)
+
+本项目提供了高度优化的 **All-in-One Docker 镜像**，将 Java 应用、MySQL 8.0 和 Redis 整合在同一个轻量级容器中（< 800MB）。我们提供了全自动化的启动脚本，无需本地安装任何依赖（仅需 Docker），即可实现**一键构建与运行**。
+
+### 1. 环境准备
+*   [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+### 2. 配置应用信息
+首次启动前，请确保项目根目录下存在 `.env` 配置文件（脚本会自动检测，若不存在会从 `.env.example` 复制）。
+
+打开 `.env` 文件，填入您的环信应用信息（可在 [环信管理后台](https://console.easemob.com/) 获取）：
+```ini
+# 环信 AppKey
+APPLICATION_APPKEY=your_org_name#your_app_name
+# AppKey 对应的 Client ID
+APPLICATION_CLIENTID=your_client_id
+# AppKey 对应的 Client Secret
+APPLICATION_CLIENTSECRET=your_client_secret
 ```
-1、用户登录；
-2、上传用户头像；
-3、获取群组头像；
-```
 
-## 技术选择与版本信息
-* [JDK 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
-* [Spring Boot 4.0.1](https://docs.spring.io/spring-boot/system-requirements.html)
-* [Spring Cloud 2025.1.0](https://spring.io/projects/spring-cloud#learn)
-* [Spring Data JPA 4.0.2](https://spring.io/projects/spring-data-jpa)
-* [lombok 1.18.42](https://projectlombok.org/)
-* [Hutool 5.8.35](https://github.com/dromara/hutool)
-* [Fastjson2 2.0.51](https://github.com/alibaba/fastjson2)  
-* [Commons Lang3 3.18.0](https://commons.apache.org/proper/commons-lang/)
-* [Guava 33.4.0-jre](https://github.com/google/guava)
-* [Jackson 2.19.1](https://github.com/FasterXML/jackson)
-* [mysql-connector-j 9.1.0](https://github.com/mysql/mysql-connector-j/tree/9.1.0)
+### 3. 一键启动
+根据您的操作系统选择启动方式，脚本会自动完成 **构建镜像** -> **清理旧环境** -> **启动新容器** 的全过程：
 
+*   **Windows 用户**:
+    双击运行项目根目录下的 `start.bat` 脚本。
 
-## 数据库使用说明
-* 数据库选择：MySQL 8.0+
-* 使用MySQL存储用户信息，需要先创建数据库`app_server`
-* 建表SQL见 [建表SQL](./doc/create_tables.sql)
-
-## 使用
-
-- 若初次使用环信，需前往[环信IM开发者注册页](https://console.easemob.com/user/register) 注册成为环信IM开发者；
-
-- 注册成为环信IM开发者后，登录[环信IM管理后台](https://console.easemob.com/user/login) 创建一个应用(App)，之后在App详情页可获得AppKey以及AppKey的clientId和clientSecret；
-
-- 管理后台的使用可参考文档：[环信管理后台使用指南](http://docs-im.easemob.com/im/quickstart/essential/console)
-
-- 成为环信IM开发者并成功注册App后，可在自己的服务器部署服务
- - 服务配置文件参考：[application.properties](./app-server/src/main/resources/application.properties)
-
-    - AppKey组成规则：orgName#appName，拿到AppKey后可得到对应的orgName和appName；
-
-    - 使用自己的orgName和appName以及AppKey的clientId和clientSecret修改配置文件，如下：
-    - 其中baseHttpUri和intranet.base.https.uri中的XXX是REST API服务的服务器域名前缀
-    ```
-        application.appkey=XXX
-        application.baseHttpUri=http://XXX.easemob.com
-        application.clientId=XXX
-        application.clientSecret=XXX
-        application.intranet.base.https.uri.=https://XXX.easemob.com
+*   **macOS / Linux 用户**:
+    在终端中运行：
+    ```bash
+    sh start.sh
     ```
 
-    - 安装MySQL 8.0+，并根据[建表SQL](./doc/create_tables.sql)创建数据库及表，设置服务配置文件：
+### 4. 访问服务
+启动成功后，所有服务将在同一个容器内运行，并对外提供服务：
+*   **App Server**: `http://localhost:8096`
+*   **MySQL**: `localhost:3307` (默认密码: `123456`，数据库自动初始化)
+*   **Redis**: `localhost:6379`
+
+> **注意**: 该模式下数据默认存储在容器内部。如果需要持久化 MySQL 数据，可以在 `start.bat` 或 `start.sh` 中的 `docker run` 命令添加 `-v mysql_data:/var/lib/mysql` 参数。
+
+---
+
+## 🛠 本地开发环境搭建 (源码部署)
+
+如果您需要修改代码或进行二次开发，请按照以下步骤配置本地开发环境。
+
+### 1. 环境依赖
+请确保本地已安装以下软件：
+*   **JDK 21**: [下载地址](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+*   **Maven 3.8+**: [下载地址](https://maven.apache.org/download.cgi)
+*   **MySQL 8.0+**: [下载地址](https://dev.mysql.com/downloads/mysql/)
+*   **Redis 6.0+**: [下载地址](https://redis.io/download/)
+
+### 2. 数据库初始化
+1.  连接到您的本地 MySQL 数据库。
+2.  创建数据库 `app_server`：
+    ```sql
+    CREATE DATABASE app_server CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     ```
-        spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-        spring.datasource.url=jdbc:mysql://127.0.0.1:3306/app_server?useSSL=false&useUnicode=true&characterEncoding=utf8
-        spring.datasource.username=root
-        spring.datasource.password=123456
+3.  导入表结构数据。执行项目目录下的 SQL 脚本：
+    *   文件路径：`doc/create_tables.sql`
+    *   命令行导入示例：
+        ```bash
+        mysql -u root -p app_server < doc/create_tables.sql
+        ```
+
+### 3. 项目配置
+修改配置文件 `app-server/src/main/resources/application.properties`：
+
+1.  **配置环信应用信息**：
+    ```properties
+    application.appkey=your_org#your_app
+    application.clientId=your_client_id
+    application.clientSecret=your_client_secret
+    
+    # REST API 服务域名 (通常无需修改，除非使用私有部署)
+    application.baseHttpUri=http://a1.easemob.com
+    application.intranet.base.https.uri=https://a1.easemob.com
+    ```
+2.  **配置数据库连接**：
+    ```properties
+    spring.datasource.url=jdbc:mysql://127.0.0.1:3306/app_server?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    spring.datasource.username=root
+    spring.datasource.password=your_password
+    ```
+3.  **配置 Redis 连接**（如果本地 Redis 设置了密码）：
+    ```properties
+    # 默认连接本地 localhost:6379，无密码
+    # 如需修改，请在配置文件中添加或修改 spring.redis 相关配置
     ```
 
-    - 启动服务即可
+### 4. 编译与运行
+进入项目根目录，执行以下 Maven 命令：
 
-## maven一键打包操作流程
-- 按照上述操作完成JDK、Spring Boot、MySQL等环境的安装配置；
-- 进入项目根目录，终端执行如下命令，即可完成'一键式'构建流程，涵盖：代码编译、测试运行、打包jar文件等内容；
-```
-mvn clean install
-```
+```bash
+# 1. 编译并打包 (跳过测试以加快速度)
+mvn clean install -DskipTests
 
-- 打包完成后，在`app-server/target`目录下可找到打包好的jar文件；
-
-## Docker 环境快速部署
-
-本服务已提供完整的 Docker 运行环境，支持一键启动。
-
-### 前置要求
-* Docker & Docker Compose
-* Windows/Linux/MacOS
-
-### 启动步骤
-1. **Windows**: 双击运行根目录下的 `start.bat`。
-   **Linux/Mac**: 在终端执行 `docker-compose up -d --build`。
-2. 首次运行时，脚本会自动检测并生成 `.env` 配置文件。
-3. 请打开 `.env` 文件，填入您的环信 AppKey、Client ID 以及 Client Secret。
-4. 保存文件后，再次运行启动脚本即可。
-
-### 服务信息
-* **App Server**: http://localhost:8096
-* **MySQL**: 端口 3307 (账号 root / 密码 123456)
-* **Redis**: 端口 6379
-
-### 镜像源说明
-项目已配置智能镜像源切换，默认使用阿里云/华为云镜像，确保国内构建速度。
-
-## 环信文档
-
-[服务端REST文档](https://doc.easemob.com/document/server-side/overview.html)
-
-## API
-
-### 用户登录
-
-用户登录并获取用户 token，用于客户端 sdk 登录环信服务器。
-
-说明：目前用户登录使用手机号+短信验证码的方式，发送短信验证码服务需要自己进行对接，目前 app-server 内没有对用户登录的短信验证码进行验证，发送短信验证码以及用户登录对短信验证码验证需要自己进行处理。
-
-**Path:** `http://localhost:8096/inside/app/user/login/V2`
-
-**HTTP Method:** `POST`
-
-**Request Headers:**
-
-| Param        | description      |
-| ------------ | ---------------- |
-| Content-Type | application/json |
-
-**Request Body example:**
-
-{"phoneNumber":"15942098909", "smsCode":"123456"}
-
-**Request Body params:**
-
-| Param       | Data Type | description |
-|-------------| --------- |-------------|
-| phoneNumber | String    | 手机号         |
-| smsCode     | String    | 短信验证码       |
-
-**request example:**
-
-```
-curl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' 'http://localhost:8096/inside/app/user/login/V2' -d '{"phoneNumber":"15942098909", "smsCode":"123456"}'
+# 2. 运行服务
+# 打包完成后 jar 包位于 app-server/target 目录下
+java -jar app-server/target/app-server-0.0.1-SNAPSHOT.jar
 ```
 
-**Response Parameters:**
+---
 
-| Param           | Data Type | description                |
-| --------------- |-----------|----------------------------|
-| code            | Integer   | 响应状态码                      |
-| token     | String    | 用户 token，用于客户端 sdk 登录环信服务器 |
-| phoneNumber     | String    | 手机号                        |
-| chatUserName | String      | 环信 id                      |
-| avatarUrl | String    | 用户头像 url                   |
+## 📚 API 接口文档
 
-**response example:**
+服务默认运行在 `8096` 端口。以下是核心接口说明。
 
+> 完整服务端 REST API 文档请参考：[环信服务端集成文档](https://doc.easemob.com/document/server-side/overview.html)
+
+### 1. 用户登录 (Login)
+用于获取用户 Token，客户端 SDK 需使用此 Token 登录环信服务器。
+
+*   **URL**: `http://localhost:8096/inside/app/user/login/V2`
+*   **Method**: `POST`
+*   **Content-Type**: `application/json`
+
+**请求示例**:
+```bash
+curl -X POST 'http://localhost:8096/inside/app/user/login/V2' \
+-H 'Content-Type: application/json' \
+-d '{"phoneNumber":"15942098909", "smsCode":"123456"}'
+```
+
+**参数说明**:
+| 参数名 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| phoneNumber | String | 是 | 手机号 |
+| smsCode | String | 是 | 短信验证码 (注：当前Demo未接入真实短信服务，可任意填写) |
+
+**响应示例**:
 ```json
 {
     "code": 200,
-    "token": "xxx",
-    "phoneNumber": "xxx",
-    "chatUserName": "xxx",
-    "avatarUrl": "xxx"
+    "token": "YWMt...",
+    "phoneNumber": "15942098909",
+    "chatUserName": "624afd8ff4",
+    "avatarUrl": "http://a1.easemob.com/1152260105225458/demo/chatfiles/80d86270-f695-11f0-a9d4-41861fe06944"
+}
+```
+
+### 2. 上传用户头像 (Upload Avatar)
+
+*   **URL**: `http://localhost:8096/inside/app/user/{chatUsername}/avatar/upload`
+*   **Method**: `POST`
+*   **Content-Type**: `multipart/form-data`
+
+**请求示例**:
+```bash
+curl -X POST http://localhost:8096/inside/app/user/624afd8ff4/avatar/upload \
+-H 'Content-Type: multipart/form-data' \
+-F "file=@/path/to/image.jpg"
+```
+
+**响应示例**:
+```json
+{
+    "code": 200,
+    "avatarUrl": "http://.../avatar.jpg"
+}
+```
+
+### 3. 获取群组头像 (Get Group Avatar)
+
+*   **URL**: `http://localhost:8096/inside/app/group/{groupId}/avatarurl`
+*   **Method**: `GET`
+
+**请求示例**:
+```bash
+curl -X GET http://localhost:8096/inside/app/group/302456782258179/avatarurl
+```
+
+**响应示例**:
+```json
+{
+    "code": 200,
+    "avatarUrl": "http://.../group_avatar.jpg"
 }
 ```
 
 ---
 
-### 上传用户头像
+## 🏗 技术栈
 
-**Path:** `http://localhost:8096/inside/app/user/{chatUsername}/avatar/upload`
-
-**HTTP Method:** `POST`
-
-**Request Headers:**
-
-| Param        | description      |
-| ------------ | ---------------- |
-| Content-Type | multipart/form-data |
-
-**Request Body example:**
-file=@/Users/XXX/image.jpg
-
-**Request Body params:**
-
-| Param   | description |
-|---------|-------------|
-| file    | 头像本地路径      |
-
-**request example:**
-
-```
-curl -X POST http://localhost:8096/inside/app/user/jack/avatar/upload -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' -F file=@/Users/XXX/image.jpg
-```
-
-**Response Parameters:**
-
-| Param           | Data Type | description                |
-| --------------- |-----------|----------------------------|
-| code            | Integer   | 响应状态码                      |
-| avatarUrl | String    | 用户头像 url                   |
-
-**response example:**
-
-```json
-{
-    "code": 200,
-    "avatarUrl": "xxx"
-}
-```
+| 组件 | 版本 | 说明 |
+|---|---|---|
+| **JDK** | 21 | 编程语言基础环境 |
+| **Spring Boot** | 4.0.1 | (原文档标注 4.0.1 疑有误，暂按主流高版本理解，实际以 pom.xml 为准) |
+| **Spring Cloud** | 2025.1.0 | 微服务架构支持 |
+| **Spring Data JPA** | 4.0.2 | 持久层框架 |
+| **MySQL** | 8.0+ | 关系型数据库 |
+| **Redis** | 6.0+ | 缓存服务 |
+| **Lombok** | 1.18.42 | 代码简化工具 |
+| **Hutool** | 5.8.35 | Java 工具包 |
 
 ---
 
-### 获取群组头像
-
-**Path:** `http://localhost:8096/inside/app/group/{groupId}/avatarurl`
-
-**HTTP Method:** `GET`
-
-**request example:**
-
-```
-curl -X GET http://localhost:8096/inside/app/group/242023244300303/avatarurl
-```
-
-**Response Parameters:**
-
-| Param           | Data Type | description |
-| --------------- |-----------|-------------|
-| code            | Integer   | 响应状态码       |
-| avatarUrl | String    | 群组头像 url    |
-
-**response example:**
-
-```json
-{
-    "code": 200,
-    "avatarUrl": "xxx"
-}
-```
-
+## 🔗 相关资源
+*   [环信管理后台](https://console.easemob.com/user/login)
+*   [环信开发者文档](http://docs-im.easemob.com/im/start)

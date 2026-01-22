@@ -43,7 +43,8 @@ public class AppUserController {
     }
 
     @PostMapping(value = "/inside/app/user/{chatUsername}/avatar/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseParam> appUserAvatarUpload(@PathVariable("chatUsername") String chatUsername, MultipartFile file) {
+    public ResponseEntity<ResponseParam> appUserAvatarUpload(@PathVariable("chatUsername") String chatUsername,
+            MultipartFile file) {
 
         if (StringUtils.isBlank(chatUsername)) {
             throw new IllegalArgumentException("Chat username cannot be empty.");

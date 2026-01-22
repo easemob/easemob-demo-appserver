@@ -7,18 +7,33 @@ import lombok.Value;
 @Value
 public class DynamicTokenResource {
 
+    /**
+     * 签名
+     */
     @JsonProperty("signature")
     private String signature;
 
+    /**
+     * 环信 AppKey
+     */
     @JsonProperty("appkey")
     private String appkey;
 
+    /**
+     * 用户 ID
+     */
     @JsonProperty("userId")
     private String userId;
 
+    /**
+     * 当前时间戳
+     */
     @JsonProperty("curTime")
     private Long curTime;
 
+    /**
+     * 过期时间 (Time To Live)
+     */
     @JsonProperty("ttl")
     private Long ttl;
 

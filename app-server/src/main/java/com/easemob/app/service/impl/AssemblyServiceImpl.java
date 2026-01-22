@@ -44,7 +44,8 @@ public class AssemblyServiceImpl implements AssemblyService {
         return chatUsername;
     }
 
-    @Override public AppUserInfoNew getAppUserInfoNewFromDB(String appKey, String phoneNumber) {
+    @Override
+    public AppUserInfoNew getAppUserInfoNewFromDB(String appKey, String phoneNumber) {
         return this.appUserInfoNewRepository.findByAppkeyAndPhoneNumber(appKey, phoneNumber);
     }
 
@@ -65,7 +66,8 @@ public class AssemblyServiceImpl implements AssemblyService {
         return appUserInfo != null;
     }
 
-    @Override public void saveAppUserNewToDB(String appKey, String phoneNumber, String chatUsername,
+    @Override
+    public void saveAppUserNewToDB(String appKey, String phoneNumber, String chatUsername,
             String chatUserPassword, String agoraUid) {
         AppUserInfoNew appUserInfo = new AppUserInfoNew();
         appUserInfo.setAppkey(appKey);
@@ -79,7 +81,8 @@ public class AssemblyServiceImpl implements AssemblyService {
         log.info("userAccount info new save to db successfully :{}", appUserInfo);
     }
 
-    @Override public void updateAppUserInfoToDB(AppUserInfoNew appUserInfo) {
+    @Override
+    public void updateAppUserInfoToDB(AppUserInfoNew appUserInfo) {
         this.appUserInfoNewRepository.save(appUserInfo);
         log.info("userAccount avatar url update to db successfully :{}", appUserInfo);
     }

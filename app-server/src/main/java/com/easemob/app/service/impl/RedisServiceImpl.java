@@ -131,7 +131,8 @@ public class RedisServiceImpl implements RedisService {
         return easemobUserId;
     }
 
-    @Override public void saveSmsCode(String phoneNumber, String smsCode, String resourceIp) {
+    @Override
+    public void saveSmsCode(String phoneNumber, String smsCode, String resourceIp) {
         try {
             String redisKeyRecord = String.format(RedisKeyConstants.PHONE_SMS_CODE_RECORD, phoneNumber);
             String redisKeyValidity = String.format("%s%s", phoneNumber, System.currentTimeMillis());
@@ -139,7 +140,8 @@ public class RedisServiceImpl implements RedisService {
 
             redisTemplate.opsForHash().put(redisKeyRecord, redisKeyValidity, smsCode);
 
-            String redisKeyMinute = String.format(RedisKeyConstants.PHONE_SMS_CODE_SEND_COUNT_LIMIT_MINUTE, phoneNumber);
+            String redisKeyMinute = String.format(RedisKeyConstants.PHONE_SMS_CODE_SEND_COUNT_LIMIT_MINUTE,
+                    phoneNumber);
             String redisKeyDay = String.format(RedisKeyConstants.PHONE_SMS_CODE_SEND_COUNT_LIMIT_DAY, phoneNumber);
             String redisKeyHour = String.format(RedisKeyConstants.PHONE_SMS_CODE_SEND_COUNT_LIMIT_HOUR, phoneNumber);
             String redisKeyIp = String.format(RedisKeyConstants.PHONE_SMS_CODE_SEND_COUNT_LIMIT_IP, resourceIp);
@@ -177,7 +179,8 @@ public class RedisServiceImpl implements RedisService {
             redisTemplate.expire(redisKeyDay, 86400, TimeUnit.SECONDS);
         } else {
             if (Integer.parseInt(dayLimit) == 0) {
-                throw new IllegalArgumentException("Sending SMS verification codes on the same day cannot exceed the limit of 15 times");
+                throw new IllegalArgumentException(
+                        "Sending SMS verification codes on the same day cannot exceed the limit of 15 times");
             }
         }
 
@@ -187,7 +190,8 @@ public class RedisServiceImpl implements RedisService {
             redisTemplate.expire(redisKeyHour, 3600, TimeUnit.SECONDS);
         } else {
             if (Integer.parseInt(hourLimit) == 0) {
-                throw new IllegalArgumentException("Sending SMS verification codes in the current hour cannot exceed the limit of 10 times");
+                throw new IllegalArgumentException(
+                        "Sending SMS verification codes in the current hour cannot exceed the limit of 10 times");
             }
         }
 
@@ -213,13 +217,15 @@ public class RedisServiceImpl implements RedisService {
 
             return redisTemplate.opsForHash().values(redisKey);
         } catch (Exception e) {
-            log.error("get phone sms code validity failed. phoneNUmber : {}, Message - {}", phoneNumber, e.getMessage());
+            log.error("get phone sms code validity failed. phoneNUmber : {}, Message - {}", phoneNumber,
+                    e.getMessage());
         }
 
         return null;
     }
 
-    @Override public Boolean checkIfUidExists(String agoraUid) {
+    @Override
+    public Boolean checkIfUidExists(String agoraUid) {
         String redisKey = String.format("inside:app:save:agorauid:%s", agoraUid);
 
         boolean result;
@@ -234,7 +240,8 @@ public class RedisServiceImpl implements RedisService {
         return result;
     }
 
-    @Override public void saveUid(String agoraUid) {
+    @Override
+    public void saveUid(String agoraUid) {
         String redisKey = String.format("inside:app:save:agorauid:%s", agoraUid);
 
         try {
@@ -247,7 +254,7 @@ public class RedisServiceImpl implements RedisService {
     public static long getRemainSecondsOneDay() {
         Date date = new Date();
         LocalDateTime midnight = LocalDateTime.ofInstant(date.toInstant(),
-                        ZoneId.systemDefault()).plusDays(1).withHour(0).withMinute(0)
+                ZoneId.systemDefault()).plusDays(1).withHour(0).withMinute(0)
                 .withSecond(0).withNano(0);
         LocalDateTime currentDateTime = LocalDateTime.ofInstant(date.toInstant(),
                 ZoneId.systemDefault());

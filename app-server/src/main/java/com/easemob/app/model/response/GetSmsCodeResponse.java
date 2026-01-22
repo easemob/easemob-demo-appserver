@@ -7,15 +7,27 @@ import lombok.Value;
 @Value
 public class GetSmsCodeResponse {
 
+    /**
+     * 错误信息
+     */
     @JsonProperty("error")
     private String error;
 
+    /**
+     * 状态
+     */
     @JsonProperty("status")
     private String status;
 
+    /**
+     * 数据
+     */
     @JsonProperty("data")
     private String data;
 
+    /**
+     * 错误描述
+     */
     @JsonProperty("error_description")
     private String errorDescription;
 

@@ -25,7 +25,7 @@ public class DynamicKey5 {
     public DynamicKey5Content content;
 
     public boolean fromString(String key) {
-        if (! key.substring(0, 3).equals(version)) {
+        if (!key.substring(0, 3).equals(version)) {
             return false;
         }
 
@@ -40,22 +40,24 @@ public class DynamicKey5 {
         return true;
     }
 
-    public static String generateSignature(String appCertificate, short service, String appID, int unixTs, int salt, String channelName, long uid, int expiredTs, TreeMap<Short, String> extra) throws
-            Exception {
+    public static String generateSignature(String appCertificate, short service, String appID, int unixTs, int salt,
+            String channelName, long uid, int expiredTs, TreeMap<Short, String> extra) throws Exception {
         // decode hex to avoid case problem
         Hex hex = new Hex();
         byte[] rawAppID = hex.decode(appID.getBytes());
         byte[] rawAppCertificate = hex.decode(appCertificate.getBytes());
 
-        Message m = new Message(service, rawAppID, unixTs, salt, channelName, (int)(uid & 0xFFFFFFFFL), expiredTs, extra);
+        Message m = new Message(service, rawAppID, unixTs, salt, channelName, (int) (uid & 0xFFFFFFFFL), expiredTs,
+                extra);
         byte[] toSign = pack(m);
         return new String(Hex.encodeHex(DynamicKeyUtil.encodeHMAC(rawAppCertificate, toSign), false));
     }
 
-    public static String generateDynamicKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs, TreeMap<Short, String> extra, short service) throws
-            Exception {
+    public static String generateDynamicKey(String appID, String appCertificate, String channel, int ts, int salt,
+            long uid, int expiredTs, TreeMap<Short, String> extra, short service) throws Exception {
         String signature = generateSignature(appCertificate, service, appID, ts, salt, channel, uid, expiredTs, extra);
-        DynamicKey5Content content = new DynamicKey5Content(service, signature, new Hex().decode(appID.getBytes()), ts, salt, expiredTs, extra);
+        DynamicKey5Content content = new DynamicKey5Content(service, signature, new Hex().decode(appID.getBytes()), ts,
+                salt, expiredTs, extra);
         byte[] bytes = pack(content);
         byte[] encoded = new Base64().encode(bytes);
         String base64 = new String(encoded);
@@ -69,27 +71,31 @@ public class DynamicKey5 {
     }
 
     public static String generatePublicSharingKey(
-            String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws
-            Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), PUBLIC_SHARING_SERVICE);
+            String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs)
+            throws Exception {
+        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs,
+                new TreeMap<Short, String>(), PUBLIC_SHARING_SERVICE);
     }
 
-    public static String generateRecordingKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws
-            Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), RECORDING_SERVICE);
+    public static String generateRecordingKey(String appID, String appCertificate, String channel, int ts, int salt,
+            long uid, int expiredTs) throws Exception {
+        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs,
+                new TreeMap<Short, String>(), RECORDING_SERVICE);
     }
 
-    public static String generateMediaChannelKey(String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs) throws
-            Exception {
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, new TreeMap<Short, String>(), MEDIA_CHANNEL_SERVICE);
+    public static String generateMediaChannelKey(String appID, String appCertificate, String channel, int ts, int salt,
+            long uid, int expiredTs) throws Exception {
+        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs,
+                new TreeMap<Short, String>(), MEDIA_CHANNEL_SERVICE);
     }
 
     public static String generateInChannelPermissionKey(
-            String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs, String permission) throws
-            Exception {
+            String appID, String appCertificate, String channel, int ts, int salt, long uid, int expiredTs,
+            String permission) throws Exception {
         TreeMap<Short, String> extra = new TreeMap<Short, String>();
         extra.put(ALLOW_UPLOAD_IN_CHANNEL, permission);
-        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, extra, IN_CHANNEL_PERMISSION);
+        return generateDynamicKey(appID, appCertificate, channel, ts, salt, uid, expiredTs, extra,
+                IN_CHANNEL_PERMISSION);
     }
 
     static class Message implements Packable {
@@ -102,7 +108,8 @@ public class DynamicKey5 {
         public int expiredTs;
         public TreeMap<Short, String> extra;
 
-        public Message(short serviceType, byte[] appID, int unixTs, int salt, String channelName, int uid, int expiredTs, TreeMap<Short, String> extra) {
+        public Message(short serviceType, byte[] appID, int unixTs, int salt, String channelName, int uid,
+                int expiredTs, TreeMap<Short, String> extra) {
             this.serviceType = serviceType;
             this.appID = appID;
             this.unixTs = unixTs;
@@ -114,7 +121,8 @@ public class DynamicKey5 {
         }
 
         public ByteBuf marshal(ByteBuf out) {
-            return out.put(serviceType).put(appID).put(unixTs).put(salt).put(channelName).put(uid).put(expiredTs).put(extra);
+            return out.put(serviceType).put(appID).put(unixTs).put(salt).put(channelName).put(uid).put(expiredTs)
+                    .put(extra);
         }
     }
 
@@ -130,7 +138,8 @@ public class DynamicKey5 {
         public DynamicKey5Content() {
         }
 
-        public DynamicKey5Content(short serviceType, String signature, byte[] appID, int unixTs, int salt, int expiredTs, TreeMap<Short, String> extra) {
+        public DynamicKey5Content(short serviceType, String signature, byte[] appID, int unixTs, int salt,
+                int expiredTs, TreeMap<Short, String> extra) {
             this.serviceType = serviceType;
             this.signature = signature;
             this.appID = appID;

@@ -11,14 +11,16 @@ public interface TokenService {
 
     /**
      * 根据频道名称与agoraUid获取声网rtc token
+     * 
      * @param channelName 频道名称
-     * @param agoraUid 声网uid
+     * @param agoraUid    声网uid
      * @return TokenInfo
      */
     TokenInfo getRtcToken(String channelName, Integer agoraUid);
 
     /**
      * 根据频道名称获取声网rtc token，自动生成agoraUid
+     * 
      * @param channelName 频道名称
      * @return TokenInfo
      */
