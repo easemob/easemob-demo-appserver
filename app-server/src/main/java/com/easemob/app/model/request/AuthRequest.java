@@ -2,6 +2,9 @@ package com.easemob.app.model.request;
 
 public class AuthRequest {
 
+    /**
+     * 用户身份标识
+     */
     private String identity;
 
     public AuthRequest() {

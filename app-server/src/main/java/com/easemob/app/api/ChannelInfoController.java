@@ -19,7 +19,7 @@ public class ChannelInfoController {
 
     @GetMapping("/inside/agora/channel/mapper")
     public ChannelResponse getAgoraChannelInfo(@RequestParam(name = "channelName") String channelName,
-                                               @RequestParam(name = "userAccount", required = false) String userId) {
+            @RequestParam(name = "userAccount", required = false) String userId) {
         Set<String> channelInfo = redisService.getAgoraChannelInfo(channelName);
         Map<String, String> resultMap = new HashMap<>();
         if (!channelInfo.isEmpty()) {

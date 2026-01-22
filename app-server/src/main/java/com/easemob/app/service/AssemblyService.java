@@ -63,6 +63,7 @@ public interface AssemblyService {
 
     /**
      * 将用户db信息更新
+     * 
      * @param appUserInfo 头像url
      */
     void updateAppUserInfoToDB(AppUserInfoNew appUserInfo);

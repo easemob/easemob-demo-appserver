@@ -60,7 +60,8 @@ public class TokenServiceImpl implements TokenService {
         return tokenInfo;
     }
 
-    @Override public TokenInfo getRtcToken(String channelName) {
+    @Override
+    public TokenInfo getRtcToken(String channelName) {
         String agoraUid;
         while (true) {
             agoraUid = RandomUidUtils.getUid();
@@ -104,8 +105,7 @@ public class TokenServiceImpl implements TokenService {
         }
         String clientId = appSecret.getT1();
         String clientSecret = appSecret.getT2();
-        Tuple2<String, Long> generate =
-                DynamicTokenGenerator.generate(appkey, clientId, clientSecret, username, ttl);
+        Tuple2<String, Long> generate = DynamicTokenGenerator.generate(appkey, clientId, clientSecret, username, ttl);
         TokenInfo tokenInfo = new TokenInfo();
         tokenInfo.setToken(generate.getT1());
         tokenInfo.setExpireTimestamp(generate.getT2() * 1000 + ttl * 1000);

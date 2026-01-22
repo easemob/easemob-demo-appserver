@@ -26,7 +26,6 @@ public class AppGroupController {
             throw new IllegalArgumentException("GroupId cannot be empty.");
         }
 
-
         String groupAvatarUrl = appGroupService.getAvatarUrl(defaultAppKey, groupId);
 
         ResponseParam responseParam = new ResponseParam();

@@ -14,7 +14,7 @@ public class RedisConfigProperties {
     @Data
     public static class Property {
 
-        //configuration
+        // configuration
         private String type = "standalone";
         private String master = "mymaster";
         private String nodes;
@@ -26,7 +26,7 @@ public class RedisConfigProperties {
         private Integer maxAttempts = 5;
         private Integer soTimeout = 5000;
 
-        //pool
+        // pool
         private Integer maxIdle;
         private Integer minIdle;
         private Integer maxTotal = 100;

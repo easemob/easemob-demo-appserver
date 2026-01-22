@@ -49,6 +49,7 @@ public class AccessToken2 {
         ;
 
         public short intValue;
+
         PrivilegeChat(int value) {
             intValue = (short) value;
         }
@@ -87,7 +88,8 @@ public class AccessToken2 {
             return "";
         }
 
-        ByteBuf buf = new ByteBuf().put(this.appId).put(this.issueTs).put(this.expire).put(this.salt).put((short) this.services.size());
+        ByteBuf buf = new ByteBuf().put(this.appId).put(this.issueTs).put(this.expire).put(this.salt)
+                .put((short) this.services.size());
         byte[] signing = getSign();
 
         this.services.forEach((k, v) -> {

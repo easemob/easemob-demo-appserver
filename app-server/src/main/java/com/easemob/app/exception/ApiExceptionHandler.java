@@ -1,4 +1,5 @@
 package com.easemob.app.exception;
+
 import com.easemob.app.model.enums.ResCode;
 import com.easemob.app.model.response.ResponseParam;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request){
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -34,7 +35,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASAuthException.class)
-    public ResponseEntity<Object> handleAuthException(ASAuthException ex, WebRequest request){
+    public ResponseEntity<Object> handleAuthException(ASAuthException ex, WebRequest request) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -45,7 +46,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASNotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(ASNotFoundException ex, WebRequest request){
+    public ResponseEntity<Object> handleNotFoundException(ASNotFoundException ex, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -56,7 +57,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASGetChatUserNameException.class)
-    public ResponseEntity<Object> handleGetChatUserIdException(ASGetChatUserNameException ex, WebRequest request){
+    public ResponseEntity<Object> handleGetChatUserIdException(ASGetChatUserNameException ex, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -67,7 +68,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASRegisterChatUserNameException.class)
-    public ResponseEntity<Object> handleRegisterChatUserIdException(ASRegisterChatUserNameException ex, WebRequest request){
+    public ResponseEntity<Object> handleRegisterChatUserIdException(ASRegisterChatUserNameException ex,
+            WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -78,7 +80,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASGetChatUserIdException.class)
-    public ResponseEntity<Object> handleGetChatUserIdException(ASGetChatUserIdException ex, WebRequest request){
+    public ResponseEntity<Object> handleGetChatUserIdException(ASGetChatUserIdException ex, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -89,7 +91,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASPasswordErrorException.class)
-    public ResponseEntity<Object> handlePasswordErrorException(ASPasswordErrorException ex, WebRequest request){
+    public ResponseEntity<Object> handlePasswordErrorException(ASPasswordErrorException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -111,7 +113,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASDuplicateUniquePropertyExistsException.class)
-    public ResponseEntity<Object> handleDuplicateUniquePropertyExistsException(ASDuplicateUniquePropertyExistsException ex, WebRequest request){
+    public ResponseEntity<Object> handleDuplicateUniquePropertyExistsException(
+            ASDuplicateUniquePropertyExistsException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -122,7 +125,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASServerSDKException.class)
-    public ResponseEntity<Object> handleServerSDKException(ASServerSDKException ex, WebRequest request){
+    public ResponseEntity<Object> handleServerSDKException(ASServerSDKException ex, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -133,7 +136,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASRestException.class)
-    public ResponseEntity<Object> handleRestException(ASRestException ex, WebRequest request){
+    public ResponseEntity<Object> handleRestException(ASRestException ex, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();
@@ -144,7 +147,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
+            final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
         BindingResult result = ex.getBindingResult();
         FieldError error = result.getFieldError();
         final ResponseParam param = new ResponseParam();
@@ -155,7 +159,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ASUnAuthorizedException.class)
-    public ResponseEntity<Object> handleDuplicateNoAuthException(ASUnAuthorizedException ex, WebRequest request){
+    public ResponseEntity<Object> handleDuplicateNoAuthException(ASUnAuthorizedException ex, WebRequest request) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         HttpHeaders headers = new HttpHeaders();
         final ResponseParam param = new ResponseParam();

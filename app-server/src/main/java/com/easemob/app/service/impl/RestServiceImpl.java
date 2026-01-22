@@ -46,7 +46,8 @@ public class RestServiceImpl implements RestService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Override public void registerChatUserName(String appkey, String chatUserName, String chatUserPassword) {
+    @Override
+    public void registerChatUserName(String appkey, String chatUserName, String chatUserPassword) {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
         String url = baseUri + "/" + orgName + "/" + appName + "/users";
@@ -90,9 +91,12 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<Map<String, Object>> responseEntity;
 
         try {
-            responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
+            responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
         } catch (Exception e) {
-            log.error("Get chat user. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName, e.getMessage());
+            log.error("Get chat user. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName,
+                    e.getMessage());
             throw new RestClientException("Get chat user token error.");
         }
 
@@ -103,7 +107,8 @@ public class RestServiceImpl implements RestService {
     public void addContact(String appkey, String chatUserName) {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
-        String url = baseUri + "/" + orgName + "/" + appName + "/users/" + chatUserName + "/contacts/users/" + DEFAULT_CONTACT_NAME;
+        String url = baseUri + "/" + orgName + "/" + appName + "/users/" + chatUserName + "/contacts/users/"
+                + DEFAULT_CONTACT_NAME;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -114,7 +119,8 @@ public class RestServiceImpl implements RestService {
         try {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
-            log.error("chat user add contact. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName, e.getMessage());
+            log.error("chat user add contact. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName,
+                    e.getMessage());
             throw new RestClientException("Add contact error.");
         }
     }
@@ -145,9 +151,12 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<Map<String, Object>> responseEntity;
 
         try {
-            responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
+            responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
         } catch (Exception e) {
-            log.error("create chat group. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName, e.getMessage());
+            log.error("create chat group. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName,
+                    e.getMessage());
             throw new RestClientException("Create chat group error.");
         }
         @SuppressWarnings("unchecked")
@@ -181,7 +190,8 @@ public class RestServiceImpl implements RestService {
         try {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
-            log.error("send message to user. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName, e.getMessage());
+            log.error("send message to user. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName,
+                    e.getMessage());
             throw new RestClientException("Send message to user error.");
         }
     }
@@ -212,7 +222,8 @@ public class RestServiceImpl implements RestService {
         try {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
-            log.error("send message to user. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName, e.getMessage());
+            log.error("send message to user. appkey : {}, chatUserName : {}, error : {}", appkey, chatUserName,
+                    e.getMessage());
             throw new RestClientException("Send message to user error.");
         }
     }
@@ -243,12 +254,14 @@ public class RestServiceImpl implements RestService {
         try {
             restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
         } catch (Exception e) {
-            log.error("send message to chat group. appkey : {}, chatGroupId : {}, error : {}", appkey, chatGroupId, e.getMessage());
+            log.error("send message to chat group. appkey : {}, chatGroupId : {}, error : {}", appkey, chatGroupId,
+                    e.getMessage());
             throw new RestClientException("Send message to chat group error.");
         }
     }
 
-    @Override public ChatGroupListResponse getUsers(String appkey, String cursor) {
+    @Override
+    public ChatGroupListResponse getUsers(String appkey, String cursor) {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
 
@@ -268,7 +281,9 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
         try {
-            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
+            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
         } catch (Exception e) {
             log.error("get chat users list. appkey : {}, error : {}", appkey, e.getMessage());
         }
@@ -277,8 +292,7 @@ public class RestServiceImpl implements RestService {
             return null;
         }
         @SuppressWarnings("unchecked")
-        List<Map<String, String>> data =
-                (List<Map<String, String>>) responseEntity.getBody().get("entities");
+        List<Map<String, String>> data = (List<Map<String, String>>) responseEntity.getBody().get("entities");
         String responseCursor = (String) responseEntity.getBody().get("cursor");
 
         List<String> userIds = new ArrayList<>();
@@ -296,7 +310,8 @@ public class RestServiceImpl implements RestService {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
 
-        String url = baseUri + "/" + orgName + "/" + appName + "/chatgroups/" + chatGroupId;;
+        String url = baseUri + "/" + orgName + "/" + appName + "/chatgroups/" + chatGroupId;
+        ;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -306,7 +321,9 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
         try {
-            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
+            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
         } catch (Exception e) {
             log.error("get chat group created. appkey : {}, error : {}", appkey, e.getMessage());
         }
@@ -315,13 +332,13 @@ public class RestServiceImpl implements RestService {
             return null;
         }
         @SuppressWarnings("unchecked")
-        List<Map<String, Object>> data =
-                (List<Map<String, Object>>) responseEntity.getBody().get("data");
+        List<Map<String, Object>> data = (List<Map<String, Object>>) responseEntity.getBody().get("data");
 
         return (String) data.get(0).get("custom");
     }
 
-    @Override public void updateGroupCustom(String appkey, String chatGroupId, String custom) {
+    @Override
+    public void updateGroupCustom(String appkey, String chatGroupId, String custom) {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
         String url = baseUri + "/" + orgName + "/" + appName + "/chatgroups/" + chatGroupId;
@@ -339,7 +356,8 @@ public class RestServiceImpl implements RestService {
         try {
             restTemplate.exchange(url, HttpMethod.PUT, entity, Map.class);
         } catch (Exception e) {
-            log.error("update chat group custom. appkey : {}, chatGroupId : {}, error : {}", appkey, chatGroupId, e.getMessage());
+            log.error("update chat group custom. appkey : {}, chatGroupId : {}, error : {}", appkey, chatGroupId,
+                    e.getMessage());
             throw new RestClientException("Update chat group custom error.");
         }
     }
@@ -349,7 +367,8 @@ public class RestServiceImpl implements RestService {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
 
-        String url = baseUri + "/" + orgName + "/" + appName + "/chatgroups/" + chatGroupId;;
+        String url = baseUri + "/" + orgName + "/" + appName + "/chatgroups/" + chatGroupId;
+        ;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -379,7 +398,9 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
         try {
-            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
+            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
         } catch (Exception e) {
             log.error("get chat group created. appkey : {}, error : {}", appkey, e.getMessage());
         }
@@ -389,8 +410,7 @@ public class RestServiceImpl implements RestService {
         }
 
         @SuppressWarnings("unchecked")
-        Map<String, String> credentials =
-                (Map<String, String>) responseEntity.getBody().get("credentials");
+        Map<String, String> credentials = (Map<String, String>) responseEntity.getBody().get("credentials");
         String clientId = credentials.get("client_id");
         String clientSecret = credentials.get("client_secret");
         return Tuples.of(clientId, clientSecret);
@@ -401,7 +421,8 @@ public class RestServiceImpl implements RestService {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
 
-        String url = baseUri + "/" + orgName + "/" + appName + "/chatgroups/" + chatGroupId + "/users?pagenum=1&pagesize=9";
+        String url = baseUri + "/" + orgName + "/" + appName + "/chatgroups/" + chatGroupId
+                + "/users?pagenum=1&pagesize=9";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -411,17 +432,19 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<Map<String, Object>> responseEntity = null;
 
         try {
-            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
+            responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
         } catch (Exception e) {
-            log.error("get chat group members. appkey : {}, groupId : {}, error : {}", appkey, chatGroupId, e.getMessage());
+            log.error("get chat group members. appkey : {}, groupId : {}, error : {}", appkey, chatGroupId,
+                    e.getMessage());
             if (e.getMessage().contains("Not Found")) {
                 throw new ASNotFoundException("Chat group not found.");
             }
         }
 
         @SuppressWarnings("unchecked")
-        List<Map<String, String>> members =
-                (List<Map<String, String>>) responseEntity.getBody().get("data");
+        List<Map<String, String>> members = (List<Map<String, String>>) responseEntity.getBody().get("data");
 
         List<String> memberNames = new ArrayList<>();
         members.forEach(member -> {
@@ -438,7 +461,8 @@ public class RestServiceImpl implements RestService {
         return memberNames;
     }
 
-    @Override public String uploadFile(String appkey, String id, File file) {
+    @Override
+    public String uploadFile(String appkey, String id, File file) {
         String orgName = appkey.split("#")[0];
         String appName = appkey.split("#")[1];
         String intranetUrl = intranetBaseUri + "/" + orgName + "/" + appName + "/chatfiles";
@@ -455,22 +479,24 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<Map<String, Object>> responseEntity;
 
         try {
-            responseEntity = restTemplate.exchange(intranetUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, Object>>() {});
+            responseEntity = restTemplate.exchange(intranetUrl, HttpMethod.POST, entity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
         } catch (Exception e) {
             log.error("upload chat file error. appkey : {}, id :{}, error : {}", appkey, id, e.getMessage());
             throw new RestClientException("upload chat file error.");
         }
 
         @SuppressWarnings("unchecked")
-        List<Map<String, String>> entities =
-                 (List<Map<String, String>>) responseEntity.getBody().get("entities");
+        List<Map<String, String>> entities = (List<Map<String, String>>) responseEntity.getBody().get("entities");
         String fileUuid = entities.get(0).get("uuid");
         String fileUrl = baseUri + "/" + orgName + "/" + appName + "/chatfiles" + "/" + fileUuid;
 
         return fileUrl;
     }
 
-    @Override public BufferedInputStream downloadThumbImage(String appkey, String urlPath) {
+    @Override
+    public BufferedInputStream downloadThumbImage(String appkey, String urlPath) {
 
         String url = intranetBaseUri + urlPath;
 
@@ -478,7 +504,6 @@ public class RestServiceImpl implements RestService {
         headers.set("thumbnail", "true");
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
         headers.setBearerAuth(Objects.requireNonNull(RestUtil.getToken(appkey, restTemplate, applicationConfig)));
-
 
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(null, headers);
         ResponseEntity<byte[]> responseEntity;
