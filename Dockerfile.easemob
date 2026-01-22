@@ -1,0 +1,67 @@
+# Stage 1: Build the Application and Custom JRE
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+
+# Copy the project files
+COPY pom.xml .
+COPY app-server app-server
+
+# Build the application (skipping tests for speed)
+RUN mvn clean package -DskipTests
+
+# Create a custom minimal JRE using jlink
+# Modules selected for Spring Boot compatibility
+RUN jlink \
+    --add-modules java.base,java.compiler,java.desktop,java.management,java.naming,java.rmi,java.scripting,java.sql,java.xml,jdk.unsupported,java.instrument,java.security.jgss,java.net.http,jdk.crypto.ec,jdk.naming.dns \
+    --strip-debug \
+    --no-man-pages \
+    --no-header-files \
+    --compress=2 \
+    --output /javaruntime
+
+# Stage 2: Runtime Environment (Ubuntu + Custom JRE + MySQL + Redis)
+FROM ubuntu:22.04
+
+# Avoid prompts from apt
+ENV DEBIAN_FRONTEND=noninteractive
+ENV JAVA_HOME=/opt/java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+# Install dependencies and perform aggressive cleanup in a single layer
+# - mysql-server & redis-server: Core services
+# - curl: Utility
+# - Cleanups: Remove apt lists, docs, man pages, and initial mysql data
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    mysql-server \
+    redis-server \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/mysql/* \
+    && mkdir -p /var/lib/mysql /var/run/mysqld \
+    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld \
+    && rm -rf /usr/share/doc/* \
+    && rm -rf /usr/share/man/* \
+    && rm -rf /usr/share/locale/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy the custom JRE from build stage
+COPY --from=build /javaruntime $JAVA_HOME
+
+# Copy the built JAR
+COPY --from=build /app/app-server/target/app-server-*.jar /app/app-server.jar
+
+# Copy database initialization script
+COPY doc/create_tables.sql /docker-entrypoint-initdb.d/create_tables.sql
+
+# Copy the startup script
+COPY easemob-entrypoint.sh /app/easemob-entrypoint.sh
+RUN chmod +x /app/easemob-entrypoint.sh
+
+# Expose ports
+EXPOSE 8096 3306 6379
+
+# Define entrypoint
+ENTRYPOINT ["/app/easemob-entrypoint.sh"]

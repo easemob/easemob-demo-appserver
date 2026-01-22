@@ -9,16 +9,19 @@ import java.io.ByteArrayOutputStream;
 public class DynamicKey {
     /**
      * Generate Dynamic Key for media channel service
-     * @param appID App ID assigned by Agora
+     * 
+     * @param appID          App ID assigned by Agora
      * @param appCertificate App Certificate assigned by Agora
-     * @param channelName name of channel to join, limited to 64 bytes and should be printable ASCII characters
-     * @param unixTs unix timestamp in seconds when generating the Dynamic Key
-     * @param randomInt salt for generating dynamic key
+     * @param channelName    name of channel to join, limited to 64 bytes and should
+     *                       be printable ASCII characters
+     * @param unixTs         unix timestamp in seconds when generating the Dynamic
+     *                       Key
+     * @param randomInt      salt for generating dynamic key
      * @return String representation of dynamic key
      * @throws Exception
      */
-    public static String generate(String appID, String appCertificate, String channelName, int unixTs, int randomInt) throws
-            Exception {
+    public static String generate(String appID, String appCertificate, String channelName, int unixTs, int randomInt)
+            throws Exception {
         String unixTsStr = ("0000000000" + Integer.toString(unixTs)).substring(
                 Integer.toString(unixTs).length());
         String randomIntStr = ("00000000" + Integer.toHexString(randomInt)).substring(
@@ -27,8 +30,8 @@ public class DynamicKey {
         return String.format("%s%s%s%s", signature, appID, unixTsStr, randomIntStr);
     }
 
-    private static String generateSignature(String appID, String appCertificate, String channelName, String unixTsStr, String randomIntStr) throws
-            Exception {
+    private static String generateSignature(String appID, String appCertificate, String channelName, String unixTsStr,
+            String randomIntStr) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         baos.write(appID.getBytes());
         baos.write(unixTsStr.getBytes());

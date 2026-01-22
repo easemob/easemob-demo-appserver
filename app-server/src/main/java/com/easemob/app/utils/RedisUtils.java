@@ -44,15 +44,12 @@ public final class RedisUtils {
 
         JedisClientConfiguration jedisClientConfiguration = getJedisClientConfiguration(property);
 
-        LettuceClientConfiguration lettuceClientConfiguration =
-                getPoolClientConfiguration(property, clientResources);
+        LettuceClientConfiguration lettuceClientConfiguration = getPoolClientConfiguration(property, clientResources);
 
-        RedisConfiguration configuration =
-                getRedisConfiguration(property);
+        RedisConfiguration configuration = getRedisConfiguration(property);
 
         if (configuration instanceof RedisClusterConfiguration) {
-            RedisClusterConfiguration clusterConfiguration =
-                    (RedisClusterConfiguration) configuration;
+            RedisClusterConfiguration clusterConfiguration = (RedisClusterConfiguration) configuration;
             if (JedisConnectionFactory.class.equals(clazz)) {
                 JedisConnectionFactory connectionFactory = new JedisConnectionFactory(
                         clusterConfiguration, jedisClientConfiguration);
@@ -69,29 +66,29 @@ public final class RedisUtils {
         } else if (configuration instanceof RedisSentinelConfiguration) {
 
             if (JedisConnectionFactory.class.equals(clazz)) {
-                JedisConnectionFactory connectionFactory =
-                        new JedisConnectionFactory((RedisSentinelConfiguration) configuration,
-                                jedisClientConfiguration);
+                JedisConnectionFactory connectionFactory = new JedisConnectionFactory(
+                        (RedisSentinelConfiguration) configuration,
+                        jedisClientConfiguration);
                 connectionFactory.afterPropertiesSet();
                 return connectionFactory;
             } else if (LettuceConnectionFactory.class.equals(clazz)) {
-                LettuceConnectionFactory connectionFactory =
-                        new LettuceConnectionFactory((RedisSentinelConfiguration) configuration);
+                LettuceConnectionFactory connectionFactory = new LettuceConnectionFactory(
+                        (RedisSentinelConfiguration) configuration);
                 connectionFactory.afterPropertiesSet();
                 return connectionFactory;
             }
 
         } else if (configuration instanceof RedisStandaloneConfiguration) {
             if (JedisConnectionFactory.class.equals(clazz)) {
-                JedisConnectionFactory connectionFactory =
-                        new JedisConnectionFactory((RedisStandaloneConfiguration) configuration,
-                                jedisClientConfiguration);
+                JedisConnectionFactory connectionFactory = new JedisConnectionFactory(
+                        (RedisStandaloneConfiguration) configuration,
+                        jedisClientConfiguration);
                 connectionFactory.afterPropertiesSet();
                 return connectionFactory;
             } else if (LettuceConnectionFactory.class.equals(clazz)) {
-                LettuceConnectionFactory connectionFactory =
-                        new LettuceConnectionFactory((RedisStandaloneConfiguration) configuration,
-                                lettuceClientConfiguration);
+                LettuceConnectionFactory connectionFactory = new LettuceConnectionFactory(
+                        (RedisStandaloneConfiguration) configuration,
+                        lettuceClientConfiguration);
                 connectionFactory.afterPropertiesSet();
                 return connectionFactory;
 
@@ -128,8 +125,7 @@ public final class RedisUtils {
 
         } else if (SENTINEL.equals(property.getType())) {
 
-            RedisSentinelConfiguration redisSentinelConfiguration =
-                    new RedisSentinelConfiguration();
+            RedisSentinelConfiguration redisSentinelConfiguration = new RedisSentinelConfiguration();
 
             redisSentinelConfiguration.setMaster(property.getMaster());
 
@@ -161,8 +157,7 @@ public final class RedisUtils {
     private static JedisClientConfiguration getJedisClientConfiguration(
             RedisConfigProperties.Property property) {
         JedisPoolConfig jedisPoolConfig = getJedisPoolConfig(property);
-        JedisClientConfiguration.JedisClientConfigurationBuilder builder =
-                JedisClientConfiguration.builder();
+        JedisClientConfiguration.JedisClientConfigurationBuilder builder = JedisClientConfiguration.builder();
 
         if (Boolean.TRUE.equals(property.getSsl())) {
             builder.useSsl();
@@ -176,7 +171,8 @@ public final class RedisUtils {
                 .connectTimeout(Duration.ofMillis(property.getConnectTimeout()))
                 .build();
     }
-    @SuppressWarnings({"rawtypes", "unchecked"})
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static LettuceClientConfiguration getPoolClientConfiguration(
             RedisConfigProperties.Property property, ClientResources clientResources) {
 
@@ -194,8 +190,8 @@ public final class RedisUtils {
             poolConfig.setMaxWait(Duration.ofMillis(property.getMaxWait()));
         }
 
-        LettucePoolingClientConfiguration.LettucePoolingClientConfigurationBuilder builder =
-                LettucePoolingClientConfiguration.builder();
+        LettucePoolingClientConfiguration.LettucePoolingClientConfigurationBuilder builder = LettucePoolingClientConfiguration
+                .builder();
         builder.poolConfig(poolConfig);
 
         ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions

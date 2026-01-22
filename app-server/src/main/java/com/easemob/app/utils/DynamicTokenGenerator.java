@@ -19,8 +19,7 @@ public class DynamicTokenGenerator {
             String username, Long ttl) {
         long curTime = Instant.now().getEpochSecond();
         String signature = sha1(clientId + appkey + username + curTime + ttl + clientSecret);
-        DynamicTokenResource resource =
-                new DynamicTokenResource(signature, appkey, username, curTime, ttl);
+        DynamicTokenResource resource = new DynamicTokenResource(signature, appkey, username, curTime, ttl);
         String json = toJson(resource);
         String token = Base64.getUrlEncoder().encodeToString(("dt-" + json).getBytes());
         return Tuples.of(token, curTime);

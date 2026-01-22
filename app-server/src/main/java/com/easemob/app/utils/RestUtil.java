@@ -19,14 +19,14 @@ public class RestUtil {
     /**
      * token cache
      */
-    private Cache<String, String>
-            tokenCache = CacheBuilder.newBuilder().maximumSize(1).expireAfterWrite(1, TimeUnit.DAYS).build();
+    private Cache<String, String> tokenCache = CacheBuilder.newBuilder().maximumSize(1)
+            .expireAfterWrite(1, TimeUnit.DAYS).build();
 
     /**
      * get app token
      *
-     * @param appkey appkey
-     * @param restTemplate restTemplate
+     * @param appkey            appkey
+     * @param restTemplate      restTemplate
      * @param applicationConfig applicationConfig
      *
      * @return token
@@ -39,7 +39,7 @@ public class RestUtil {
             return tokenCache.get(String.format("%s-token", appkey),
                     () -> {
 
-                        //  set header
+                        // set header
                         JSONObject body = new JSONObject();
                         body.put("client_id", applicationConfig.getClientId());
                         body.put("client_secret", applicationConfig.getClientSecret());
@@ -48,7 +48,7 @@ public class RestUtil {
                         HttpHeaders header = new HttpHeaders();
                         header.setContentType(MediaType.APPLICATION_JSON);
 
-                        //  pull request
+                        // pull request
                         ResponseEntity<String> responseEntity = restTemplate
                                 .exchange(
                                         UriComponentsBuilder
@@ -59,18 +59,17 @@ public class RestUtil {
                                                 .toUri(),
                                         HttpMethod.POST,
                                         new HttpEntity<>(body, header),
-                                        String.class
-                                );
+                                        String.class);
 
                         if (responseEntity.getStatusCode().is2xxSuccessful()) {
                             return JSONObject.parseObject(responseEntity.getBody()).getString("access_token");
                         } else {
                             return null;
                         }
-                    }
-            );
+                    });
         } catch (Exception e) {
-            log.error("|{}|get exception when get token using |{}|, exception |{}|", appkey, applicationConfig, e.getMessage());
+            log.error("|{}|get exception when get token using |{}|, exception |{}|", appkey, applicationConfig,
+                    e.getMessage());
             return null;
         }
     }

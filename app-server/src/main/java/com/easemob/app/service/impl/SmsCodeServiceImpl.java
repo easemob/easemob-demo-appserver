@@ -19,9 +19,10 @@ public class SmsCodeServiceImpl implements SmsCodeService {
     @Autowired
     private RedisService redisService;
 
-    @Override public void sendSms(String phoneNumber, String resourceIp) {
+    @Override
+    public void sendSms(String phoneNumber, String resourceIp) {
 
-        SmsCodeRequest request  = SmsCodeRequest.builder()
+        SmsCodeRequest request = SmsCodeRequest.builder()
                 .checkHost(Boolean.FALSE)
                 .imgVerifyResult(Boolean.FALSE)
                 .host(resourceIp)

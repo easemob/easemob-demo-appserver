@@ -23,5 +23,6 @@ public final class RedisKeyConstants {
 
     public static final String USER_RESET_PASSWORD_SIGN = "user:reset:password:sign:%s";
 
-    private RedisKeyConstants() {}
+    private RedisKeyConstants() {
+    }
 }

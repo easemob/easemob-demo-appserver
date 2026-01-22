@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.time.LocalDateTime;
 
-
 @Slf4j
 @Service
 public class AppUserServiceImpl implements AppUserService {
@@ -30,29 +29,28 @@ public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private RestService restService;
 
-
     @Override
     public UserLoginResponse loginWithPhoneNumber(String appKey, LoginAppUser appUser) {
         String phoneNumber = appUser.getPhoneNumber();
         AppServerUtils.isPhoneNumber(phoneNumber);
 
         // 需要自己做短信验证码检查
-//        List<Object> smsCodeList = redisService.getSmsCodeRecord(phoneNumber);
-//        if (smsCodeList.isEmpty()) {
-//            throw new IllegalArgumentException(
-//                    "Please send SMS to get mobile phone verification code.");
-//        } else {
-//            AtomicBoolean mark = new AtomicBoolean(false);
-//            smsCodeList.forEach(smsCode -> {
-//                if (appUser.getSmsCode().equals(String.valueOf(smsCode))) {
-//                    mark.set(true);
-//                }
-//            });
-//
-//            if (!mark.get()) {
-//                throw new IllegalArgumentException("SMS verification code error.");
-//            }
-//        }
+        // List<Object> smsCodeList = redisService.getSmsCodeRecord(phoneNumber);
+        // if (smsCodeList.isEmpty()) {
+        // throw new IllegalArgumentException(
+        // "Please send SMS to get mobile phone verification code.");
+        // } else {
+        // AtomicBoolean mark = new AtomicBoolean(false);
+        // smsCodeList.forEach(smsCode -> {
+        // if (appUser.getSmsCode().equals(String.valueOf(smsCode))) {
+        // mark.set(true);
+        // }
+        // });
+        //
+        // if (!mark.get()) {
+        // throw new IllegalArgumentException("SMS verification code error.");
+        // }
+        // }
 
         AppUserInfoNew appUserInfo = this.assemblyService.getAppUserInfoNewFromDB(appKey, phoneNumber);
         String chatUserName;
@@ -72,8 +70,7 @@ public class AppUserServiceImpl implements AppUserService {
                     this.assemblyService.generateUniqueAgoraUid(appKey));
         }
 
-        String userToken =
-                this.restService.getChatUserToken(appKey, chatUserName, chatUserPassword);
+        String userToken = this.restService.getChatUserToken(appKey, chatUserName, chatUserPassword);
 
         UserLoginResponse response = new UserLoginResponse();
         response.setToken(userToken);
@@ -83,7 +80,8 @@ public class AppUserServiceImpl implements AppUserService {
         return response;
     }
 
-    @Override public String uploadAvatar(String appkey, String chatUsername, MultipartFile file) {
+    @Override
+    public String uploadAvatar(String appkey, String chatUsername, MultipartFile file) {
         AppUserInfoNew appUserInfo = this.assemblyService.getAppUserInfoNewByChatUserName(appkey, chatUsername);
         if (appUserInfo == null) {
             throw new ASNotFoundException("The chat username not found.");

@@ -10,7 +10,7 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuil
 // 移除旧的 SSLConnectionSocketFactory 导入（如果不需要了）
 // import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory; 
 // 引入新的 DefaultClientTlsStrategy
-import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy; 
+import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
 import org.apache.hc.core5.ssl.SSLContexts;
 import org.apache.hc.core5.util.Timeout;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -43,7 +43,7 @@ public class ApplicationConfig {
     public HttpClient httpClient() {
         // 使用 Builder 构建连接管理器
         PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
-                .setTlsSocketStrategy(new DefaultClientTlsStrategy(SSLContexts.createDefault())) 
+                .setTlsSocketStrategy(new DefaultClientTlsStrategy(SSLContexts.createDefault()))
                 .setMaxConnTotal(200)
                 .setMaxConnPerRoute(100)
                 .setDefaultConnectionConfig(ConnectionConfig.custom()

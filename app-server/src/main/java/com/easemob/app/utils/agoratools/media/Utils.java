@@ -55,11 +55,11 @@ public class Utils {
     public static int crc32(byte[] bytes) {
         CRC32 checksum = new CRC32();
         checksum.update(bytes);
-        return (int)checksum.getValue();
+        return (int) checksum.getValue();
     }
 
     public static int getTimestamp() {
-        return (int)((new Date().getTime())/1000);
+        return (int) ((new Date().getTime()) / 1000);
     }
 
     public static int randomInt() {
